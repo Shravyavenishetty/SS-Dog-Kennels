@@ -1,0 +1,34 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  :root {
+    --color-champagne: #F7E7CE;
+    --color-forest: #2D5A2D;
+    --color-ivory: #FAF9F6;
+  }
+
+  body {
+    @apply bg-ivory text-gray-900 font-inter antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-playfair;
+  }
+}
+
+.fixed-layout {
+  width: 1440px;
+  margin: 0 auto;
+}
+
+.content-container {
+  width: 1200px;
+  margin: 0 auto;
+}
