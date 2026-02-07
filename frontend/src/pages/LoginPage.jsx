@@ -87,10 +87,10 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                             SS
                         </div>
                         <h2 className="font-playfair text-4xl text-champagne-gold leading-tight mb-6">
-                            Experience the Art of <br />Champion Breeding.
+                            Welcome to <br />SS Dog Kennels.
                         </h2>
                         <p className="font-inter text-ivory/60 text-sm leading-relaxed max-w-sm">
-                            Join our exclusive community of dog enthusiasts and gain access to premium litters, pedigrees, and elite grooming services.
+                            Join our community and find your perfect puppy companion today.
                         </p>
                     </div>
 
@@ -124,10 +124,10 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
 
                     <div className="mb-10">
                         <h1 className="font-playfair text-4xl text-forest-green mb-3">
-                            {step === 'number' ? 'Welcome Back' : 'Verify Identity'}
+                            {step === 'number' ? 'Welcome Back' : 'Enter Code'}
                         </h1>
                         <p className="font-inter text-sm text-forest-green/40 uppercase tracking-widest">
-                            {step === 'number' ? 'Enter your mobile to receive an OTP' : `We've sent a code to +91 ${phoneNumber}`}
+                            {step === 'number' ? 'Please enter your mobile number' : `We sent a 6-digit code to +91 ${phoneNumber}`}
                         </p>
                     </div>
 
@@ -159,7 +159,7 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                                     <RefreshCw className="animate-spin" size={16} />
                                 ) : (
                                     <>
-                                        <span>Send Verification Code</span>
+                                        <span>Send Code</span>
                                         <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
@@ -209,7 +209,7 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                                     <RefreshCw className="animate-spin" size={16} />
                                 ) : (
                                     <>
-                                        <span>Verify & Sign In</span>
+                                        <span>Log In</span>
                                         <ShieldCheck size={16} className="group-hover:scale-110 transition-transform" />
                                     </>
                                 )}
