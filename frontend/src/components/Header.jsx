@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ShoppingCart, Menu, Heart, User, X, ArrowRight } from 'lucide-react';
+import { Search, ShoppingCart, Menu, Heart, User, X, ArrowRight, LogOut } from 'lucide-react';
 
-const Header = ({ onPageChange, wishlistCount, cartCount }) => {
+const Header = ({ onPageChange, wishlistCount, cartCount, isLoggedIn, onLogout }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     // Prevent background scrolling when menu is open
@@ -55,6 +55,21 @@ const Header = ({ onPageChange, wishlistCount, cartCount }) => {
                             {item.label}
                         </button>
                     ))}
+                    {isLoggedIn ? (
+                        <button
+                            onClick={onLogout}
+                            className="font-inter text-sm font-semibold tracking-wider text-red-500 hover:text-red-600 transition-colors uppercase"
+                        >
+                            Logout
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => onPageChange('login')}
+                            className="font-inter text-sm font-semibold tracking-wider text-forest-green/70 hover:text-forest-green transition-colors uppercase"
+                        >
+                            Login
+                        </button>
+                    )}
                 </nav>
 
                 {/* Actions & Toggle */}
@@ -134,6 +149,33 @@ const Header = ({ onPageChange, wishlistCount, cartCount }) => {
                                 <ArrowRight size={16} className="text-forest-green/20 group-hover:text-forest-green transition-all -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100" />
                             </button>
                         ))}
+
+                        {/* Auth Item */}
+                        <div className="pt-4 mt-4 border-t border-champagne-gold/10">
+                            {isLoggedIn ? (
+                                <button
+                                    onClick={() => {
+                                        onLogout();
+                                        setIsMenuOpen(false);
+                                    }}
+                                    className="flex items-center justify-between w-full px-4 py-3.5 rounded-xl hover:bg-red-50 group transition-colors text-red-500"
+                                >
+                                    <span className="font-playfair text-lg font-bold">Logout</span>
+                                    <LogOut size={16} className="opacity-40 group-hover:opacity-100 transition-all" />
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => {
+                                        onPageChange('login');
+                                        setIsMenuOpen(false);
+                                    }}
+                                    className="flex items-center justify-between w-full px-4 py-3.5 rounded-xl hover:bg-forest-green/5 group transition-colors"
+                                >
+                                    <span className="font-playfair text-lg font-bold text-forest-green/80 group-hover:text-forest-green transition-colors">Login</span>
+                                    <ArrowRight size={16} className="text-forest-green/20 group-hover:text-forest-green transition-all -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100" />
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="mt-auto p-6">

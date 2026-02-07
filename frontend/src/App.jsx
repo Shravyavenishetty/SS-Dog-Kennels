@@ -117,7 +117,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-ivory-white">
-      <Header onPageChange={setCurrentPage} wishlistCount={wishlist.length} cartCount={cart.length} />
+      <Header onPageChange={setCurrentPage} wishlistCount={wishlist.length} cartCount={cart.length} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
       <main className="pt-[56px] lg:pt-[80px]">
         {renderPage()}
       </main>
