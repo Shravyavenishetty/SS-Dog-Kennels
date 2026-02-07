@@ -14,7 +14,6 @@ import LoginPage from './pages/LoginPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import StudAvailabilityPage from './pages/StudAvailabilityPage';
-import AdminPanelPage from './pages/AdminPanelPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
