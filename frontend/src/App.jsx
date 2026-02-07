@@ -4,6 +4,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import PuppiesPage from './pages/PuppiesPage';
 import PuppyDetailPage from './pages/PuppyDetailPage';
+import StudServicesPage from './pages/StudServicesPage';
 import ServicesPage from './pages/ServicesPage';
 import BookingWizard from './pages/BookingWizard';
 import ProfilePage from './pages/DashboardPage';
@@ -15,6 +16,12 @@ import AdminPanelPage from './pages/AdminPanelPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [selectedService, setSelectedService] = useState(null);
+
+  const handleServiceBooking = (serviceId) => {
+    setSelectedService(serviceId);
+    setCurrentPage('booking-wizard');
+  };
 
   const renderPage = () => {
     switch (currentPage) {
@@ -23,8 +30,8 @@ function App() {
       case 'puppy-detail': return <PuppyDetailPage />;
       case 'stud': return <StudServicesPage onPageChange={setCurrentPage} />;
       case 'stud-availability': return <StudAvailabilityPage onPageChange={setCurrentPage} />;
-      case 'services': return <ServicesPage onPageChange={setCurrentPage} />;
-      case 'booking-wizard': return <BookingWizard onPageChange={setCurrentPage} />;
+      case 'services': return <ServicesPage onPageChange={setCurrentPage} onServiceSelect={handleServiceBooking} />;
+      case 'booking-wizard': return <BookingWizard onPageChange={setCurrentPage} initialService={selectedService} />;
       case 'wishlist': return <WishlistPage onPageChange={setCurrentPage} onPuppySelect={() => setCurrentPage('puppy-detail')} />;
       case 'profile': return <ProfilePage />;
       case 'about': return <AboutPage />;

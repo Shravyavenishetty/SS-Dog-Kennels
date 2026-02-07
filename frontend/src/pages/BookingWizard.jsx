@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 import { Check, Calendar, CreditCard, User } from 'lucide-react';
 
-const BookingWizard = ({ onPageChange }) => {
-    const [step, setStep] = useState(1);
+const BookingWizard = ({ onPageChange, initialService }) => {
+    const [step, setStep] = useState(initialService ? 2 : 1);
+    const [selectedSubService, setSelectedSubService] = useState(null);
+
+    const serviceMap = {
+        'grooming-training': ['Full Grooming', 'Puppy Grooming', 'De-shedding', 'Obedience Training', 'Protection Training', 'Puppy Socialization'],
+        'boarding-daycare': ['Short-term Stay', 'Long-term Stay', 'Luxury Suite', 'Day Care Supervision'],
+        'health-consultation': ['Vet Consultation', 'Vaccination Guide', 'Nutrition Planning', 'Health Check'],
+        'stud-breeding': ['Breeding Consult', 'Reservation Support', 'Documentation Only'],
+        'premium-logistics': ['Domestic Transport', 'Airport Pickup', 'Insurance Help', 'Microchipping']
+    };
+
+    const currentSubServices = serviceMap[initialService] || ['Grooming', 'Dog Training', 'Dog Boarding', 'Health Check'];
 
     return (
         <div className="fixed-layout py-24 px-10">
@@ -39,8 +50,15 @@ const BookingWizard = ({ onPageChange }) => {
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <h2 className="font-playfair text-4xl text-forest-green mb-8">What do you need?</h2>
                             <div className="grid grid-cols-2 gap-6">
-                                {['Grooming', 'Dog Training', 'Dog Staying', 'Health Check'].map(service => (
-                                    <button key={service} onClick={() => setStep(2)} className="p-8 border border-forest-green/10 rounded-xl hover:border-forest-green hover:bg-forest-green/5 transition-all text-left flex justify-between items-center group">
+                                {currentSubServices.map(service => (
+                                    <button
+                                        key={service}
+                                        onClick={() => {
+                                            setSelectedSubService(service);
+                                            setStep(2);
+                                        }}
+                                        className="p-8 border border-forest-green/10 rounded-xl hover:border-forest-green hover:bg-forest-green/5 transition-all text-left flex justify-between items-center group"
+                                    >
                                         <span className="font-playfair text-xl text-forest-green">{service}</span>
                                         <div className="w-6 h-6 rounded-full border border-forest-green/20 group-hover:bg-forest-green transition-colors"></div>
                                     </button>
@@ -93,7 +111,7 @@ const BookingWizard = ({ onPageChange }) => {
                                     <span>#NS-8274</span>
                                 </div>
                                 <div className="flex justify-between mb-4">
-                                    <span className="font-playfair text-xl">Elite Grooming</span>
+                                    <span className="font-playfair text-xl">{selectedSubService || 'Elite Session'}</span>
                                     <span className="font-playfair text-xl">₹4,500</span>
                                 </div>
                                 <div className="flex justify-between text-sm opacity-70">

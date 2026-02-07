@@ -1,119 +1,167 @@
 import React from 'react';
-import { Scissors, GraduationCap, Home, HeartPulse, Clock, Sparkles, ShieldCheck } from 'lucide-react';
+import { Scissors, GraduationCap, Home, HeartPulse, ShieldCheck, Truck, Apple, Scale, MessageCircle, ArrowRight, Star } from 'lucide-react';
 
-const ServicesPage = ({ onPageChange }) => {
-    const services = [
+const ServicesPage = ({ onPageChange, onServiceSelect }) => {
+    const categories = [
         {
-            id: 'grooming',
-            title: 'Elite Grooming',
-            description: 'Full-service spa treatment including bath, hair-cut, nail trimming, and ear cleaning. We use premium organic shampoos tailored to your dog\'s coat type.',
-            price: 'Starting at ₹1,500',
-            duration: '2-3 Hours',
+            id: 'grooming-training',
+            title: 'Grooming & Training',
+            tagline: 'Precision Care & Elite Discipline',
+            image: 'https://www.cgshospital.com/images/blog/groomingservices.jpeg',
             icon: Scissors,
-            benefits: ['Coat Conditioning', 'Stress-free environment', 'Expert Stylists']
+            subServices: [
+                'Full Grooming (Bath, Haircut, Nails)',
+                'Puppy Grooming (Gentle First-Care)',
+                'De-shedding & Coat Treatment',
+                'Basic Obedience Training',
+                'Advanced / Protection Training',
+                'Puppy Socialization'
+            ],
+            priceRange: '₹1,500 - ₹25,000'
         },
         {
-            id: 'training',
-            title: 'Professional Training',
-            description: 'From basic obedience to advanced behavioral correction. Our certified trainers use positive reinforcement techniques to build lasting bonds.',
-            price: 'Starting at ₹15,000',
-            duration: '10 Sessions',
-            icon: GraduationCap,
-            benefits: ['KCI Standards', 'Socialization', 'Home Integration']
-        },
-        {
-            id: 'boarding',
-            title: 'Luxury Boarding',
-            description: 'Climate-controlled individual suites with 24/7 supervision. Includes daily exercise, social playtime, and personalized feeding schedules.',
-            price: '₹1,200 / Night',
-            duration: '24/7 Care',
+            id: 'boarding-daycare',
+            title: 'Boarding & Day Care',
+            tagline: 'Their Home Away From Home',
+            image: 'https://cdn.prod.website-files.com/5742366615d374a826153265/612eb723f3ee1354b7556259_Boarding-Facility-1200.jpg',
             icon: Home,
-            benefits: ['Live Feed Access', 'Veterinary On-call', 'Spacious Play Yards']
+            subServices: [
+                'Short-term & Long-term Stays',
+                'Luxury Suites (Private, AC)',
+                'Live Camera Access for Owners',
+                'Supervised Daily Playtime',
+                'Day Care Supervision',
+                'Personalized Feeding Plans'
+            ],
+            priceRange: '₹800 - ₹2,500 / Day'
         },
         {
-            id: 'health',
-            title: 'Wellness Check',
-            description: 'Comprehensive health assessment including vaccinations, parasite control, and nutritional consulting for puppies and adults.',
-            price: '₹2,500',
-            duration: '45 Minutes',
+            id: 'health-consultation',
+            title: 'Health & Consultation',
+            tagline: 'Professional Wellness Guidance',
+            image: 'https://d3544la1u8djza.cloudfront.net/APHI/Blog/2022/04-18/woman%2Band%2Bdog%2Bhaving%2Ban%2Bonline%2Bconsultation%2Bwith%2Ba%2Bveterinarian-min.jpg',
             icon: HeartPulse,
-            benefits: ['Health Records', 'Growth Tracking', 'Diet Plans']
+            subServices: [
+                'Vet Consultation (Online/In-person)',
+                'Vaccination & Health Guidance',
+                'Nutrition & Individual Diet Plans',
+                'Post-adoption Health Checks',
+                'Growth & Wellness Tracking',
+                'DNA & Breed Health Screening'
+            ],
+            priceRange: 'Consultation starts ₹1,000'
+        },
+        {
+            id: 'stud-breeding',
+            title: 'Stud & Breeding',
+            tagline: 'Elite Heritage & Support',
+            image: 'https://www.ecad1.org/images/Breeding_Collage.jpg',
+            icon: Star,
+            subServices: [
+                'Champion Stud Availability',
+                'Pedigree & Bloodline Details',
+                'Breeding Consultation',
+                'Puppy Reservation Support',
+                'Documentation & Registration',
+                'Adoption Coordination'
+            ],
+            priceRange: 'Contact for Pricing'
+        },
+        {
+            id: 'premium-logistics',
+            title: 'Premium & Logistics',
+            tagline: 'Global Support System',
+            image: 'https://www.acrossthepondpet.com/images/blog/gl-10.jpg',
+            icon: Truck,
+            subServices: [
+                'Domestic Pet Transport',
+                'Safe Crate & Travel Support',
+                'Airport Pickup / Drop-off',
+                'Pet Insurance Guidance',
+                'Ownership Transfer Support',
+                'Microchipping Assistance'
+            ],
+            priceRange: 'Varies by Service'
         }
     ];
 
     return (
         <div className="fixed-layout py-24 px-10">
             {/* Header Section */}
-            <div className="mb-20">
-                <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-6 block font-bold">NS Care Services</span>
-                <h1 className="font-playfair text-6xl text-forest-green mb-8 leading-tight">Expert Care for your <br /><span className="italic text-champagne-gold underline decoration-forest-green/5 underline-offset-8">Best Friend.</span></h1>
-                <p className="max-w-2xl text-lg text-forest-green/60 leading-relaxed">
-                    Our commitment to excellence extends beyond breeding. We provide lifelong support through professional grooming, training, and sanctuary boarding.
+            <div className="max-w-4xl mb-24">
+                <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-6 block font-bold">NS Care Ecosystem</span>
+                <h1 className="font-playfair text-6xl lg:text-7xl text-forest-green mb-8 leading-tight">Professional Services for <br /><span className="italic text-champagne-gold underline decoration-forest-green/5 underline-offset-8">Every Stage.</span></h1>
+                <p className="text-xl text-forest-green/70 leading-relaxed font-inter">
+                    From the first grooming session to lifelong boarding and elite breeding support, we are here to ensure your companion receives the gold standard of care.
                 </p>
             </div>
 
-            {/* Services Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-24">
-                {services.map((service, index) => (
-                    <div key={index} className="bg-white rounded-32 border border-forest-green/5 shadow-22 shadow-forest-green/5 p-12 hover:shadow-32 hover:border-champagne-gold/20 transition-all group overflow-hidden relative">
-                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-forest-green/5 rounded-full blur-3xl group-hover:bg-champagne-gold/10 transition-colors"></div>
-
-                        <div className="flex items-start justify-between mb-10">
-                            <div className="w-16 h-16 bg-forest-green rounded-2xl flex items-center justify-center text-champagne-gold shadow-xl group-hover:scale-110 transition-transform">
-                                <service.icon size={32} />
-                            </div>
-                            <div className="text-right">
-                                <span className="font-playfair text-2xl text-forest-green font-bold block">{service.price}</span>
-                                <span className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest flex items-center justify-end mt-1">
-                                    <Clock size={12} className="mr-1" /> {service.duration}
-                                </span>
+            {/* Comprehensive Categories */}
+            <div className="space-y-32">
+                {categories.map((cat, index) => (
+                    <div key={cat.id} className={`flex flex-col lg:flex-row items-center gap-20 ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
+                        {/* Image Panel */}
+                        <div className="lg:w-1/2 shadow-2xl rounded-32 overflow-hidden relative group">
+                            <img src={cat.image} alt={cat.title} className="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-forest-green/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-12">
+                                <span className="text-white font-playfair text-2xl italic">Trusted by thousands of owners.</span>
                             </div>
                         </div>
 
-                        <h3 className="font-playfair text-3xl text-forest-green mb-4">{service.title}</h3>
-                        <p className="font-inter text-forest-green/60 leading-relaxed mb-8">
-                            {service.description}
-                        </p>
+                        {/* Content Panel */}
+                        <div className="lg:w-1/2 flex flex-col justify-center">
+                            <div className="flex items-center space-x-4 mb-6">
+                                <div className="p-3 bg-forest-green/5 rounded-xl text-forest-green">
+                                    <cat.icon size={24} />
+                                </div>
+                                <span className="font-inter text-xs uppercase tracking-widest text-[#C5A059] font-bold">{cat.tagline}</span>
+                            </div>
 
-                        <div className="flex flex-wrap gap-4 mb-10">
-                            {service.benefits.map((benefit, i) => (
-                                <span key={i} className="px-3 py-1 bg-ivory text-forest-green/60 text-[10px] uppercase font-bold tracking-widest rounded-full border border-forest-green/5">
-                                    {benefit}
-                                </span>
-                            ))}
+                            <h2 className="font-playfair text-5xl text-forest-green mb-8">{cat.title}</h2>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 mb-12">
+                                {cat.subServices.map((service, i) => (
+                                    <div key={i} className="flex items-start space-x-3">
+                                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
+                                        <span className="font-inter text-sm text-forest-green/70 leading-relaxed">{service}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="flex items-end justify-between border-t border-forest-green/5 pt-10">
+                                <div>
+                                    <span className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest block mb-1">Pricing Overview</span>
+                                    <span className="font-playfair text-2xl text-forest-green font-bold">{cat.priceRange}</span>
+                                </div>
+                                <button
+                                    onClick={() => onServiceSelect(cat.id)}
+                                    className="px-12 py-5 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-xl hover:shadow-2xl hover:-translate-y-1 active:translate-y-0 transition-all flex items-center space-x-3"
+                                >
+                                    <span>Plan This Service</span>
+                                    <ArrowRight size={14} />
+                                </button>
+                            </div>
                         </div>
-
-                        <button
-                            onClick={() => onPageChange('booking-wizard')}
-                            className="w-full py-5 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-xl hover:shadow-xl active:scale-[0.98] transition-all flex items-center justify-center space-x-3"
-                        >
-                            <Sparkles size={16} />
-                            <span>Book {service.title}</span>
-                        </button>
                     </div>
                 ))}
             </div>
 
-            {/* Quality Promise Section */}
-            <div className="bg-forest-green rounded-[40px] p-20 text-ivory flex flex-col items-center text-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-white/5 blur-[120px] rounded-full"></div>
-                <ShieldCheck size={48} className="text-champagne-gold mb-8" />
-                <h2 className="font-playfair text-5xl mb-6">Our Quality Promise</h2>
-                <p className="max-w-2xl text-white/60 mb-12 text-lg">
-                    Every service is supervised by our senior breeding team. We ensure that the dogs in our care receive the same respect and affection as our home champions.
-                </p>
-                <div className="flex space-x-12">
-                    <div className="text-center">
-                        <div className="text-3xl font-playfair text-champagne-gold mb-1">100%</div>
-                        <div className="text-[10px] uppercase font-bold tracking-widest text-white/40">Organic Products</div>
-                    </div>
-                    <div className="text-center border-x border-white/10 px-12">
-                        <div className="text-3xl font-playfair text-champagne-gold mb-1">Top Tier</div>
-                        <div className="text-[10px] uppercase font-bold tracking-widest text-white/40">KCI Certified</div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-3xl font-playfair text-champagne-gold mb-1">Safe</div>
-                        <div className="text-[10px] uppercase font-bold tracking-widest text-white/40">24/7 CCTV</div>
+            {/* Bottom Support Section */}
+            <div className="mt-48 bg-ivory rounded-[40px] p-24 text-center border border-forest-green/5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#C5A059]/5 blur-3xl rounded-full"></div>
+                <div className="max-w-2xl mx-auto relative z-10">
+                    <ShieldCheck size={48} className="mx-auto text-forest-green mb-8" />
+                    <h3 className="font-playfair text-4xl text-forest-green mb-6">Can't find what you need?</h3>
+                    <p className="text-forest-green/60 mb-10 leading-relaxed font-inter">
+                        Our help team is available for custom arrangements, including long-term breeding partnerships and international pet relocation.
+                    </p>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <button
+                            onClick={() => onPageChange('contact')}
+                            className="w-full sm:w-auto px-10 py-5 border-2 border-forest-green text-forest-green font-bold uppercase tracking-widest text-xs rounded-xl hover:bg-forest-green hover:text-white transition-all"
+                        >
+                            Talk to our Help Team
+                        </button>
                     </div>
                 </div>
             </div>
