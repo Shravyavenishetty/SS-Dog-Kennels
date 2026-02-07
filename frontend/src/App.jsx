@@ -10,6 +10,7 @@ import BookingWizard from './pages/BookingWizard';
 import ProfilePage from './pages/DashboardPage';
 import WishlistPage from './pages/WishlistPage';
 import CartPage from './pages/CartPage';
+import LoginPage from './pages/LoginPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import StudAvailabilityPage from './pages/StudAvailabilityPage';
@@ -21,10 +22,21 @@ function App() {
   const [selectedPuppy, setSelectedPuppy] = useState(null);
   const [wishlist, setWishlist] = useState([]);
   const [cart, setCart] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handlePuppySelect = (puppy) => {
     setSelectedPuppy(puppy);
     setCurrentPage('puppy-detail');
+  };
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setCurrentPage('profile');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentPage('login');
   };
 
   const addToCart = (puppy) => {
@@ -86,7 +98,18 @@ function App() {
         cart={cart}
         onRemoveFromCart={removeFromCart}
       />;
-      case 'profile': return <ProfilePage />;
+      case 'profile':
+        return isLoggedIn ? (
+          <ProfilePage
+            onPageChange={setCurrentPage}
+            wishlistCount={wishlist.length}
+            cartCount={cart.length}
+            onLogout={handleLogout}
+          />
+        ) : (
+          <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />
+        );
+      case 'login': return <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />;
       case 'about': return <AboutPage />;
       case 'contact': return <ContactPage />;
       default: return <HomePage onPageChange={setCurrentPage} onPuppySelect={handlePuppySelect} />;
