@@ -68,11 +68,11 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-20 px-10 bg-ivory/30">
-            <div className="w-full max-w-5xl flex bg-white rounded-[40px] shadow-2xl overflow-hidden border border-forest-green/5 min-h-[700px]">
+        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-6 lg:py-20 px-4 lg:px-10 bg-ivory/30">
+            <div className="w-full max-w-5xl flex bg-white rounded-32 lg:rounded-[40px] shadow-2xl overflow-hidden border border-forest-green/5 min-h-[600px] lg:min-h-[700px]">
 
-                {/* Visual Side */}
-                <div className="hidden lg:block w-1/2 relative overflow-hidden bg-forest-green p-16 flex flex-col justify-between">
+                {/* Visual Side - Hidden on mobile */}
+                <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-forest-green p-16 flex-col justify-between">
                     <div className="absolute inset-0 opacity-20">
                         <img
                             src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=800"
@@ -112,11 +112,11 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                 </div>
 
                 {/* Content Side */}
-                <div className="w-full lg:w-1/2 p-12 lg:p-20 flex flex-col justify-center relative">
+                <div className="w-full lg:w-1/2 p-8 sm:p-12 lg:p-20 flex flex-col justify-center relative">
                     {step === 'otp' && (
                         <button
                             onClick={() => setStep('number')}
-                            className="absolute top-12 left-12 p-2 border border-forest-green/10 rounded-full text-forest-green/40 hover:text-forest-green hover:border-forest-green/20 transition-all"
+                            className="absolute top-8 left-8 lg:top-12 lg:left-12 p-2 border border-forest-green/10 rounded-full text-forest-green/40 hover:text-forest-green hover:border-forest-green/20 transition-all"
                         >
                             <ChevronLeft size={20} />
                         </button>

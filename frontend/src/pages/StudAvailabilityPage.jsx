@@ -67,107 +67,107 @@ const StudAvailabilityPage = ({ onPageChange, selectedStud: initialStud }) => {
     }
 
     return (
-        <div className="fixed-layout py-16 px-10">
+        <div className="fixed-layout py-8 lg:py-16 px-6 lg:px-10">
             {/* Top Navigation & Header */}
-            <div className="max-w-6xl mx-auto mb-20 text-center">
+            <div className="max-w-6xl mx-auto mb-12 lg:mb-20 text-center">
                 <button
                     onClick={() => onPageChange('stud')}
-                    className="inline-flex items-center space-x-3 text-forest-green/40 hover:text-forest-green mb-10 transition-colors group"
+                    className="inline-flex items-center space-x-3 text-forest-green/40 hover:text-forest-green mb-8 lg:mb-10 transition-colors group"
                 >
-                    <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" />
+                    <ArrowLeft size={16} className="group-hover:-translate-x-1 lg:group-hover:-translate-x-2 transition-transform" />
                     <span className="font-inter text-[10px] uppercase tracking-widest font-bold">Back to Stud Dogs</span>
                 </button>
 
-                <span className="font-inter text-[10px] uppercase tracking-[0.4em] text-forest-green/60 mb-6 block font-bold">Booking Portal</span>
-                <h1 className="font-playfair text-5xl lg:text-7xl text-forest-green mb-8">Champion Stud <br /><span className="italic text-[#C5A059] underline decoration-forest-green/5 underline-offset-8">Availability</span></h1>
-                <p className="max-w-2xl mx-auto text-lg text-forest-green/60 leading-relaxed">
-                    Reserve your mating session with our elite champions. Our streamlined process ensures your business success starts with the right foundation.
+                <span className="font-inter text-[10px] uppercase tracking-[0.4em] text-forest-green/60 mb-4 lg:mb-6 block font-bold">Booking Portal</span>
+                <h1 className="font-playfair text-3xl lg:text-7xl text-forest-green mb-6 lg:mb-8 leading-tight">Champion Stud <br className="hidden sm:block" /><span className="italic text-[#C5A059] underline decoration-forest-green/5 underline-offset-8">Availability</span></h1>
+                <p className="max-w-2xl mx-auto text-sm lg:text-lg text-forest-green/60 leading-relaxed">
+                    Reserve your session with our elite champions. Right foundation for your success.
                 </p>
             </div>
 
             {/* Main Centered Hub */}
             <div className="max-w-5xl mx-auto">
-                <div className="bg-white rounded-[40px] shadow-2xl shadow-forest-green/5 border border-forest-green/5 overflow-hidden flex flex-col lg:flex-row">
+                <div className="bg-white rounded-32 lg:rounded-[40px] shadow-2xl shadow-forest-green/5 border border-forest-green/5 overflow-hidden flex flex-col lg:flex-row">
 
-                    {/* Left Panel: Calendar - NOW MORE PROMINENT */}
-                    <div className="lg:w-[450px] bg-ivory/50 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-forest-green/5">
-                        <div className="flex items-center justify-between mb-10">
+                    {/* Left Panel: Calendar */}
+                    <div className="w-full lg:w-[450px] bg-ivory/50 p-6 lg:p-12 border-b lg:border-b-0 lg:border-r border-forest-green/5">
+                        <div className="flex items-center justify-between mb-8 lg:mb-10">
                             <div>
-                                <h3 className="font-playfair text-3xl text-forest-green">{monthName}</h3>
+                                <h3 className="font-playfair text-2xl lg:text-3xl text-forest-green">{monthName}</h3>
                                 <p className="font-inter text-[10px] text-forest-green/40 uppercase tracking-[0.2em] font-bold mt-1">{currentYear}</p>
                             </div>
                             <div className="flex space-x-2">
-                                <button onClick={handlePrevMonth} className="w-10 h-10 rounded-full bg-white border border-forest-green/5 flex items-center justify-center hover:bg-forest-green hover:text-white transition-all shadow-sm">
-                                    <ChevronLeft size={18} />
+                                <button onClick={handlePrevMonth} className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white border border-forest-green/5 flex items-center justify-center hover:bg-forest-green hover:text-white transition-all shadow-sm">
+                                    <ChevronLeft size={16} />
                                 </button>
-                                <button onClick={handleNextMonth} className="w-10 h-10 rounded-full bg-white border border-forest-green/5 flex items-center justify-center hover:bg-forest-green hover:text-white transition-all shadow-sm">
-                                    <ChevronRight size={18} />
+                                <button onClick={handleNextMonth} className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white border border-forest-green/5 flex items-center justify-center hover:bg-forest-green hover:text-white transition-all shadow-sm">
+                                    <ChevronRight size={16} />
                                 </button>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-7 mb-4">
+                        <div className="grid grid-cols-7 mb-2 lg:mb-4">
                             {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                                <div key={day} className="py-2 text-center text-[10px] font-bold text-forest-green/30 uppercase">{day}</div>
+                                <div key={day} className="py-2 text-center text-[10px] lg:text-[10px] font-bold text-forest-green/30 uppercase">{day}</div>
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-7 gap-1 lg:gap-2">
+                        <div className="grid grid-cols-7 gap-1">
                             {days}
                         </div>
 
-                        <div className="mt-10 pt-8 border-t border-forest-green/5 flex items-center justify-between">
+                        <div className="mt-8 lg:mt-10 pt-6 lg:pt-8 border-t border-forest-green/5 flex flex-wrap items-center justify-between gap-4">
                             <div className="flex items-center space-x-2">
                                 <div className="w-2 h-2 rounded-full bg-forest-green/20"></div>
-                                <span className="text-[9px] uppercase font-bold text-forest-green/40 tracking-wider">Booked</span>
+                                <span className="text-[8px] lg:text-[9px] uppercase font-bold text-forest-green/40 tracking-wider">Booked</span>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <div className="w-2 h-2 rounded-full border border-forest-green/20"></div>
-                                <span className="text-[9px] uppercase font-bold text-forest-green/40 tracking-wider">Available</span>
+                                <span className="text-[8px] lg:text-[9px] uppercase font-bold text-forest-green/40 tracking-wider">Available</span>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <div className="w-2 h-2 rounded-full bg-champagne-gold"></div>
-                                <span className="text-[9px] uppercase font-bold text-forest-green/40 tracking-wider">Selected</span>
+                                <span className="text-[8px] lg:text-[9px] uppercase font-bold text-forest-green/40 tracking-wider">Selected</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Right Panel: Form & Info */}
-                    <div className="flex-1 p-8 lg:p-12 bg-white">
-                        <div className="mb-10">
-                            <h3 className="font-playfair text-3xl text-forest-green mb-4">Mating Request</h3>
-                            <p className="font-inter text-sm text-forest-green/60">Fill in the details below to check pedigree compatibility and secure your dates.</p>
+                    <div className="flex-1 p-6 lg:p-12 bg-white">
+                        <div className="mb-8 lg:mb-10">
+                            <h3 className="font-playfair text-2xl lg:text-3xl text-forest-green mb-4">Mating Request</h3>
+                            <p className="font-inter text-sm text-forest-green/60">Pedigree compatibility check and dates securement.</p>
                         </div>
 
-                        <div className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4 lg:space-y-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest pl-2">Selected Date</label>
-                                    <div className="w-full bg-forest-green/5 rounded-2xl px-5 py-4 font-inter text-sm text-forest-green font-bold">
-                                        {selectedDate ? `${monthName} ${selectedDate}, ${currentYear}` : 'Select a date'}
+                                    <label className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest lg:pl-2">Selected Date</label>
+                                    <div className="w-full bg-forest-green/5 rounded-2xl px-5 py-4 font-inter text-xs lg:text-sm text-forest-green font-bold">
+                                        {selectedDate ? `${monthName} ${selectedDate}, ${currentYear}` : 'Pick a date'}
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest pl-2">Full Name</label>
-                                    <input type="text" placeholder="Ganesh..." className="w-full bg-forest-green/5 border-none rounded-2xl px-5 py-4 font-inter text-sm focus:ring-2 focus:ring-forest-green/10 transition-all" />
+                                    <label className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest lg:pl-2">Full Name</label>
+                                    <input type="text" placeholder="Your name..." className="w-full bg-forest-green/5 border-none rounded-2xl px-5 py-3 lg:py-4 font-inter text-sm focus:ring-2 focus:ring-forest-green/10 transition-all outline-none" />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest pl-2">Email Address</label>
-                                <input type="email" placeholder="hello@example.com" className="w-full bg-forest-green/5 border-none rounded-2xl px-5 py-4 font-inter text-sm focus:ring-2 focus:ring-forest-green/10 transition-all" />
+                                <label className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest lg:pl-2">Email Address</label>
+                                <input type="email" placeholder="email@address.com" className="w-full bg-forest-green/5 border-none rounded-2xl px-5 py-3 lg:py-4 font-inter text-sm focus:ring-2 focus:ring-forest-green/10 transition-all outline-none" />
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest pl-2">Special Notes & Breed Details</label>
-                                <textarea rows="3" placeholder="Tell us about your female dog..." className="w-full bg-forest-green/5 border-none rounded-2xl px-5 py-4 font-inter text-sm focus:ring-2 focus:ring-forest-green/10 transition-all resize-none"></textarea>
+                                <label className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest lg:pl-2">Breed Details</label>
+                                <textarea rows="3" placeholder="Tell us about your female..." className="w-full bg-forest-green/5 border-none rounded-2xl px-5 py-3 lg:py-4 font-inter text-sm focus:ring-2 focus:ring-forest-green/10 transition-all resize-none outline-none"></textarea>
                             </div>
 
                             <button
                                 disabled={!selectedDate}
                                 onClick={() => setBookingSuccess(true)}
-                                className={`w-full py-6 rounded-2xl font-bold uppercase tracking-widest text-xs transition-all mt-4 shadow-xl ${selectedDate
-                                    ? 'bg-forest-green text-champagne-gold hover:translate-y-[-2px] hover:shadow-forest-green/20 active:translate-y-0'
+                                className={`w-full py-5 lg:py-6 rounded-2xl font-bold uppercase tracking-widest text-[10px] lg:text-xs transition-all mt-4 shadow-xl active:scale-95 ${selectedDate
+                                    ? 'bg-forest-green text-champagne-gold hover:shadow-forest-green/20'
                                     : 'bg-forest-green/10 text-forest-green/20 cursor-not-allowed'
                                     }`}
                             >
@@ -176,45 +176,45 @@ const StudAvailabilityPage = ({ onPageChange, selectedStud: initialStud }) => {
                         </div>
 
                         {/* Trust Badges */}
-                        <div className="mt-12 pt-10 border-t border-forest-green/5 flex flex-wrap gap-8 justify-center lg:justify-start">
-                            <div className="flex items-center space-x-3">
-                                <ShieldCheck size={18} className="text-champagne-gold" />
-                                <span className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest">Health Vetted</span>
+                        <div className="mt-8 lg:mt-12 pt-8 lg:pt-10 border-t border-forest-green/5 flex flex-wrap gap-6 lg:gap-8 justify-center lg:justify-start">
+                            <div className="flex items-center space-x-2 lg:space-x-3">
+                                <ShieldCheck size={16} className="text-champagne-gold" />
+                                <span className="text-[8px] lg:text-[10px] font-bold text-forest-green/40 uppercase tracking-widest">Health Vetted</span>
                             </div>
-                            <div className="flex items-center space-x-3">
-                                <Clock size={18} className="text-champagne-gold" />
-                                <span className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest">24h Response</span>
+                            <div className="flex items-center space-x-2 lg:space-x-3">
+                                <Clock size={16} className="text-champagne-gold" />
+                                <span className="text-[8px] lg:text-[10px] font-bold text-forest-green/40 uppercase tracking-widest">24h Response</span>
                             </div>
-                            <div className="flex items-center space-x-3">
-                                <Mail size={18} className="text-champagne-gold" />
-                                <span className="text-[10px] font-bold text-forest-green/40 uppercase tracking-widest">Support</span>
+                            <div className="flex items-center space-x-2 lg:space-x-3">
+                                <Mail size={16} className="text-champagne-gold" />
+                                <span className="text-[8px] lg:text-[10px] font-bold text-forest-green/40 uppercase tracking-widest">Support</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Support Section - Fills vertical gap */}
-            <div className="max-w-5xl mx-auto mt-24 text-center">
-                <div className="inline-block p-1 rounded-full bg-forest-green/5 mb-8">
-                    <div className="flex items-center space-x-4 px-6 py-2">
+            {/* Bottom Support Section */}
+            <div className="max-w-5xl mx-auto mt-16 lg:mt-24 text-center px-4">
+                <div className="inline-block p-1 rounded-full bg-forest-green/5 mb-6 lg:mb-8">
+                    <div className="flex items-center space-x-4 px-4 lg:px-6 py-2">
                         <div className="flex -space-x-2">
                             {[1, 2, 3].map(i => (
-                                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-forest-green/10 overflow-hidden">
-                                    <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Expert" />
+                                <div key={i} className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border-2 border-white bg-forest-green/10 overflow-hidden shrink-0">
+                                    <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Expert" className="w-full h-full object-cover" />
                                 </div>
                             ))}
                         </div>
-                        <span className="text-xs font-bold text-forest-green/60">Help team standing by</span>
+                        <span className="text-[10px] lg:text-xs font-bold text-forest-green/60">Expert team standing by</span>
                     </div>
                 </div>
-                <h4 className="font-playfair text-2xl text-forest-green mb-4">Need immediate help?</h4>
-                <p className="text-forest-green/40 text-sm mb-8">Our breeding experts are available for consult on complex pedigrees.</p>
+                <h4 className="font-playfair text-xl lg:text-2xl text-forest-green mb-4">Need immediate help?</h4>
+                <p className="text-forest-green/40 text-[10px] lg:text-sm mb-6 lg:mb-8">Breeding experts available for pedigree consult.</p>
                 <button
                     onClick={() => onPageChange('contact')}
-                    className="text-forest-green font-bold text-xs uppercase tracking-[0.2em] hover:text-champagne-gold transition-colors underline decoration-champagne-gold underline-offset-8"
+                    className="text-forest-green font-bold text-[10px] lg:text-xs uppercase tracking-[0.2em] hover:text-champagne-gold transition-colors underline decoration-champagne-gold underline-offset-8"
                 >
-                    Contact Breeding Experts &rarr;
+                    Contact Experts &rarr;
                 </button>
             </div>
         </div>

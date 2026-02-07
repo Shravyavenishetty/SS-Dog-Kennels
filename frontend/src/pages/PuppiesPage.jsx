@@ -76,9 +76,48 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
     };
 
     return (
-        <div className="fixed-layout py-16 px-10 flex space-x-12">
-            {/* Sidebar Filters */}
-            <aside className="w-[280px] shrink-0">
+        <div className="fixed-layout py-8 lg:py-16 px-6 lg:px-10 flex flex-col lg:flex-row lg:space-x-12">
+            {/* Mobile Filter Toggle & Search */}
+            <div className="lg:hidden mb-8 space-y-4">
+                <div className="flex items-center justify-between">
+                    <h1 className="font-playfair text-3xl text-forest-green">Our Collection</h1>
+                    <button
+                        onClick={() => {
+                            setSelectedTypes([]);
+                            setSelectedAvailability([]);
+                            setPriceRange('All Prices');
+                            setSearchQuery('');
+                        }}
+                        className="font-inter text-[10px] uppercase tracking-widest text-forest-green/40 font-bold"
+                    >
+                        Reset
+                    </button>
+                </div>
+                <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-forest-green/40" size={16} />
+                    <input
+                        type="text"
+                        placeholder="Search breeds..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-12 pr-6 py-4 bg-forest-green/5 border border-forest-green/5 rounded-2xl font-inter text-sm text-forest-green outline-none"
+                    />
+                </div>
+                <div className="flex overflow-x-auto space-x-2 pb-2 scrollbar-hide">
+                    {['Guard Dogs', 'Pets', 'Working Dogs', 'Farm Dogs'].map(type => (
+                        <button
+                            key={type}
+                            onClick={() => toggleType(type)}
+                            className={`px-4 py-2 rounded-full whitespace-nowrap text-[10px] font-bold uppercase tracking-widest transition-all ${selectedTypes.includes(type) ? 'bg-forest-green text-champagne-gold' : 'bg-forest-green/5 text-forest-green'}`}
+                        >
+                            {type}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Sidebar Filters - Desktop Only */}
+            <aside className="hidden lg:block w-[280px] shrink-0">
                 <div className="sticky top-[120px]">
                     <div className="flex items-center justify-between mb-8">
                         <h2 className="font-playfair text-2xl text-forest-green">Filters</h2>
@@ -162,13 +201,13 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                         <div className="absolute top-0 right-0 w-32 h-32 bg-champagne-gold/10 blur-3xl -mr-16 -mt-16 group-hover:bg-champagne-gold/20 transition-all"></div>
                         <h3 className="font-playfair text-xl mb-4 text-champagne-gold z-10 relative">Need Help?</h3>
                         <p className="font-inter text-xs opacity-70 leading-relaxed mb-6 z-10 relative">
-                            Talk to our friendly team to find the right puppy for your family.
+                            Talk to our team to find the right puppy.
                         </p>
                         <button
                             onClick={() => onPageChange('contact')}
                             className="text-xs font-bold uppercase tracking-widest text-champagne-gold hover:text-white transition-colors flex items-center space-x-2 z-10 relative"
                         >
-                            <span>Contact Help Team</span>
+                            <span>Contact Us</span>
                             <span>&rarr;</span>
                         </button>
                     </div>
@@ -177,7 +216,7 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
 
             {/* Main Content */}
             <section className="flex-1">
-                <div className="flex flex-col mb-12">
+                <div className="hidden lg:flex flex-col mb-12">
                     <div className="flex justify-between items-center mb-8">
                         <h1 className="font-playfair text-4xl text-forest-green">Our Collection <span className="text-forest-green/40">({filteredPuppies.length} Dogs)</span></h1>
                         <div className="flex items-center space-x-6">
@@ -239,7 +278,7 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                 </div>
 
                 {filteredPuppies.length > 0 ? (
-                    <div className="grid grid-cols-3 gap-8 mb-20 animate-in fade-in duration-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20 animate-in fade-in duration-700">
                         {filteredPuppies.map((puppy, i) => (
                             <PuppyCard
                                 key={i}
@@ -253,13 +292,13 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                         ))}
                     </div>
                 ) : (
-                    <div className="py-20 text-center bg-forest-green/5 rounded-32 border border-dashed border-forest-green/20">
-                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                            <Search className="text-forest-green/20" size={32} />
+                    <div className="py-12 lg:py-20 text-center bg-forest-green/5 rounded-32 border border-dashed border-forest-green/20">
+                        <div className="w-12 h-12 lg:w-16 lg:h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 lg:mb-6 shadow-sm">
+                            <Search className="text-forest-green/20" size={24} />
                         </div>
-                        <h3 className="font-playfair text-2xl text-forest-green mb-2">No matching dogs found</h3>
-                        <p className="font-inter text-forest-green/40 text-sm max-w-xs mx-auto">
-                            Try adjusting your filters or resetting your search to find your perfect companion.
+                        <h3 className="font-playfair text-xl lg:text-2xl text-forest-green mb-2">No matching dogs found</h3>
+                        <p className="font-inter text-forest-green/40 text-[10px] lg:text-sm max-w-xs mx-auto">
+                            Try adjusting your filters or resetting your search.
                         </p>
                         <button
                             onClick={() => {
@@ -268,9 +307,9 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                                 setPriceRange('All Prices');
                                 setSearchQuery('');
                             }}
-                            className="mt-8 px-8 py-3 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-lg hover:scale-105 transition-all"
+                            className="mt-6 px-8 py-3 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-[10px] rounded-lg hover:scale-105 transition-all"
                         >
-                            Reset All Filters
+                            Reset All
                         </button>
                     </div>
                 )}
