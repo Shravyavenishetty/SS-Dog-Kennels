@@ -32,11 +32,11 @@ const Header = ({ onPageChange, wishlistCount, cartCount }) => {
                     className="flex items-center space-x-2 lg:space-x-3"
                 >
                     <div className="w-8 h-8 lg:w-10 lg:h-10 bg-forest-green rounded-lg flex items-center justify-center text-champagne-gold shadow-sm">
-                        <span className="font-playfair font-bold text-xs lg:text-base">NS</span>
+                        <span className="font-playfair font-bold text-xs lg:text-base">SS</span>
                     </div>
                     <div className="flex flex-col items-start leading-tight">
                         <span className="font-playfair text-sm lg:text-xl font-black tracking-tight text-forest-green">
-                            NS DOG KENNELS
+                            SS DOG KENNELS
                         </span>
                         <span className="hidden lg:block font-inter text-[10px] uppercase tracking-[0.3em] text-forest-green/50 font-bold mt-0.5">
                             Est. 1982 • Legacy of Excellence
@@ -147,7 +147,7 @@ const Header = ({ onPageChange, wishlistCount, cartCount }) => {
                             Book a Consultation
                         </button>
                         <p className="text-center mt-6 font-inter text-[8px] text-forest-green/30 uppercase tracking-[0.2em] font-bold">
-                            NS DOG KENNELS • Est. 1982
+                            SS DOG KENNELS • Est. 1982
                         </p>
                     </div>
                 </div>
