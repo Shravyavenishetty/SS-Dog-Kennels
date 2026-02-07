@@ -1,13 +1,7 @@
 import React from 'react';
 import PuppyCard from '../components/PuppyCard';
 
-const WishlistPage = ({ onPuppySelect }) => {
-    // Demo data for saved dogs
-    const savedPuppies = [
-        { breed: 'Caucasian Shepherd', price: '₹4.5L', age: '8 Weeks', availability: 'Available', image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400' },
-        { breed: 'French Bulldog', price: '₹2.8L', age: '10 Weeks', availability: 'Available', image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400' },
-    ];
-
+const WishlistPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }) => {
     return (
         <div className="fixed-layout py-16 px-10">
             <div className="flex justify-between items-end mb-12">
@@ -15,15 +9,24 @@ const WishlistPage = ({ onPuppySelect }) => {
                     <h1 className="font-playfair text-4xl text-forest-green mb-2">My Saved Dogs</h1>
                     <p className="font-inter text-sm text-forest-green/40 uppercase tracking-widest">Dogs you are interested in</p>
                 </div>
+                <button
+                    onClick={() => onPageChange('puppies')}
+                    className="px-6 py-2 border border-forest-green/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-forest-green hover:bg-forest-green hover:text-white transition-all"
+                >
+                    Find More Dogs
+                </button>
             </div>
 
-            {savedPuppies.length > 0 ? (
+            {wishlist.length > 0 ? (
                 <div className="grid grid-cols-4 gap-8">
-                    {savedPuppies.map((puppy, i) => (
+                    {wishlist.map((puppy, i) => (
                         <PuppyCard
                             key={i}
                             {...puppy}
+                            price={puppy.priceDisplay || puppy.price}
                             onSelect={() => onPuppySelect(puppy)}
+                            isWishlisted={true}
+                            onToggleWishlist={() => onToggleWishlist(puppy)}
                         />
                     ))}
                 </div>

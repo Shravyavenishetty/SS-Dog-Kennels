@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import PuppyCard from '../components/PuppyCard';
 import { Search, SlidersHorizontal } from 'lucide-react';
 
-const PuppiesPage = ({ onPageChange, onPuppySelect }) => {
+const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }) => {
     // 1. Data
     const basePuppies = [
         { breed: 'Caucasian Shepherd', price: 450000, priceDisplay: '₹4.5L', age: '8 Weeks', availability: 'Available Now', type: 'Guard Dogs', image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400' },
@@ -247,6 +247,8 @@ const PuppiesPage = ({ onPageChange, onPuppySelect }) => {
                                 price={puppy.priceDisplay}
                                 availability={puppy.availability}
                                 onSelect={() => onPuppySelect(puppy)}
+                                isWishlisted={wishlist.some(p => p.breed === puppy.breed)}
+                                onToggleWishlist={() => onToggleWishlist(puppy)}
                             />
                         ))}
                     </div>

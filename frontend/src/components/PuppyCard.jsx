@@ -1,7 +1,7 @@
 import React from 'react';
 import { Heart, ArrowRight } from 'lucide-react';
 
-const PuppyCard = ({ image, breed, price, availability, age, onSelect }) => {
+const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlisted, onToggleWishlist }) => {
     return (
         <div
             onClick={onSelect}
@@ -17,10 +17,13 @@ const PuppyCard = ({ image, breed, price, availability, age, onSelect }) => {
                 />
                 <div className="absolute top-4 right-4">
                     <button
-                        onClick={(e) => { e.stopPropagation(); }}
-                        className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-forest-green hover:text-red-500 transition-colors shadow-sm active:scale-95 group/heart"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleWishlist();
+                        }}
+                        className={`w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors shadow-sm active:scale-95 group/heart ${isWishlisted ? 'text-red-500' : 'text-forest-green hover:text-red-500'}`}
                     >
-                        <Heart size={18} className="group-hover/heart:fill-current group-hover/heart:[animation:pulse_1s_infinite]" />
+                        <Heart size={18} className={`${isWishlisted ? 'fill-current' : 'group-hover/heart:fill-current group-hover/heart:[animation:pulse_1s_infinite]'}`} />
                     </button>
                 </div>
                 <div className="absolute bottom-4 left-4">
