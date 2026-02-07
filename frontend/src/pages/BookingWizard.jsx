@@ -16,7 +16,7 @@ const BookingWizard = ({ onPageChange, initialService }) => {
     const currentSubServices = serviceMap[initialService] || ['Grooming', 'Dog Training', 'Dog Boarding', 'Health Check'];
 
     return (
-        <div className="fixed-layout py-8 lg:py-24 px-6 lg:px-10">
+        <div className="fixed-layout py-8 lg:py-24 px-4 lg:px-10">
             <div className="max-w-4xl mx-auto">
                 {/* Back Button */}
                 <button

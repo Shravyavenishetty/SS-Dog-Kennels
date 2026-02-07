@@ -9,7 +9,7 @@ const CartPage = ({ onPageChange, cart, onRemoveFromCart }) => {
     };
 
     return (
-        <div className="fixed-layout py-8 lg:py-16 px-6 lg:px-10">
+        <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 lg:mb-12 gap-4">
                 <div>
                     <h1 className="font-playfair text-3xl lg:text-4xl text-forest-green mb-2">Your Puppy Cart</h1>

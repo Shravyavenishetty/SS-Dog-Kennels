@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Instagram, Facebook, Twitter } from 'lucide-react'
 const Footer = ({ onPageChange }) => {
     return (
         <footer className="bg-forest-green text-ivory-white pt-20 pb-10 lg:pt-32 lg:pb-12 mt-0">
-            <div className="fixed-layout px-6 lg:px-10">
+            <div className="fixed-layout px-4 lg:px-10">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 mb-16 lg:mb-24">
                     {/* Brand Section */}
                     <div className="md:col-span-4 translate-y-0">

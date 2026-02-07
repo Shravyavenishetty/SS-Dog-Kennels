@@ -15,7 +15,7 @@ const Header = ({ onPageChange, wishlistCount, cartCount }) => {
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-ivory/80 backdrop-blur-md border-b border-champagne-gold/20 h-[80px]">
-            <div className="fixed-layout h-full flex items-center justify-between px-6 lg:px-10">
+            <div className="fixed-layout h-full flex items-center justify-between px-4 lg:px-10">
                 {/* Logo */}
                 <button
                     onClick={() => onPageChange('home')}
@@ -82,7 +82,7 @@ const Header = ({ onPageChange, wishlistCount, cartCount }) => {
                     {/* Mobile Menu Toggle */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="lg:hidden text-forest-green p-2 hover:bg-forest-green/5 rounded-full transition-colors"
+                        className={`lg:hidden p-2 rounded-full transition-all duration-300 ${isMenuOpen ? 'bg-white/10 text-champagne-gold rotate-90' : 'text-forest-green hover:bg-forest-green/5'}`}
                     >
                         {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
@@ -90,29 +90,36 @@ const Header = ({ onPageChange, wishlistCount, cartCount }) => {
 
                 {/* Mobile Navigation Overlay */}
                 <div className={`
-                    fixed inset-0 bg-ivory z-40 lg:hidden transition-transform duration-500 ease-in-out
-                    ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}
+                    fixed inset-0 bg-forest-green/95 backdrop-blur-xl z-40 lg:hidden transition-all duration-500 ease-in-out
+                    ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
                 `}>
                     <div className="flex flex-col items-center justify-center h-full space-y-8 px-10 pt-[80px]">
-                        {navItems.map((item) => (
+                        {navItems.map((item, index) => (
                             <button
                                 key={item.id}
                                 onClick={() => {
                                     onPageChange(item.id);
                                     setIsMenuOpen(false);
                                 }}
-                                className="font-playfair text-3xl font-bold text-forest-green hover:text-champagne-gold transition-colors"
+                                className={`
+                                    font-playfair text-3xl font-bold text-champagne-gold transition-all duration-500
+                                    ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}
+                                `}
+                                style={{ transitionDelay: `${index * 100}ms` }}
                             >
                                 {item.label}
                             </button>
                         ))}
-                        <div className="pt-8 w-full">
+                        <div className={`
+                            pt-12 w-full transition-all duration-700 delay-500
+                            ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}
+                        `}>
                             <button
                                 onClick={() => {
                                     onPageChange('contact');
                                     setIsMenuOpen(false);
                                 }}
-                                className="w-full py-4 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-lg"
+                                className="w-full py-5 bg-champagne-gold text-forest-green font-bold uppercase tracking-widest text-xs rounded-xl shadow-[0_10px_30px_rgba(247,231,206,0.2)]"
                             >
                                 Get in Touch
                             </button>

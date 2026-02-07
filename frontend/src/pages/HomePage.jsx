@@ -30,10 +30,10 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-forest-green/80 via-forest-green/40 to-transparent"></div>
 
-                <div className="fixed-layout relative h-full flex flex-col justify-center px-6 lg:px-10 mt-12 lg:mt-0">
+                <div className="fixed-layout relative h-full flex flex-col justify-center px-4 lg:px-10 mt-12 lg:mt-0">
                     <div className="max-w-2xl animate-in fade-in slide-in-from-left-8 duration-1000">
                         <span className="font-inter text-[10px] lg:text-xs uppercase tracking-[0.4em] text-champagne-gold mb-4 lg:mb-6 block drop-shadow-lg">44 Years of Trust • Family Business</span>
-                        <h1 className="font-playfair text-4xl lg:text-7xl text-white leading-tight mb-6 lg:mb-8 drop-shadow-2xl">
+                        <h1 className="font-playfair text-3xl lg:text-7xl text-white leading-tight mb-6 lg:mb-8 drop-shadow-2xl">
                             Find Your New <br className="hidden sm:block" />
                             <span className="italic text-champagne-gold">Best Friend.</span>
                         </h1>
@@ -92,7 +92,7 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
                     <div className="flex flex-col lg:flex-row justify-between lg:items-end mb-12 lg:mb-20 border-b border-forest-green/5 pb-10">
                         <div className="mb-6 lg:mb-0">
                             <span className="font-inter text-xs uppercase tracking-widest text-forest-green/60 mb-2 lg:mb-4 block">Our Current Selection</span>
-                            <h2 className="text-4xl lg:text-6xl text-forest-green font-playfair">Featured Puppies</h2>
+                            <h2 className="font-playfair text-3xl lg:text-6xl text-forest-green">Featured Puppies</h2>
                         </div>
                         <button
                             onClick={() => onPageChange('puppies')}

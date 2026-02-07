@@ -15,7 +15,7 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
     }
 
     return (
-        <div className="fixed-layout py-8 lg:py-16 px-6 lg:px-10">
+        <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10">
             {/* Back Button */}
             <button
                 onClick={() => onPageChange('puppies')}

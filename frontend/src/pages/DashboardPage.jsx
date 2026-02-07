@@ -156,7 +156,7 @@ const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout }) => {
     };
 
     return (
-        <div className="fixed-layout py-8 lg:py-16 px-6 lg:px-10 flex flex-col lg:flex-row lg:space-x-12 min-h-screen">
+        <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10 flex flex-col lg:flex-row lg:space-x-12 min-h-screen">
             {/* Sidebar */}
             <aside className="w-full lg:w-[300px] shrink-0 mb-8 lg:mb-0">
                 <div className="bg-white rounded-24 p-6 lg:p-10 border border-forest-green/10 shadow-xl sticky top-24 lg:top-32">

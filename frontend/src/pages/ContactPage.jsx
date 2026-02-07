@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
 const ContactPage = () => {
     return (
-        <div className="fixed-layout py-12 lg:py-24 px-6 lg:px-10">
+        <div className="fixed-layout py-12 lg:py-24 px-4 lg:px-10">
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
                 <div className="w-full lg:w-[40%]">
                     <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-4 lg:mb-6 block">Help Team</span>

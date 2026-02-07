@@ -54,7 +54,7 @@ const StudServicesPage = ({ onPageChange }) => {
     };
 
     return (
-        <div className="fixed-layout py-8 lg:py-16 px-6 lg:px-10">
+        <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10">
             {/* Header Section */}
             <div className="text-center mb-12 lg:mb-20 animate-in fade-in slide-in-from-top-8 duration-1000">
                 <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-4 block">Superior Bloodlines</span>

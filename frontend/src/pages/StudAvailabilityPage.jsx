@@ -67,7 +67,7 @@ const StudAvailabilityPage = ({ onPageChange, selectedStud: initialStud }) => {
     }
 
     return (
-        <div className="fixed-layout py-8 lg:py-16 px-6 lg:px-10">
+        <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10">
             {/* Top Navigation & Header */}
             <div className="max-w-6xl mx-auto mb-12 lg:mb-20 text-center">
                 <button

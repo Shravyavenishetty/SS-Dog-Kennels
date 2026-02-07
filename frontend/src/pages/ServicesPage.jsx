@@ -86,7 +86,7 @@ const ServicesPage = ({ onPageChange, onServiceSelect }) => {
     ];
 
     return (
-        <div className="fixed-layout py-12 lg:py-24 px-6 lg:px-10">
+        <div className="fixed-layout py-12 lg:py-24 px-4 lg:px-10">
             {/* Header Section */}
             <div className="max-w-4xl mb-16 lg:mb-24">
                 <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-4 lg:mb-6 block font-bold">NS Care Ecosystem</span>

@@ -76,7 +76,7 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
     };
 
     return (
-        <div className="fixed-layout py-8 lg:py-16 px-6 lg:px-10 flex flex-col lg:flex-row lg:space-x-12">
+        <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10 flex flex-col lg:flex-row lg:space-x-12">
             {/* Mobile Filter Toggle & Search */}
             <div className="lg:hidden mb-8 space-y-4">
                 <div className="flex items-center justify-between">

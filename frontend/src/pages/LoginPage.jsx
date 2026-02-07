@@ -168,7 +168,7 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                     ) : (
                         <form onSubmit={handleVerifyOTP} className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-500">
                             <div className="space-y-4 text-center">
-                                <div className="flex justify-between gap-3">
+                                <div className="flex justify-between gap-2 sm:gap-3">
                                     {otp.map((digit, i) => (
                                         <input
                                             key={i}

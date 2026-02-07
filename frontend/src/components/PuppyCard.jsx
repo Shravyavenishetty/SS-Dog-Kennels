@@ -45,7 +45,7 @@ const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlis
 
                 <div className="h-[1px] w-full bg-champagne-gold/10 my-4 lg:my-6"></div>
 
-                <button className="w-full py-3.5 lg:py-4 bg-transparent border border-forest-green/10 hover:border-forest-green hover:bg-forest-green hover:text-champagne-gold transition-all duration-500 rounded-xl flex items-center justify-center space-x-2 text-[10px] lg:text-[11px] font-bold uppercase tracking-widest text-forest-green group/btn">
+                <button className="w-full py-3.5 lg:py-4 bg-transparent border border-forest-green/10 hover:border-forest-green hover:bg-forest-green hover:text-champagne-gold transition-all duration-500 rounded-xl flex items-center justify-center space-x-2 text-xs lg:text-[11px] font-bold uppercase tracking-widest text-forest-green group/btn">
                     <span>Explore Legacy</span>
                     <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>
