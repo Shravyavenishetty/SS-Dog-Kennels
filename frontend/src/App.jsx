@@ -4,7 +4,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import PuppiesPage from './pages/PuppiesPage';
 import PuppyDetailPage from './pages/PuppyDetailPage';
-import StudServicesPage from './pages/StudServicesPage';
+import ServicesPage from './pages/ServicesPage';
 import BookingWizard from './pages/BookingWizard';
 import ProfilePage from './pages/DashboardPage';
 import WishlistPage from './pages/WishlistPage';
@@ -23,7 +23,8 @@ function App() {
       case 'puppy-detail': return <PuppyDetailPage />;
       case 'stud': return <StudServicesPage onPageChange={setCurrentPage} />;
       case 'stud-availability': return <StudAvailabilityPage onPageChange={setCurrentPage} />;
-      case 'services': return <BookingWizard />;
+      case 'services': return <ServicesPage onPageChange={setCurrentPage} />;
+      case 'booking-wizard': return <BookingWizard onPageChange={setCurrentPage} />;
       case 'wishlist': return <WishlistPage onPageChange={setCurrentPage} onPuppySelect={() => setCurrentPage('puppy-detail')} />;
       case 'profile': return <ProfilePage />;
       case 'about': return <AboutPage />;

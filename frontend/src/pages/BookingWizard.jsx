@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
 import { Check, Calendar, CreditCard, User } from 'lucide-react';
 
-const BookingWizard = () => {
+const BookingWizard = ({ onPageChange }) => {
     const [step, setStep] = useState(1);
 
     return (
         <div className="fixed-layout py-24 px-10">
             <div className="max-w-4xl mx-auto">
+                {/* Back Button */}
+                <button
+                    onClick={() => onPageChange('services')}
+                    className="flex items-center space-x-3 text-forest-green/40 hover:text-forest-green mb-12 transition-colors group"
+                >
+                    <div className="w-8 h-8 rounded-full border border-forest-green/10 flex items-center justify-center group-hover:bg-forest-green group-hover:text-white transition-all">
+                        <span className="text-lg">←</span>
+                    </div>
+                    <span className="font-inter text-xs uppercase tracking-widest font-bold">Back to Services</span>
+                </button>
+
                 {/* Progress Bar */}
                 <div className="flex justify-between items-center mb-20 relative">
                     <div className="absolute top-1/2 left-0 w-full h-[1px] bg-forest-green/10 -z-10"></div>
