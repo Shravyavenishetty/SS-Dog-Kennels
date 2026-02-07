@@ -9,6 +9,7 @@ import ServicesPage from './pages/ServicesPage';
 import BookingWizard from './pages/BookingWizard';
 import ProfilePage from './pages/DashboardPage';
 import WishlistPage from './pages/WishlistPage';
+import CartPage from './pages/CartPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import StudAvailabilityPage from './pages/StudAvailabilityPage';
@@ -17,7 +18,27 @@ import AdminPanelPage from './pages/AdminPanelPage';
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedService, setSelectedService] = useState(null);
+  const [selectedPuppy, setSelectedPuppy] = useState(null);
   const [wishlist, setWishlist] = useState([]);
+  const [cart, setCart] = useState([]);
+
+  const handlePuppySelect = (puppy) => {
+    setSelectedPuppy(puppy);
+    setCurrentPage('puppy-detail');
+  };
+
+  const addToCart = (puppy) => {
+    setCart(prev => {
+      const exists = prev.find(p => p.breed === puppy.breed);
+      if (exists) return prev;
+      return [...prev, puppy];
+    });
+    setCurrentPage('cart');
+  };
+
+  const removeFromCart = (puppy) => {
+    setCart(prev => prev.filter(p => p.breed !== puppy.breed));
+  };
 
   const toggleWishlist = (puppy) => {
     setWishlist(prev => {
@@ -36,34 +57,45 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home': return <HomePage onPageChange={setCurrentPage} onPuppySelect={() => setCurrentPage('puppy-detail')} />;
+      case 'home': return <HomePage onPageChange={setCurrentPage} onPuppySelect={handlePuppySelect} />;
       case 'puppies': return <Entries
         onPageChange={setCurrentPage}
-        onPuppySelect={() => setCurrentPage('puppy-detail')}
+        onPuppySelect={handlePuppySelect}
         wishlist={wishlist}
         onToggleWishlist={toggleWishlist}
       />;
-      case 'puppy-detail': return <PuppyDetailPage />;
+      case 'puppy-detail': return <PuppyDetailPage
+        onPageChange={setCurrentPage}
+        puppy={selectedPuppy}
+        onToggleWishlist={() => toggleWishlist(selectedPuppy)}
+        isWishlisted={selectedPuppy && wishlist.some(p => p.breed === selectedPuppy.breed)}
+        onAddToCart={addToCart}
+      />;
       case 'stud': return <StudServicesPage onPageChange={setCurrentPage} />;
       case 'stud-availability': return <StudAvailabilityPage onPageChange={setCurrentPage} />;
       case 'services': return <ServicesPage onPageChange={setCurrentPage} onServiceSelect={handleServiceBooking} />;
       case 'booking-wizard': return <BookingWizard onPageChange={setCurrentPage} initialService={selectedService} />;
       case 'wishlist': return <WishlistPage
         onPageChange={setCurrentPage}
-        onPuppySelect={() => setCurrentPage('puppy-detail')}
+        onPuppySelect={handlePuppySelect}
         wishlist={wishlist}
         onToggleWishlist={toggleWishlist}
+      />;
+      case 'cart': return <CartPage
+        onPageChange={setCurrentPage}
+        cart={cart}
+        onRemoveFromCart={removeFromCart}
       />;
       case 'profile': return <ProfilePage />;
       case 'about': return <AboutPage />;
       case 'contact': return <ContactPage />;
-      default: return <HomePage onPageChange={setCurrentPage} onPuppySelect={() => setCurrentPage('puppy-detail')} />;
+      default: return <HomePage onPageChange={setCurrentPage} onPuppySelect={handlePuppySelect} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-ivory-white">
-      <Header onPageChange={setCurrentPage} wishlistCount={wishlist.length} />
+      <Header onPageChange={setCurrentPage} wishlistCount={wishlist.length} cartCount={cart.length} />
       <main className="pt-[80px]">
         {renderPage()}
       </main>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search, ShoppingCart, Menu, Heart, Shield, User } from 'lucide-react';
 
-const Header = ({ onPageChange, wishlistCount }) => {
+const Header = ({ onPageChange, wishlistCount, cartCount }) => {
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-ivory/80 backdrop-blur-md border-b border-champagne-gold/20 h-[80px]">
             <div className="fixed-layout h-full flex items-center justify-between px-10">
@@ -62,11 +62,17 @@ const Header = ({ onPageChange, wishlistCount }) => {
                     >
                         <User size={20} />
                     </button>
-                    <button className="text-forest-green hover:scale-110 transition-transform relative">
+                    <button
+                        onClick={() => onPageChange('cart')}
+                        className="text-forest-green hover:scale-110 transition-transform relative"
+                        title="Shopping Cart"
+                    >
                         <ShoppingCart size={20} />
-                        <span className="absolute -top-2 -right-2 bg-forest-green text-champagne-gold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                            0
-                        </span>
+                        {cartCount > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-forest-green text-champagne-gold text-[10px] w-4 h-4 rounded-full flex items-center justify-center animate-bounce">
+                                {cartCount}
+                            </span>
+                        )}
                     </button>
                 </div>
             </div>
