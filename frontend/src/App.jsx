@@ -118,7 +118,7 @@ function App() {
   return (
     <div className="min-h-screen bg-ivory-white">
       <Header onPageChange={setCurrentPage} wishlistCount={wishlist.length} cartCount={cart.length} />
-      <main className="pt-[80px]">
+      <main className="pt-[56px] lg:pt-[80px]">
         {renderPage()}
       </main>
       <Footer onPageChange={setCurrentPage} />
