@@ -1,16 +1,22 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Calendar, Mail, FileText, Star, Search, SlidersHorizontal } from 'lucide-react';
+import { fetchStudDogs } from '../lib/api';
 
 const StudServicesPage = ({ onPageChange }) => {
-    // 1. Data
-    const baseStuds = [
-        { name: 'Titan', breed: 'Tibetan Mastiff', rating: 5.0, pups: 12, image: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=80&w=600' },
-        { name: 'Storm', breed: 'Doberman', rating: 4.9, pups: 8, image: 'https://images.unsplash.com/photo-1554692998-0420ff80562e?auto=format&fit=crop&q=80&w=600' },
-        { name: 'Caesar', breed: 'German Shepherd', rating: 5.0, pups: 24, image: 'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?auto=format&fit=crop&q=80&w=600' },
-        { name: 'Brutus', breed: 'Rottweiler', rating: 4.8, pups: 15, image: 'https://images.unsplash.com/photo-1567171466295-4afa58141417?auto=format&fit=crop&q=80&w=600' },
-        { name: 'Shadow', breed: 'Caucasian Shepherd', rating: 5.0, pups: 5, image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=600' },
-        { name: 'Max', breed: 'Golden Retriever', rating: 4.7, pups: 30, image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400' },
-    ];
+    const [baseStuds, setBaseStuds] = useState([]);
+
+    useEffect(() => {
+        let mounted = true;
+        fetchStudDogs()
+            .then((items) => {
+                if (!mounted) return;
+                setBaseStuds(items);
+            })
+            .catch((err) => {
+                console.error("Failed to load stud dogs from API:", err);
+            });
+        return () => { mounted = false; };
+    }, []);
 
     // 2. State
     const [searchQuery, setSearchQuery] = useState('');
@@ -43,7 +49,7 @@ const StudServicesPage = ({ onPageChange }) => {
         });
 
         return result;
-    }, [searchQuery, selectedBreeds, sortBy]);
+    }, [baseStuds, searchQuery, selectedBreeds, sortBy]);
 
     const breeds = [...new Set(baseStuds.map(s => s.breed))];
 

@@ -1,15 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, Play, Award, ShieldCheck, Heart, Star, Calendar, MessageCircle } from 'lucide-react';
 import PuppyCard from '../components/PuppyCard';
 import LitterCounter from '../components/LitterCounter';
+import { fetchPuppies } from '../lib/api';
 
 const HomePage = ({ onPageChange, onPuppySelect }) => {
-    const featuredPuppies = [
+    const fallbackFeaturedPuppies = [
         { breed: 'Caucasian Shepherd', price: '₹4.5L', age: '8 Weeks', availability: 'Available', image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400' },
         { breed: 'Tibetan Mastiff', price: '₹12L', age: '12 Weeks', availability: 'Reserved', image: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=80&w=400' },
         { breed: 'French Bulldog', price: '₹2.8L', age: '10 Weeks', availability: 'Available', image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=800' },
         { breed: 'Golden Retriever', price: '₹1.5L', age: '9 Weeks', availability: 'Available', image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400' },
     ];
+    const [featuredPuppies, setFeaturedPuppies] = useState(fallbackFeaturedPuppies);
+
+    useEffect(() => {
+        let mounted = true;
+        fetchPuppies()
+            .then((items) => {
+                if (!mounted) return;
+                setFeaturedPuppies(items.slice(0, 4));
+            })
+            .catch((err) => {
+                console.error("Failed to load featured puppies from API:", err);
+            });
+        return () => { mounted = false; };
+    }, []);
 
     const testimonials = [
         { name: 'Arjun Sharma', text: 'Finding our Labrador through NS Kennels was the best decision. The level of care they show for their pups is visible from day one.', location: 'Mumbai' },
@@ -108,6 +123,7 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
                             <PuppyCard
                                 key={i}
                                 {...puppy}
+                                price={puppy.priceDisplay || puppy.price}
                                 onSelect={() => onPuppySelect(puppy)}
                             />
                         ))}
@@ -238,3 +254,4 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
 };
 
 export default HomePage;
+

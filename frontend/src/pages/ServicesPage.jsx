@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Scissors, GraduationCap, Home, HeartPulse, ShieldCheck, Truck, Apple, Scale, MessageCircle, ArrowRight, Star } from 'lucide-react';
+import { fetchServiceCategories } from '../lib/api';
 
 const ServicesPage = ({ onPageChange, onServiceSelect }) => {
-    const categories = [
+    const fallbackCategories = [
         {
             id: 'grooming-training',
             title: 'Grooming & Training',
@@ -84,12 +85,29 @@ const ServicesPage = ({ onPageChange, onServiceSelect }) => {
             priceRange: 'Varies by Service'
         }
     ];
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        let mounted = true;
+        fetchServiceCategories()
+            .then((items) => {
+                if (!mounted) return;
+                setCategories(items.map((item) => ({
+                    ...item,
+                    icon: Star,
+                })));
+            })
+            .catch((err) => {
+                console.error("Failed to load services from API:", err);
+            });
+        return () => { mounted = false; };
+    }, []);
 
     return (
         <div className="fixed-layout py-12 lg:py-24 px-4 lg:px-10">
             {/* Header Section */}
             <div className="max-w-4xl mb-16 lg:mb-24">
-                <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-4 lg:mb-6 block font-bold">NS Care Ecosystem</span>
+                <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-4 lg:mb-6 block font-bold">SS Care Ecosystem</span>
                 <h1 className="font-playfair text-4xl lg:text-7xl text-forest-green mb-6 lg:mb-8 leading-tight">Professional Services for <br className="hidden sm:block" /><span className="italic text-champagne-gold underline decoration-forest-green/5 underline-offset-8">Every Stage.</span></h1>
                 <p className="text-lg lg:text-xl text-forest-green/70 leading-relaxed font-inter">
                     From the first grooming session to lifelong boarding and elite breeding support, we ensure your companion receives the gold standard of care.

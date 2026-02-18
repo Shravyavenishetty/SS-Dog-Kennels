@@ -9,8 +9,8 @@ const Footer = ({ onPageChange }) => {
                     {/* Brand Section */}
                     <div className="md:col-span-4 translate-y-0">
                         <div className="flex items-center space-x-3 mb-6 lg:mb-8">
-                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-champagne-gold rounded-full flex items-center justify-center text-forest-green font-playfair font-bold text-sm lg:text-base">NS</div>
-                            <h2 className="font-playfair text-xl lg:text-2xl font-bold text-champagne-gold tracking-tight uppercase">NS DOG KENNELS</h2>
+                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-champagne-gold rounded-full flex items-center justify-center text-forest-green font-playfair font-bold text-sm lg:text-base">SS</div>
+                            <h2 className="font-playfair text-xl lg:text-2xl font-bold text-champagne-gold tracking-tight uppercase">SS DOG KENNELS</h2>
                         </div>
                         <p className="font-inter text-xs lg:text-sm leading-relaxed text-ivory-white/60 mb-8 lg:mb-10 max-w-sm">
                             Since 1982, we have been dedicated to raising the healthiest and happiest dogs. Our focus is on quality breeding and ensuring every puppy find a loving home.
