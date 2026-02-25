@@ -53,9 +53,9 @@ function App() {
 
   const toggleWishlist = (puppy) => {
     setWishlist(prev => {
-      const exists = prev.find(p => p.breed === puppy.breed);
+      const exists = prev.find(p => p.id === puppy.id);
       if (exists) {
-        return prev.filter(p => p.breed !== puppy.breed);
+        return prev.filter(p => p.id !== puppy.id);
       }
       return [...prev, puppy];
     });
@@ -68,7 +68,12 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home': return <HomePage onPageChange={setCurrentPage} onPuppySelect={handlePuppySelect} />;
+      case 'home': return <HomePage
+        onPageChange={setCurrentPage}
+        onPuppySelect={handlePuppySelect}
+        wishlist={wishlist}
+        onToggleWishlist={toggleWishlist}
+      />;
       case 'puppies': return <Entries
         onPageChange={setCurrentPage}
         onPuppySelect={handlePuppySelect}
@@ -79,7 +84,7 @@ function App() {
         onPageChange={setCurrentPage}
         puppy={selectedPuppy}
         onToggleWishlist={() => toggleWishlist(selectedPuppy)}
-        isWishlisted={selectedPuppy && wishlist.some(p => p.breed === selectedPuppy.breed)}
+        isWishlisted={selectedPuppy && wishlist.some(p => p.id === selectedPuppy.id)}
         onAddToCart={addToCart}
       />;
       case 'stud': return <StudServicesPage onPageChange={setCurrentPage} />;
