@@ -1,7 +1,7 @@
 import React from 'react';
 import { Heart, ArrowRight } from 'lucide-react';
 
-const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlisted, onToggleWishlist }) => {
+const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlisted, onToggleWishlist, id }) => {
     return (
         <div
             onClick={onSelect}
