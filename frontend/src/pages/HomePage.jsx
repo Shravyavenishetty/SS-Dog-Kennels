@@ -2,16 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, Play, Award, ShieldCheck, Heart, Star, Calendar, MessageCircle } from 'lucide-react';
 import PuppyCard from '../components/PuppyCard';
 import LitterCounter from '../components/LitterCounter';
-import { fetchPuppies } from '../lib/api';
+import { fetchPuppies, fetchTestimonials, fetchHomeHighlights } from '../lib/api';
 
-const HomePage = ({ onPageChange, onPuppySelect }) => {
-    const fallbackFeaturedPuppies = [
-        { breed: 'Caucasian Shepherd', price: '₹4.5L', age: '8 Weeks', availability: 'Available', image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400' },
-        { breed: 'Tibetan Mastiff', price: '₹12L', age: '12 Weeks', availability: 'Reserved', image: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=80&w=400' },
-        { breed: 'French Bulldog', price: '₹2.8L', age: '10 Weeks', availability: 'Available', image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=800' },
-        { breed: 'Golden Retriever', price: '₹1.5L', age: '9 Weeks', availability: 'Available', image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400' },
-    ];
-    const [featuredPuppies, setFeaturedPuppies] = useState(fallbackFeaturedPuppies);
+const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist }) => {
+    const [featuredPuppies, setFeaturedPuppies] = useState([]);
+    const [testimonials, setTestimonials] = useState([]);
+    const [homeHighlights, setHomeHighlights] = useState([]);
+
+    const iconMap = {
+        award: Award,
+        "shield-check": ShieldCheck,
+        heart: Heart,
+        "message-circle": MessageCircle,
+        messagecircle: MessageCircle,
+    };
 
     useEffect(() => {
         let mounted = true;
@@ -23,14 +27,24 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
             .catch((err) => {
                 console.error("Failed to load featured puppies from API:", err);
             });
+        fetchTestimonials()
+            .then((items) => {
+                if (!mounted) return;
+                setTestimonials(items);
+            })
+            .catch((err) => {
+                console.error("Failed to load testimonials from API:", err);
+            });
+        fetchHomeHighlights()
+            .then((items) => {
+                if (!mounted) return;
+                setHomeHighlights(items);
+            })
+            .catch((err) => {
+                console.error("Failed to load home highlights from API:", err);
+            });
         return () => { mounted = false; };
     }, []);
-
-    const testimonials = [
-        { name: 'Arjun Sharma', text: 'Finding our Labrador through NS Kennels was the best decision. The level of care they show for their pups is visible from day one.', location: 'Mumbai' },
-        { name: 'Priya Patel', text: 'Our Caucasian Shepherd is not just a dog; he is a protector. Healthy, strong, and very well-behaved from the start.', location: 'Delhi' },
-        { name: 'Dr. Vivek R.', text: 'As a vet, I am very picky. NS Kennels has some of the healthiest breeding lines I have seen in the country.', location: 'Bangalore' },
-    ];
 
     return (
         <div className="flex flex-col">
@@ -47,7 +61,7 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
 
                 <div className="fixed-layout relative h-full flex flex-col justify-center px-4 lg:px-10 mt-12 lg:mt-0">
                     <div className="max-w-2xl animate-in fade-in slide-in-from-left-8 duration-1000">
-                        <span className="font-inter text-[10px] lg:text-xs uppercase tracking-[0.4em] text-champagne-gold mb-4 lg:mb-6 block drop-shadow-lg">44 Years of Trust • Family Business</span>
+                        <span className="font-inter text-[10px] lg:text-xs uppercase tracking-[0.4em] text-champagne-gold mb-4 lg:mb-6 block drop-shadow-lg">5 Years of Trust • Family Business</span>
                         <h1 className="font-playfair text-3xl lg:text-7xl text-white leading-tight mb-6 lg:mb-8 drop-shadow-2xl">
                             Find Your New <br className="hidden sm:block" />
                             <span className="italic text-champagne-gold">Best Friend.</span>
@@ -97,7 +111,7 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
                         <span className="font-playfair font-bold text-lg lg:text-xl tracking-tighter uppercase">Health Clearance</span>
                     </div>
                     <div className="font-playfair font-bold text-xl lg:text-2xl tracking-tighter">KCI REGISTERED</div>
-                    <div className="font-playfair font-bold text-xl lg:text-2xl tracking-tighter italic">ESTD. 1982</div>
+                    <div className="font-playfair font-bold text-xl lg:text-2xl tracking-tighter italic">ESTD. 2020</div>
                 </div>
             </div>
 
@@ -125,6 +139,8 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
                                 {...puppy}
                                 price={puppy.priceDisplay || puppy.price}
                                 onSelect={() => onPuppySelect(puppy)}
+                                isWishlisted={wishlist.some(p => p.id === puppy.id)}
+                                onToggleWishlist={() => onToggleWishlist(puppy)}
                             />
                         ))}
                     </div>
@@ -239,7 +255,7 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
             <section className="bg-ivory py-20 lg:py-32">
                 <div className="fixed-layout px-6 lg:px-10 flex flex-col items-center text-center">
                     <LitterCounter />
-                    <p className="mt-8 font-inter text-forest-green/40 text-[10px] lg:text-xs uppercase tracking-widest mb-8 lg:mb-12">Puppies found their homes in 44 years</p>
+                    <p className="mt-8 font-inter text-forest-green/40 text-[10px] lg:text-xs uppercase tracking-widest mb-8 lg:mb-12">Puppies found their homes in 5 years</p>
                     <h3 className="text-3xl lg:text-4xl text-forest-green font-playfair mb-8 max-w-2xl px-4">Ready to welcome your next family member?</h3>
                     <button
                         onClick={() => onPageChange('contact')}
@@ -254,4 +270,5 @@ const HomePage = ({ onPageChange, onPuppySelect }) => {
 };
 
 export default HomePage;
+
 
