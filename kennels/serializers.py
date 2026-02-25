@@ -1,5 +1,15 @@
 from rest_framework import serializers
-from .models import Puppy, StudDog, ServiceCategory, SubService, Booking
+from .models import (
+    Puppy,
+    StudDog,
+    ServiceCategory,
+    SubService,
+    Booking,
+    HomeTestimonial,
+    HomeServiceHighlight,
+    Facility,
+    FAQ,
+)
 
 class PuppySerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
@@ -35,4 +45,36 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
+        fields = '__all__'
+
+
+class HomeTestimonialSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = HomeTestimonial
+        fields = '__all__'
+
+
+class HomeServiceHighlightSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = HomeServiceHighlight
+        fields = '__all__'
+
+
+class FacilitySerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Facility
+        fields = '__all__'
+
+
+class FAQSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = FAQ
         fields = '__all__'

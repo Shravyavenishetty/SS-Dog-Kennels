@@ -83,3 +83,65 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.user_name} - {self.service_name} on {self.booking_date}"
+
+
+class HomeTestimonial(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    text = models.TextField()
+    location = models.CharField(max_length=100)
+    rating = models.PositiveSmallIntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["display_order", "name"]
+
+    def __str__(self):
+        return f"{self.name} ({self.location})"
+
+
+class HomeServiceHighlight(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=255)
+    icon_name = models.CharField(max_length=50, help_text="Lucide icon name, e.g. award, shield-check")
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["display_order", "title"]
+
+    def __str__(self):
+        return self.title
+
+
+class Facility(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = "Facilities"
+        ordering = ["display_order", "title"]
+
+    def __str__(self):
+        return self.title
+
+
+class FAQ(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    question = models.CharField(max_length=255)
+    answer = models.TextField()
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "FAQ"
+        verbose_name_plural = "FAQs"
+        ordering = ["display_order", "question"]
+
+    def __str__(self):
+        return self.question

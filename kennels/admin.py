@@ -1,5 +1,15 @@
 from django.contrib import admin
-from .models import Puppy, StudDog, ServiceCategory, SubService, Booking
+from .models import (
+    Puppy,
+    StudDog,
+    ServiceCategory,
+    SubService,
+    Booking,
+    HomeTestimonial,
+    HomeServiceHighlight,
+    Facility,
+    FAQ,
+)
 
 @admin.register(Puppy)
 class PuppyAdmin(admin.ModelAdmin):
@@ -27,3 +37,35 @@ class BookingAdmin(admin.ModelAdmin):
     list_display = ('user_name', 'service_name', 'booking_date', 'status')
     list_filter = ('status', 'booking_date')
     search_fields = ('user_name', 'user_email', 'service_name')
+
+
+@admin.register(HomeTestimonial)
+class HomeTestimonialAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location', 'rating', 'display_order', 'is_active')
+    list_filter = ('is_active', 'rating')
+    search_fields = ('name', 'location', 'text')
+    ordering = ('display_order',)
+
+
+@admin.register(HomeServiceHighlight)
+class HomeServiceHighlightAdmin(admin.ModelAdmin):
+    list_display = ('title', 'icon_name', 'display_order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'description', 'icon_name')
+    ordering = ('display_order',)
+
+
+@admin.register(Facility)
+class FacilityAdmin(admin.ModelAdmin):
+    list_display = ('title', 'display_order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'description')
+    ordering = ('display_order',)
+
+
+@admin.register(FAQ)
+class FAQAdmin(admin.ModelAdmin):
+    list_display = ('question', 'display_order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('question', 'answer')
+    ordering = ('display_order',)

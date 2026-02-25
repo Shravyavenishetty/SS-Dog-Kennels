@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { fetchFaqs } from '../lib/api';
 
 const ContactPage = () => {
+    const [faqs, setFaqs] = useState([]);
+
+    useEffect(() => {
+        let mounted = true;
+        fetchFaqs()
+            .then((items) => {
+                if (!mounted) return;
+                setFaqs(items);
+            })
+            .catch((err) => {
+                console.error("Failed to load FAQs from API:", err);
+            });
+        return () => { mounted = false; };
+    }, []);
+
     return (
         <div className="fixed-layout py-12 lg:py-24 px-4 lg:px-10">
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
@@ -93,12 +109,7 @@ const ContactPage = () => {
             <div className="mt-20 lg:mt-32">
                 <h2 className="font-playfair text-3xl lg:text-4xl text-forest-green mb-8 lg:mb-12 text-center">Frequently Asked</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 lg:gap-y-6">
-                    {[
-                        { q: 'How do I buy a puppy?', a: 'You can pay a 20% deposit to hold your puppy. We send updates every week.' },
-                        { q: 'Can you ship safely?', a: 'Yes, we facilitate professional transport for puppies to most cities.' },
-                        { q: 'Is the puppy healthy?', a: 'Every puppy comes with a full health clearance and necessary shots.' },
-                        { q: 'Can I visit the kennel?', a: 'Visits are welcome by appointment. Please contact us to schedule.' },
-                    ].map((faq, i) => (
+                    {faqs.map((faq, i) => (
                         <div key={i} className="p-6 lg:p-8 border-b border-forest-green/10 hover:bg-forest-green/5 transition-colors group cursor-pointer rounded-xl">
                             <h4 className="font-playfair text-lg lg:text-xl text-forest-green mb-3 lg:mb-4">{faq.q}</h4>
                             <p className="font-inter text-xs lg:text-sm text-forest-green/60 leading-relaxed">{faq.a}</p>

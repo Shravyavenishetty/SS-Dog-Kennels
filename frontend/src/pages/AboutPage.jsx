@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Award, Heart, Users, MapPin } from 'lucide-react';
+import { fetchFacilities } from '../lib/api';
 
 const AboutPage = () => {
+    const [facilities, setFacilities] = useState([]);
+
+    useEffect(() => {
+        let mounted = true;
+        fetchFacilities()
+            .then((items) => {
+                if (!mounted) return;
+                setFacilities(items);
+            })
+            .catch((err) => {
+                console.error("Failed to load facilities from API:", err);
+            });
+        return () => { mounted = false; };
+    }, []);
+
     return (
         <div className="fixed-layout py-12 lg:py-24 px-4 lg:px-10">
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center mb-20 lg:mb-32">
@@ -9,7 +25,7 @@ const AboutPage = () => {
                     <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-4 lg:mb-6 block">Our Story</span>
                     <h1 className="font-playfair text-3xl lg:text-6xl text-forest-green mb-6 lg:mb-8 leading-tight">We Love Raising <span className="italic">Great Dogs</span>.</h1>
                     <p className="font-inter text-sm lg:text-lg text-forest-green/70 leading-relaxed mb-8">
-                        Starting in 1982, our family has worked hard to raise the best guard dogs and family pets. We believe every puppy deserves a loving home and a healthy start in life.
+                        Starting in 2020, our family has worked hard to raise the best guard dogs and family pets. We believe every puppy deserves a loving home and a healthy start in life.
                     </p>
                     <div className="grid grid-cols-2 gap-6 lg:gap-8">
                         <div>
@@ -40,11 +56,7 @@ const AboutPage = () => {
                     <p className="max-w-xl mx-auto opacity-70 text-sm">Perfect environment for champion puppies to grow and socialize.</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
-                    {[
-                        { title: 'Health Lab', desc: 'Where we do health and DNA tests for every dog.' },
-                        { title: 'Play Grounds', desc: '10 acres of land where puppies play and learn.' },
-                        { title: 'Puppy Rooms', desc: 'Clean and warm rooms where our dogs live and sleep.' },
-                    ].map((item, i) => (
+                    {facilities.map((item, i) => (
                         <div key={i} className="bg-white p-8 lg:p-10 rounded-24 border border-forest-green/10 shadow-sm">
                             <h3 className="font-playfair text-xl lg:text-2xl text-forest-green mb-3 lg:mb-4">{item.title}</h3>
                             <p className="font-inter text-xs lg:text-sm text-forest-green/60 leading-relaxed">{item.desc}</p>
