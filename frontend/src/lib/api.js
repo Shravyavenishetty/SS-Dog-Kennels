@@ -45,3 +45,42 @@ export async function fetchServiceCategories() {
     priceRange: c.price_range,
   }));
 }
+
+export async function fetchTestimonials() {
+  const data = await getJson("/testimonials/");
+  return data.map((t) => ({
+    id: t.id,
+    name: t.name,
+    text: t.text,
+    location: t.location,
+    rating: Number(t.rating || 5),
+  }));
+}
+
+export async function fetchHomeHighlights() {
+  const data = await getJson("/home-highlights/");
+  return data.map((h) => ({
+    id: h.id,
+    title: h.title,
+    desc: h.description,
+    iconName: h.icon_name,
+  }));
+}
+
+export async function fetchFacilities() {
+  const data = await getJson("/facilities/");
+  return data.map((f) => ({
+    id: f.id,
+    title: f.title,
+    desc: f.description,
+  }));
+}
+
+export async function fetchFaqs() {
+  const data = await getJson("/faqs/");
+  return data.map((f) => ({
+    id: f.id,
+    q: f.question,
+    a: f.answer,
+  }));
+}
