@@ -5,15 +5,7 @@ import { fetchPuppies } from '../lib/api';
 
 const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }) => {
     // 1. Data
-    const fallbackPuppies = [
-        //{ breed: 'Caucasian Shepherd', price: 450000, priceDisplay: '₹4.5L', age: '8 Weeks', availability: 'Available Now', type: 'Guard Dogs', image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400' },
-        { breed: 'Tibetan Mastiff', price: 1200000, priceDisplay: '₹12L', age: '12 Weeks', availability: 'Coming Soon', type: 'Guard Dogs', image: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=80&w=400' },
-        { breed: 'French Bulldog', price: 280000, priceDisplay: '₹2.8L', age: '10 Weeks', availability: 'Available Now', type: 'Pets', image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400' },
-        { breed: 'Golden Retriever', price: 150000, priceDisplay: '₹1.5L', age: '9 Weeks', availability: 'Available Now', type: 'Pets', image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400' },
-        { breed: 'Alaskan Malamute', price: 350000, priceDisplay: '₹3.5L', age: '11 Weeks', availability: 'Available Now', type: 'Working Dogs', image: 'https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=400' },
-        { breed: 'Siberian Husky', price: 220000, priceDisplay: '₹2.2L', age: '7 Weeks', availability: 'Available Now', type: 'Pets', image: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=80&w=400' },
-    ];
-    const [basePuppies, setBasePuppies] = useState(fallbackPuppies);
+    const [basePuppies, setBasePuppies] = useState([]);
 
     useEffect(() => {
         let mounted = true;
@@ -301,7 +293,7 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                                 price={puppy.priceDisplay}
                                 availability={puppy.availability}
                                 onSelect={() => onPuppySelect(puppy)}
-                                isWishlisted={wishlist.some(p => p.breed === puppy.breed)}
+                                isWishlisted={wishlist.some(p => p.id === puppy.id)}
                                 onToggleWishlist={() => onToggleWishlist(puppy)}
                             />
                         ))}
