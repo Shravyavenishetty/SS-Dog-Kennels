@@ -252,36 +252,6 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                         </div>
                     </div>
 
-                    {/* Active Filters Bar */}
-                    {(selectedTypes.length > 0 || selectedAvailability.length > 0 || priceRange !== 'All Prices' || searchQuery) && (
-                        <div className="flex flex-wrap items-center gap-2 border-t border-forest-green/5 pt-6 animate-in fade-in slide-in-from-top-4 duration-500">
-                            <span className="font-inter text-[10px] uppercase tracking-widest text-forest-green/40 font-bold mr-2">Active Filters:</span>
-                            {searchQuery && (
-                                <div className="px-3 py-1 bg-forest-green/5 border border-forest-green/10 rounded-full text-[10px] text-forest-green font-bold flex items-center space-x-2">
-                                    <span>Search: {searchQuery}</span>
-                                    <button onClick={() => setSearchQuery('')} className="hover:text-red-500 transition-colors">&times;</button>
-                                </div>
-                            )}
-                            {selectedTypes.map(type => (
-                                <div key={type} className="px-3 py-1 bg-forest-green text-champagne-gold rounded-full text-[10px] font-bold flex items-center space-x-2">
-                                    <span>{type}</span>
-                                    <button onClick={() => toggleType(type)} className="hover:text-white transition-colors">&times;</button>
-                                </div>
-                            ))}
-                            {selectedAvailability.map(status => (
-                                <div key={status} className="px-3 py-1 bg-forest-green/10 border border-forest-green text-forest-green rounded-full text-[10px] font-bold flex items-center space-x-2">
-                                    <span>{status}</span>
-                                    <button onClick={() => toggleAvailability(status)} className="hover:text-red-500 transition-colors">&times;</button>
-                                </div>
-                            ))}
-                            {priceRange !== 'All Prices' && (
-                                <div className="px-3 py-1 bg-champagne-gold/20 border border-champagne-gold text-forest-green rounded-full text-[10px] font-bold flex items-center space-x-2">
-                                    <span>{priceRange}</span>
-                                    <button onClick={() => setPriceRange('All Prices')} className="hover:text-red-500 transition-colors">&times;</button>
-                                </div>
-                            )}
-                        </div>
-                    )}
                 </div>
 
                 {filteredPuppies.length > 0 ? (
