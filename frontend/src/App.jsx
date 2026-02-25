@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -16,12 +16,36 @@ import ContactPage from './pages/ContactPage';
 import StudAvailabilityPage from './pages/StudAvailabilityPage';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState(() => {
+    const path = window.location.pathname.replace('/SS-Dog-Kennels/', '').replace('/', '');
+    return path || 'home';
+  });
   const [selectedService, setSelectedService] = useState(null);
   const [selectedPuppy, setSelectedPuppy] = useState(null);
   const [wishlist, setWishlist] = useState([]);
   const [cart, setCart] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  // Sync state with History API (Back/Forward buttons)
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.replace('/SS-Dog-Kennels/', '').replace('/', '');
+      setCurrentPage(path || 'home');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Sync state to URL (Internal navigation)
+  useEffect(() => {
+    const currentPath = window.location.pathname.replace('/SS-Dog-Kennels/', '').replace('/', '') || 'home';
+    if (currentPage !== currentPath) {
+      const newPath = currentPage === 'home' ? '/SS-Dog-Kennels/' : `/SS-Dog-Kennels/${currentPage}`;
+      window.history.pushState({}, '', newPath);
+    }
+  }, [currentPage]);
 
   const handlePuppySelect = (puppy) => {
     setSelectedPuppy(puppy);
