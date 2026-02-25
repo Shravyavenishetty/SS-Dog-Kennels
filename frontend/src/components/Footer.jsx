@@ -13,7 +13,7 @@ const Footer = ({ onPageChange }) => {
                             <h2 className="font-playfair text-xl lg:text-2xl font-bold text-champagne-gold tracking-tight uppercase">SS DOG KENNELS</h2>
                         </div>
                         <p className="font-inter text-xs lg:text-sm leading-relaxed text-ivory-white/60 mb-8 lg:mb-10 max-w-sm">
-                            Since 1982, we have been dedicated to raising the healthiest and happiest dogs. Our focus is on quality breeding and ensuring every puppy find a loving home.
+                            Since 2020, we have been dedicated to raising the healthiest and happiest dogs. Our focus is on quality breeding and ensuring every puppy find a loving home.
                         </p>
                         <div className="flex space-x-4 lg:space-x-5">
                             <button className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-champagne-gold hover:border-champagne-gold transition-all">
