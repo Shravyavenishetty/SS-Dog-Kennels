@@ -83,23 +83,23 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
 
                     <div className="text-4xl lg:text-6xl text-forest-green font-playfair mb-8 lg:mb-10">{puppy.priceDisplay || `₹${(puppy.price / 100000).toFixed(1)}L`}</div>
 
-                    <div className="grid grid-cols-2 gap-y-6 lg:gap-y-8 mb-10 lg:mb-12">
-                        <div>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-6 lg:gap-x-12 lg:gap-y-8 mb-10 lg:mb-12">
+                        <div className="break-words pr-2">
                             <span className="font-inter text-[8px] lg:text-[10px] text-forest-green/40 uppercase tracking-widest block mb-1">How Old</span>
                             <span className="font-inter font-bold text-forest-green text-base lg:text-lg">{puppy.age}</span>
                         </div>
-                        <div>
+                        <div className="break-words">
                             <span className="font-inter text-[8px] lg:text-[10px] text-forest-green/40 uppercase tracking-widest block mb-1">Availability</span>
                             <span className={`font-inter font-bold text-base lg:text-lg ${puppy.availability === 'Sold Out' ? 'text-red-500' : 'text-forest-green'}`}>{puppy.availability}</span>
                         </div>
-                        <div>
+                        <div className="break-words pr-2">
                             <span className="font-inter text-[8px] lg:text-[10px] text-forest-green/40 uppercase tracking-widest block mb-1">Behavior</span>
                             <span className="font-inter font-bold text-forest-green text-base lg:text-lg">{puppy.behavior || 'Calm & Trained'}</span>
                         </div>
-                        <div>
+                        <div className="break-words">
                             <span className="font-inter text-[8px] lg:text-[10px] text-forest-green/40 uppercase tracking-widest block mb-1">Health Shield</span>
-                            <span className="font-inter font-bold text-forest-green text-base lg:text-lg flex items-center">
-                                {puppy.health_shield || 'Verified'} <ShieldCheck size={16} className="ml-2 text-forest-green" />
+                            <span className="font-inter font-bold text-forest-green text-base lg:text-lg flex items-center flex-wrap gap-x-2">
+                                <span>{puppy.health_shield || 'Verified'}</span> <ShieldCheck size={16} className="text-forest-green shrink-0" />
                             </span>
                         </div>
                     </div>
@@ -130,22 +130,22 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                 <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
                     <div className="lg:w-2/3">
                         <p className="text-lg lg:text-xl text-forest-green/80 font-inter leading-relaxed mb-8 lg:mb-10">
-                            Our {puppy.breed} puppies come from a lineage of excellence. We ensure every puppy receives individual attention, high-quality nutrition, and early socialization to make their transition to your home seamless and joyful.
+                            {puppy.description || `Our ${puppy.breed} puppies come from a lineage of excellence. We ensure every puppy receives individual attention, high-quality nutrition, and early socialization to make their transition to your home seamless and joyful.`}
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                             <div className="p-6 lg:p-8 bg-ivory rounded-2xl border border-forest-green/5">
                                 <h4 className="font-playfair text-lg lg:text-xl text-forest-green mb-4">Initial Care Package</h4>
-                                <ul className="space-y-3 font-inter text-[10px] lg:text-sm text-forest-green/60">
-                                    <li>• Complete Vaccinations Record</li>
-                                    <li>• Microchipping Documentation</li>
-                                    <li>• Beginner's Training Guide</li>
-                                    <li>• 14-Day Health Guaranty</li>
-                                </ul>
+                                <div className="space-y-3 font-inter text-[10px] lg:text-sm text-forest-green/60">
+                                    {(puppy.initial_package || '• Complete Vaccinations Record\n• Microchipping Documentation\n• Beginner\'s Training Guide\n• 14-Day Health Guaranty').split('\n').map((item, index) => (
+                                        <div key={index}>{item}</div>
+                                    ))}
+                                </div>
                             </div>
+
                             <div className="p-6 lg:p-8 bg-ivory rounded-2xl border border-forest-green/5">
                                 <h4 className="font-playfair text-lg lg:text-xl text-forest-green mb-4">Elite Protection</h4>
-                                <p className="font-inter text-[10px] lg:text-sm text-forest-green/60 leading-relaxed">
-                                    This breed is known for its natural guardian instincts. We provide guidance on maintaining their protective yet gentle nature.
+                                <p className="font-inter text-[10px] lg:text-sm text-forest-green/60 leading-relaxed whitespace-pre-wrap">
+                                    {puppy.elite_protection || 'This breed is known for its natural guardian instincts. We provide guidance on maintaining their protective yet gentle nature.'}
                                 </p>
                             </div>
                         </div>
