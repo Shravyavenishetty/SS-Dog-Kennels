@@ -35,11 +35,26 @@ function App() {
     }
   }, [selectedPuppy]);
 
-  const [wishlist, setWishlist] = useState([]);
-  const [cart, setCart] = useState([]);
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem('wishlist');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem('cart');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
   const [userPhone, setUserPhone] = useState(() => localStorage.getItem('userPhone') || '');
   const [isNavigating, setIsNavigating] = useState(false);
+
+  // Persistence for Wishlist and Cart
+  useEffect(() => {
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
   // Sync state with History API (Back/Forward buttons)
   useEffect(() => {
