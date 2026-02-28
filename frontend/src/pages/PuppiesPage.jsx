@@ -5,7 +5,11 @@ import { fetchPuppies } from '../lib/api';
 
 const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }) => {
     // 1. Data
-    const [basePuppies, setBasePuppies] = useState([]);
+    const [basePuppies, setBasePuppies] = useState(() => {
+        const cached = localStorage.getItem('ss_puppies_cache');
+        return cached ? JSON.parse(cached) : [];
+    });
+    const [isLoading, setIsLoading] = useState(basePuppies.length === 0);
 
     useEffect(() => {
         let mounted = true;
@@ -13,9 +17,12 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
             .then((items) => {
                 if (!mounted) return;
                 setBasePuppies(items);
+                localStorage.setItem('ss_puppies_cache', JSON.stringify(items));
+                setIsLoading(false);
             })
             .catch((err) => {
                 console.error("Failed to load puppies from API:", err);
+                if (mounted) setIsLoading(false);
             });
         return () => { mounted = false; };
     }, []);
@@ -256,7 +263,13 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
 
                 </div>
 
-                {filteredPuppies.length > 0 ? (
+                {isLoading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20 animate-pulse">
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                            <div key={i} className="bg-forest-green/5 rounded-32 aspect-[4/5] border border-forest-green/5" />
+                        ))}
+                    </div>
+                ) : filteredPuppies.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20 animate-in fade-in duration-700">
                         {filteredPuppies.map((puppy, i) => (
                             <PuppyCard

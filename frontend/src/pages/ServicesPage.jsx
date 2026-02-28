@@ -85,23 +85,68 @@ const ServicesPage = ({ onPageChange, onServiceSelect }) => {
             priceRange: 'Varies by Service'
         }
     ];
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState(() => {
+        const cached = localStorage.getItem('ss_services_cache');
+        return cached ? JSON.parse(cached) : [];
+    });
+    const [isLoading, setIsLoading] = useState(categories.length === 0);
+
+    const iconMap = {
+        scissors: Scissors,
+        graduationcap: GraduationCap,
+        "graduation-cap": GraduationCap,
+        home: Home,
+        heartpulse: HeartPulse,
+        "heart-pulse": HeartPulse,
+        shieldcheck: ShieldCheck,
+        "shield-check": ShieldCheck,
+        truck: Truck,
+        apple: Apple,
+        scale: Scale,
+        messagecircle: MessageCircle,
+        "message-circle": MessageCircle,
+        star: Star
+    };
 
     useEffect(() => {
         let mounted = true;
         fetchServiceCategories()
             .then((items) => {
                 if (!mounted) return;
-                setCategories(items.map((item) => ({
-                    ...item,
-                    icon: Star,
-                })));
+                setCategories(items);
+                localStorage.setItem('ss_services_cache', JSON.stringify(items));
+                setIsLoading(false);
             })
             .catch((err) => {
                 console.error("Failed to load services from API:", err);
+                if (mounted) setIsLoading(false);
             });
         return () => { mounted = false; };
     }, []);
+
+    if (isLoading) {
+        return (
+            <div className="fixed-layout py-12 lg:py-24 px-4 lg:px-10 animate-pulse">
+                <div className="max-w-4xl mb-16 lg:mb-24">
+                    <div className="h-4 bg-forest-green/5 w-32 rounded mb-6" />
+                    <div className="h-16 bg-forest-green/5 w-3/4 rounded mb-8" />
+                    <div className="h-20 bg-forest-green/5 w-full rounded" />
+                </div>
+                <div className="space-y-20 lg:space-y-32">
+                    {[1, 2].map(i => (
+                        <div key={i} className="flex flex-col lg:flex-row gap-10 lg:gap-20">
+                            <div className="w-full lg:w-1/2 h-[300px] lg:h-[500px] bg-forest-green/5 rounded-32" />
+                            <div className="w-full lg:w-1/2 space-y-6 flex flex-col justify-center">
+                                <div className="h-8 bg-forest-green/5 w-1/2 rounded" />
+                                <div className="h-24 bg-forest-green/5 w-full rounded" />
+                                <div className="h-12 bg-forest-green/5 w-1/3 rounded" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="fixed-layout py-12 lg:py-24 px-4 lg:px-10">
@@ -130,7 +175,10 @@ const ServicesPage = ({ onPageChange, onServiceSelect }) => {
                         <div className="w-full lg:w-1/2 flex flex-col justify-center">
                             <div className="flex items-center space-x-4 mb-4 lg:mb-6">
                                 <div className="p-3 bg-forest-green/5 rounded-xl text-forest-green">
-                                    <cat.icon size={20} className="lg:w-6 lg:h-6" />
+                                    {(() => {
+                                        const IconComp = iconMap[cat.iconName?.toLowerCase()] || Star;
+                                        return <IconComp size={20} className="lg:w-6 lg:h-6" />;
+                                    })()}
                                 </div>
                                 <span className="font-inter text-[10px] lg:text-xs uppercase tracking-widest text-[#C5A059] font-bold">{cat.tagline}</span>
                             </div>

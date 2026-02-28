@@ -52,6 +52,7 @@ export async function fetchServiceCategories() {
     title: c.title,
     tagline: c.tagline,
     image: c.image_url,
+    iconName: c.icon_name,
     subServices: (c.sub_services || []).map((s) => s.name),
     priceRange: c.price_range,
   }));

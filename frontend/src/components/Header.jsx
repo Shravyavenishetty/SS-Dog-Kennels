@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, ShoppingCart, Menu, Heart, User, X, ArrowRight, LogOut } from 'lucide-react';
 import logo from '../assets/ss_dog_kennels_logo-removebg-preview.png';
 
-const Header = ({ onPageChange, wishlistCount, cartCount, isLoggedIn, onLogout }) => {
+const Header = ({ currentPage, onPageChange, wishlistCount, cartCount, isLoggedIn, onLogout }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     // Prevent background scrolling when menu is open
@@ -49,9 +49,12 @@ const Header = ({ onPageChange, wishlistCount, cartCount, isLoggedIn, onLogout }
                         <button
                             key={item.id}
                             onClick={() => onPageChange(item.id)}
-                            className="font-inter text-sm font-semibold tracking-wider text-forest-green/70 hover:text-forest-green transition-colors uppercase"
+                            className={`font-inter text-sm font-semibold tracking-wider transition-all uppercase relative group ${currentPage === item.id ? 'text-forest-green' : 'text-forest-green/70 hover:text-forest-green'
+                                }`}
                         >
-                            {item.label}
+                            <span>{item.label}</span>
+                            <span className={`absolute -bottom-1 left-0 h-0.5 bg-forest-green transition-all duration-300 ${currentPage === item.id ? 'w-full' : 'w-0 group-hover:w-full'
+                                }`} />
                         </button>
                     ))}
                     {isLoggedIn ? (
@@ -142,10 +145,13 @@ const Header = ({ onPageChange, wishlistCount, cartCount, isLoggedIn, onLogout }
                                     onPageChange(item.id);
                                     setIsMenuOpen(false);
                                 }}
-                                className="flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-forest-green/5 group transition-colors"
+                                className={`flex items-center justify-between px-4 py-3.5 rounded-xl group transition-colors ${currentPage === item.id ? 'bg-forest-green/10' : 'hover:bg-forest-green/5'
+                                    }`}
                             >
-                                <span className="font-playfair text-lg font-bold text-forest-green/80 group-hover:text-forest-green transition-colors">{item.label}</span>
-                                <ArrowRight size={16} className="text-forest-green/20 group-hover:text-forest-green transition-all -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100" />
+                                <span className={`font-playfair text-lg font-bold transition-colors ${currentPage === item.id ? 'text-forest-green' : 'text-forest-green/80 group-hover:text-forest-green'
+                                    }`}>{item.label}</span>
+                                <ArrowRight size={16} className={`transition-all ${currentPage === item.id ? 'text-forest-green opacity-100 translate-x-0' : 'text-forest-green/20 group-hover:text-forest-green -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'
+                                    }`} />
                             </button>
                         ))}
 
