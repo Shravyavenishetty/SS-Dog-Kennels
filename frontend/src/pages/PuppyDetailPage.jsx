@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck, Heart, Download } from 'lucide-react';
 
-const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, onAddToCart }) => {
+const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, onBookPuppy }) => {
     const [activeImage, setActiveImage] = React.useState(puppy?.image);
 
     // Update activeImage if puppy changes
@@ -106,10 +106,10 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
 
                     <div className="flex flex-col sm:flex-row gap-4">
                         <button
-                            onClick={() => onAddToCart(puppy)}
+                            onClick={() => onBookPuppy(puppy)}
                             className="flex-1 py-5 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-[10px] lg:text-xs rounded-xl hover:bg-forest-green/90 transition-all hover:shadow-2xl active:scale-95"
                         >
-                            Buy Puppy
+                            Complete Booking
                         </button>
                         <button
                             onClick={() => onPageChange('contact')}
