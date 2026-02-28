@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Play, Award, ShieldCheck, Heart, Star, Calendar, MessageCircle } from 'lucide-react';
+import { ArrowRight, Award, ShieldCheck, Heart, Star, Calendar, MessageCircle, Scissors, Truck, Home, GraduationCap } from 'lucide-react';
 import PuppyCard from '../components/PuppyCard';
 import LitterCounter from '../components/LitterCounter';
 import { fetchPuppies, fetchTestimonials, fetchHomeHighlights } from '../lib/api';
@@ -12,9 +12,16 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
     const iconMap = {
         award: Award,
         "shield-check": ShieldCheck,
+        shieldcheck: ShieldCheck,
         heart: Heart,
         "message-circle": MessageCircle,
         messagecircle: MessageCircle,
+        scissors: Scissors,
+        truck: Truck,
+        home: Home,
+        "graduation-cap": GraduationCap,
+        graduationcap: GraduationCap,
+        star: Star,
     };
 
     useEffect(() => {
@@ -168,18 +175,21 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                            {[
-                                { title: 'Grooming', icon: Award, desc: 'Keeping them clean & happy.' },
-                                { title: 'Training', icon: ShieldCheck, desc: 'Help them listen better.' },
-                                { title: 'Boarding', icon: Heart, desc: 'A safe home away from home.' },
-                                { title: 'Health', icon: MessageCircle, desc: 'Expert advice anytime.' },
-                            ].map((s, i) => (
-                                <div key={i} className="bg-white/5 border border-white/10 p-6 lg:p-8 rounded-24 hover:bg-white/10 transition-colors">
-                                    <s.icon className="text-champagne-gold mb-4 lg:mb-6" size={24} />
-                                    <h4 className="font-playfair text-xl mb-2">{s.title}</h4>
-                                    <p className="font-inter text-xs text-ivory-white/40">{s.desc}</p>
-                                </div>
-                            ))}
+                            {(homeHighlights.length > 0 ? homeHighlights : [
+                                { title: 'Grooming', iconName: 'award', desc: 'Keeping them clean & happy.' },
+                                { title: 'Training', iconName: 'shield-check', desc: 'Help them listen better.' },
+                                { title: 'Boarding', iconName: 'heart', desc: 'A safe home away from home.' },
+                                { title: 'Health', iconName: 'message-circle', desc: 'Expert advice anytime.' },
+                            ]).map((s, i) => {
+                                const IconComponent = iconMap[s.iconName?.toLowerCase()] || Award;
+                                return (
+                                    <div key={i} className="bg-white/5 border border-white/10 p-6 lg:p-8 rounded-24 hover:bg-white/10 transition-colors">
+                                        <IconComponent className="text-champagne-gold mb-4 lg:mb-6" size={24} />
+                                        <h4 className="font-playfair text-xl mb-2">{s.title}</h4>
+                                        <p className="font-inter text-xs text-ivory-white/40">{s.desc}</p>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
