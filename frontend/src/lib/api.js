@@ -40,12 +40,25 @@ export async function fetchStudDogs() {
   const data = await getJson("/stud-dogs/");
   return data.map((s) => ({
     id: s.id,
-    name: s.name,
     breed: s.breed,
     rating: Number(s.rating || 0),
     pups: s.pups_produced || 0,
     image: s.image_url,
+    booked_dates: (s.booked_dates || []).map(b => b.date), // Array of 'YYYY-MM-DD' strings
   }));
+}
+
+export async function submitStudBookingRequest(data) {
+  const res = await fetch(`${API_BASE}/stud-booking-requests/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(err));
+  }
+  return res.json();
 }
 
 export async function fetchServiceCategories() {
@@ -185,4 +198,75 @@ export async function fetchUserBookings(phone) {
     status: b.status,
     details: b.details,
   }));
+}
+export async function submitServiceBooking(data) {
+  const res = await fetch(`${API_BASE}/bookings/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_name: data.userName,
+      user_phone: data.userPhone,
+      user_email: data.userEmail,
+      service_name: data.serviceName,
+      booking_date: data.bookingDate,
+      booking_time: data.bookingTime,
+      details: data.details || '',
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(err));
+  }
+  return res.json();
+}
+export async function fetchKennelDetails() {
+  const data = await getJson("/kennel-details/");
+  if (data && data.length > 0) {
+    const k = data[0];
+    return {
+      address: k.address,
+      phone: k.phone,
+      email: k.email,
+      mapUrl: k.map_url,
+    };
+  }
+  return null;
+}
+
+export async function submitContactInquiry(data) {
+  const res = await fetch(`${API_BASE}/contact-inquiries/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: data.name,
+      email: data.email,
+      subject: data.subject,
+      message: data.message,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(err));
+  }
+  return res.json();
+}
+
+export async function submitPuppyInquiry(data) {
+  const res = await fetch(`${API_BASE}/puppy-inquiries/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      puppy: data.puppyId,
+      customer_name: data.name,
+      customer_phone: data.phone,
+      customer_email: data.email,
+      customer_address: data.address,
+      additional_notes: data.notes,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(JSON.stringify(err));
+  }
+  return res.json();
 }
