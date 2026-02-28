@@ -1,7 +1,7 @@
 import React from 'react';
 import { Mail, Phone, MapPin, Instagram, Facebook, Twitter } from 'lucide-react';
 
-const Footer = ({ onPageChange }) => {
+const Footer = ({ onPageChange, kennelDetail }) => {
     return (
         <footer className="bg-forest-green text-ivory-white py-8 lg:py-12 mt-0 border-t border-white/5">
             <div className="fixed-layout px-4 lg:px-10">
@@ -43,9 +43,9 @@ const Footer = ({ onPageChange }) => {
                             <h4 className="font-playfair text-base lg:text-lg text-white mb-4 lg:mb-6 uppercase tracking-widest">Help Center</h4>
                             <ul className="space-y-2 lg:space-y-3 font-inter text-xs lg:text-sm text-ivory-white/60">
                                 <li><button onClick={() => onPageChange('contact')} className="hover:text-champagne-gold transition-colors">Contact Team</button></li>
-                                <li><button className="hover:text-champagne-gold transition-colors">Shipping Info</button></li>
-                                <li><button className="hover:text-champagne-gold transition-colors">Health Guarantee</button></li>
-                                <li><button className="hover:text-champagne-gold transition-colors">Buyer FAQ</button></li>
+                                <li><button onClick={() => onPageChange('contact')} className="hover:text-champagne-gold transition-colors">Shipping Info</button></li>
+                                <li><button onClick={() => onPageChange('contact')} className="hover:text-champagne-gold transition-colors">Health Guarantee</button></li>
+                                <li><button onClick={() => onPageChange('contact')} className="hover:text-champagne-gold transition-colors">Buyer FAQ</button></li>
                             </ul>
                         </div>
                     </div>
@@ -56,15 +56,15 @@ const Footer = ({ onPageChange }) => {
                         <div className="space-y-3 lg:space-y-4">
                             <div className="flex items-start space-x-4">
                                 <MapPin size={18} className="text-champagne-gold shrink-0 mt-0.5" />
-                                <span className="font-inter text-xs lg:text-sm text-ivory-white/60">NS Estate, Kennel Village,<br />Mahabaleshwar, India</span>
+                                <span className="font-inter text-xs lg:text-sm text-ivory-white/60 whitespace-pre-line">{kennelDetail?.address || "NS Estate, Kennel Village,\nMahabaleshwar, India"}</span>
                             </div>
                             <div className="flex items-center space-x-4">
                                 <Phone size={18} className="text-champagne-gold shrink-0" />
-                                <span className="font-inter text-xs lg:text-sm text-ivory-white/60">+91 98765 43210</span>
+                                <span className="font-inter text-xs lg:text-sm text-ivory-white/60">{kennelDetail?.phone || "+91 98765 43210"}</span>
                             </div>
                             <div className="flex items-center space-x-4">
                                 <Mail size={18} className="text-champagne-gold shrink-0" />
-                                <span className="font-inter text-xs lg:text-sm text-ivory-white/60">hello@nskennels.com</span>
+                                <span className="font-inter text-xs lg:text-sm text-ivory-white/60">{kennelDetail?.email || "hello@nskennels.com"}</span>
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@ const Footer = ({ onPageChange }) => {
 
                 {/* Bottom Bar */}
                 <div className="pt-4 lg:pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-ivory-white/30 font-inter text-[10px] lg:text-xs">
-                    <p className="mb-6 md:mb-0 text-center md:text-left">&copy; 2026 NS Dog Kennels. All rights reserved. Trusted since 1982.</p>
+                    <p className="mb-6 md:mb-0 text-center md:text-left">&copy; NS Dog Kennels. All rights reserved. Trusted since 2020.</p>
                     <div className="flex flex-wrap justify-center gap-4 lg:gap-8">
                         <button className="hover:text-champagne-gold transition-colors">Privacy Policy</button>
                         <button className="hover:text-champagne-gold transition-colors">Terms of Business</button>
