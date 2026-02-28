@@ -52,9 +52,10 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
         // Price Range Filter
         if (priceRange !== 'All Prices') {
             result = result.filter(p => {
-                if (priceRange === '₹1L - ₹3L') return p.price >= 100000 && p.price <= 300000;
-                if (priceRange === '₹3L - ₹10L') return p.price > 300000 && p.price <= 1000000;
-                if (priceRange === '₹10L+') return p.price > 1000000;
+                if (priceRange === '₹1,000 - ₹25,000') return p.price >= 1000 && p.price <= 25000;
+                if (priceRange === '₹25,000 - ₹50,000') return p.price > 25000 && p.price <= 50000;
+                if (priceRange === '₹50,000 - ₹1L') return p.price > 50000 && p.price <= 100000;
+                if (priceRange === '₹1L+') return p.price > 100000;
                 return true;
             });
         }
@@ -197,9 +198,10 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                                 className="w-full bg-transparent border-b border-forest-green/20 py-2 font-inter text-sm text-forest-green focus:outline-none focus:border-forest-green transition-colors cursor-pointer"
                             >
                                 <option>All Prices</option>
-                                <option>₹1L - ₹3L</option>
-                                <option>₹3L - ₹10L</option>
-                                <option>₹10L+</option>
+                                <option>₹1,000 - ₹25,000</option>
+                                <option>₹25,000 - ₹50,000</option>
+                                <option>₹50,000 - ₹1L</option>
+                                <option>₹1L+</option>
                             </select>
                         </div>
                     </div>
