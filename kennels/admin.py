@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import (
     Puppy,
+    PuppyImage,
     StudDog,
     ServiceCategory,
     SubService,
@@ -11,11 +12,16 @@ from .models import (
     FAQ,
 )
 
+class PuppyImageInline(admin.TabularInline):
+    model = PuppyImage
+    extra = 1
+
 @admin.register(Puppy)
 class PuppyAdmin(admin.ModelAdmin):
     list_display = ('breed', 'price_display', 'availability', 'dog_type', 'created_at')
     list_filter = ('availability', 'dog_type')
     search_fields = ('breed',)
+    inlines = [PuppyImageInline]
 
 @admin.register(StudDog)
 class StudDogAdmin(admin.ModelAdmin):

@@ -21,7 +21,20 @@ function App() {
     return path || 'home';
   });
   const [selectedService, setSelectedService] = useState(null);
-  const [selectedPuppy, setSelectedPuppy] = useState(null);
+  const [selectedPuppy, setSelectedPuppy] = useState(() => {
+    const saved = localStorage.getItem('selectedPuppy');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  // Sync selected puppy to localStorage
+  useEffect(() => {
+    if (selectedPuppy) {
+      localStorage.setItem('selectedPuppy', JSON.stringify(selectedPuppy));
+    } else {
+      localStorage.removeItem('selectedPuppy');
+    }
+  }, [selectedPuppy]);
+
   const [wishlist, setWishlist] = useState([]);
   const [cart, setCart] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);

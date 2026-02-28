@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Puppy,
+    PuppyImage,
     StudDog,
     ServiceCategory,
     SubService,
@@ -11,12 +12,31 @@ from .models import (
     FAQ,
 )
 
+class PuppyImageSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    url = serializers.ReadOnlyField()
+
+    class Meta:
+        model = PuppyImage
+        fields = ['id', 'url']
+
 class PuppySerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
+    images = PuppyImageSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Puppy
-        fields = '__all__'
+        fields = [
+            'id', 'breed', 'price', 'price_display', 'age', 'availability', 
+            'dog_type', 'image', 'image_url', 'tagline', 'behavior', 'health_shield', 
+            'images', 'created_at'
+        ]
+    
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
+        return obj.image_url
 
 class StudDogSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)

@@ -2,6 +2,13 @@ import React from 'react';
 import { ShieldCheck, Heart, Download } from 'lucide-react';
 
 const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, onAddToCart }) => {
+    const [activeImage, setActiveImage] = React.useState(puppy?.image);
+
+    // Update activeImage if puppy changes
+    React.useEffect(() => {
+        if (puppy) setActiveImage(puppy.image);
+    }, [puppy]);
+
     // Fallback if puppy is null (e.g. direct refresh)
     if (!puppy) {
         return (
@@ -13,6 +20,9 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
             </div>
         );
     }
+
+    // Prepare gallery: main image + nested images
+    const allImages = [puppy.image, ...(puppy.images || [])].filter(Boolean);
 
     return (
         <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10">
@@ -32,7 +42,7 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                 <div className="w-full lg:w-[600px] shrink-0">
                     <div className="aspect-[4/5] bg-forest-green/5 rounded-24 lg:rounded-32 overflow-hidden mb-4 lg:mb-6 relative group">
                         <img
-                            src={puppy.image}
+                            src={activeImage || puppy.image}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             alt={puppy.breed}
                         />
@@ -45,9 +55,13 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                     </div>
 
                     <div className="grid grid-cols-5 gap-2 lg:gap-4 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
-                        {[1, 2, 3, 4, 5].map(i => (
-                            <div key={i} className="aspect-square bg-forest-green/5 rounded-lg overflow-hidden cursor-pointer hover:ring-2 ring-forest-green transition-all shrink-0">
-                                <img src={`${puppy.image}&sig=${i}`} className="w-full h-full object-cover" />
+                        {allImages.map((img, i) => (
+                            <div
+                                key={i}
+                                onClick={() => setActiveImage(img)}
+                                className={`aspect-square bg-forest-green/5 rounded-lg overflow-hidden cursor-pointer hover:ring-2 ring-forest-green transition-all shrink-0 ${activeImage === img ? 'ring-2' : ''}`}
+                            >
+                                <img src={img} className="w-full h-full object-cover" />
                             </div>
                         ))}
                     </div>
@@ -59,13 +73,13 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                         <span className="px-3 py-1 bg-forest-green text-champagne-gold text-[10px] font-bold uppercase tracking-widest rounded-full">
                             {puppy.type || 'Top Quality Dog'}
                         </span>
-                        <span className="text-forest-green/40 text-[10px] lg:text-sm font-inter">ID: NS-2026-{(Math.random() * 999).toFixed(0).padStart(3, '0')}</span>
+                        <span className="text-forest-green/40 text-[10px] lg:text-sm font-inter">ID: SS-2026-{(Math.random() * 999).toFixed(0).padStart(3, '0')}</span>
                     </div>
 
                     <h1 className="font-playfair text-4xl lg:text-7xl text-forest-green mb-2 lg:mb-4 leading-tight">
                         {puppy.breed}
                     </h1>
-                    <p className="font-playfair text-xl lg:text-2xl text-forest-green/80 mb-6 lg:mb-8 italic">Elite Heritage & Quality Companion</p>
+                    <p className="font-playfair text-xl lg:text-2xl text-forest-green/80 mb-6 lg:mb-8 italic">{puppy.tagline || 'Elite Heritage & Quality Companion'}</p>
 
                     <div className="text-4xl lg:text-6xl text-forest-green font-playfair mb-8 lg:mb-10">{puppy.priceDisplay || `₹${(puppy.price / 100000).toFixed(1)}L`}</div>
 
@@ -80,12 +94,12 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                         </div>
                         <div>
                             <span className="font-inter text-[8px] lg:text-[10px] text-forest-green/40 uppercase tracking-widest block mb-1">Behavior</span>
-                            <span className="font-inter font-bold text-forest-green text-base lg:text-lg">Calm & Trained</span>
+                            <span className="font-inter font-bold text-forest-green text-base lg:text-lg">{puppy.behavior || 'Calm & Trained'}</span>
                         </div>
                         <div>
                             <span className="font-inter text-[8px] lg:text-[10px] text-forest-green/40 uppercase tracking-widest block mb-1">Health Shield</span>
                             <span className="font-inter font-bold text-forest-green text-base lg:text-lg flex items-center">
-                                Verified <ShieldCheck size={16} className="ml-2 text-forest-green" />
+                                {puppy.health_shield || 'Verified'} <ShieldCheck size={16} className="ml-2 text-forest-green" />
                             </span>
                         </div>
                     </div>

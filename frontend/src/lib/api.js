@@ -1,4 +1,11 @@
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api").replace(/\/+$/, "");
+const BACKEND_URL = API_BASE.replace('/api', '');
+
+function getFullUrl(url) {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  return `${BACKEND_URL}${url}`;
+}
 
 async function getJson(path) {
   const res = await fetch(`${API_BASE}${path}`);
@@ -18,7 +25,11 @@ export async function fetchPuppies() {
     age: p.age,
     availability: p.availability,
     type: p.dog_type,
-    image: p.image_url,
+    image: getFullUrl(p.image_url),
+    images: (p.images || []).map(img => getFullUrl(img.url)),
+    tagline: p.tagline,
+    behavior: p.behavior,
+    health_shield: p.health_shield,
   }));
 }
 

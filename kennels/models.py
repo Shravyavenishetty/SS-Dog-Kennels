@@ -1,6 +1,10 @@
+import requests
+from django.core.files.base import ContentFile
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_mongodb_backend.fields import ObjectIdAutoField
+from urllib.parse import urlparse
+import os
 
 class Puppy(models.Model):
     id = ObjectIdAutoField(primary_key=True)
@@ -8,6 +12,7 @@ class Puppy(models.Model):
         ('Guard Dogs', 'Guard Dogs'),
         ('Pets', 'Pets'),
         ('Working Dogs', 'Working Dogs'),
+        ('Farm Dogs', 'Farm Dogs'),
     ]
     AVAILABILITY_CHOICES = [
         ('Available Now', 'Available Now'),
@@ -21,7 +26,11 @@ class Puppy(models.Model):
     age = models.CharField(max_length=50)
     availability = models.CharField(max_length=50, choices=AVAILABILITY_CHOICES, default='Available Now')
     dog_type = models.CharField(max_length=50, choices=TYPE_CHOICES, default='Pets')
-    image_url = models.URLField(max_length=500)
+    image = models.ImageField(upload_to='puppies/', null=True, blank=True)
+    image_url = models.URLField(max_length=500, null=True, blank=True)
+    tagline = models.CharField(max_length=200, default='Elite Heritage & Quality Companion')
+    behavior = models.CharField(max_length=100, default='Calm & Trained')
+    health_shield = models.CharField(max_length=100, default='Verified')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -29,6 +38,62 @@ class Puppy(models.Model):
 
     def __str__(self):
         return f"{self.breed} - {self.price_display}"
+
+    def save(self, *args, **kwargs):
+        # Force re-fetch from URL if image_url has changed or if image is missing
+        if self.pk:
+            try:
+                orig = Puppy.objects.get(pk=self.pk)
+                if orig.image_url != self.image_url and self.image_url:
+                    self.image = None
+            except Puppy.DoesNotExist:
+                pass
+
+        if self.image_url and not self.image:
+            try:
+                response = requests.get(self.image_url)
+                if response.status_code == 200:
+                    filename = os.path.basename(urlparse(self.image_url).path) or f"{self.breed}_{self.id}.jpg"
+                    self.image.save(filename, ContentFile(response.content), save=False)
+            except Exception as e:
+                print(f"Error fetching image from URL: {e}")
+        super().save(*args, **kwargs)
+
+class PuppyImage(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    puppy = models.ForeignKey(Puppy, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='puppies/gallery/', null=True, blank=True)
+    image_url = models.URLField(max_length=500, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for {self.puppy.breed}"
+
+    def save(self, *args, **kwargs):
+        # Force re-fetch from URL if image_url has changed or if image is missing
+        if self.pk:
+            try:
+                orig = PuppyImage.objects.get(pk=self.pk)
+                if orig.image_url != self.image_url and self.image_url:
+                    self.image = None
+            except PuppyImage.DoesNotExist:
+                pass
+
+        if self.image_url and not self.image:
+            try:
+                response = requests.get(self.image_url)
+                if response.status_code == 200:
+                    filename = os.path.basename(urlparse(self.image_url).path) or f"gallery_{self.puppy.breed}_{self.id}.jpg"
+                    self.image.save(filename, ContentFile(response.content), save=False)
+            except Exception as e:
+                print(f"Error fetching gallery image from URL: {e}")
+        super().save(*args, **kwargs)
+
+    @property
+    def url(self):
+        if self.image:
+            return self.image.url
+        return self.image_url
 
 class StudDog(models.Model):
     id = ObjectIdAutoField(primary_key=True)
