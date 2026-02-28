@@ -3,6 +3,8 @@ from .models import (
     Puppy,
     PuppyImage,
     StudDog,
+    StudAvailability,
+    StudBookingRequest,
     ServiceCategory,
     SubService,
     Booking,
@@ -11,6 +13,9 @@ from .models import (
     Facility,
     FAQ,
     UserProfile,
+    KennelDetail,
+    ContactInquiry,
+    PuppyInquiry,
 )
 
 @admin.register(UserProfile)
@@ -29,11 +34,30 @@ class PuppyAdmin(admin.ModelAdmin):
     search_fields = ('breed',)
     inlines = [PuppyImageInline]
 
+class StudAvailabilityInline(admin.TabularInline):
+    model = StudAvailability
+    extra = 1
+
 @admin.register(StudDog)
 class StudDogAdmin(admin.ModelAdmin):
-    list_display = ('name', 'breed', 'rating', 'pups_produced')
+    list_display = ('breed', 'rating', 'pups_produced')
     list_filter = ('breed', 'rating')
-    search_fields = ('name', 'breed')
+    search_fields = ('breed',)
+    inlines = [StudAvailabilityInline]
+
+@admin.register(StudAvailability)
+class StudAvailabilityAdmin(admin.ModelAdmin):
+    list_display = ('stud', 'date', 'note')
+    list_filter = ('stud',)
+    ordering = ('date',)
+
+@admin.register(StudBookingRequest)
+class StudBookingRequestAdmin(admin.ModelAdmin):
+    list_display = ('customer_name', 'customer_phone', 'stud_breed', 'requested_date', 'requested_time', 'status', 'created_at')
+    list_filter = ('status', 'requested_date')
+    search_fields = ('customer_name', 'customer_phone', 'stud_breed')
+    ordering = ('-created_at',)
+    readonly_fields = ('customer_name', 'customer_phone', 'stud_breed', 'requested_date', 'requested_time', 'female_breed_details', 'created_at')
 
 class SubServiceInline(admin.TabularInline):
     model = SubService
@@ -46,9 +70,10 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'service_name', 'booking_date', 'status')
+    list_display = ('user_name', 'user_phone', 'service_name', 'booking_date', 'booking_time', 'status')
     list_filter = ('status', 'booking_date')
-    search_fields = ('user_name', 'user_email', 'service_name')
+    search_fields = ('user_name', 'user_phone', 'user_email', 'service_name')
+    readonly_fields = ('user_name', 'user_phone', 'user_email', 'service_name', 'booking_date', 'booking_time', 'details', 'created_at')
 
 
 @admin.register(HomeTestimonial)
@@ -81,3 +106,20 @@ class FAQAdmin(admin.ModelAdmin):
     list_filter = ('is_active',)
     search_fields = ('question', 'answer')
     ordering = ('display_order',)
+
+@admin.register(KennelDetail)
+class KennelDetailAdmin(admin.ModelAdmin):
+    list_display = ('phone', 'email', 'updated_at')
+
+@admin.register(ContactInquiry)
+class ContactInquiryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'subject', 'created_at')
+    list_filter = ('subject', 'created_at')
+    search_fields = ('name', 'email', 'message')
+    readonly_fields = ('name', 'email', 'subject', 'message', 'created_at')
+@admin.register(PuppyInquiry)
+class PuppyInquiryAdmin(admin.ModelAdmin):
+    list_display = ('customer_name', 'puppy', 'customer_phone', 'created_at')
+    list_filter = ('puppy__breed', 'created_at')
+    search_fields = ('customer_name', 'customer_phone', 'customer_email', 'customer_address')
+    readonly_fields = ('customer_name', 'puppy', 'customer_phone', 'customer_email', 'customer_address', 'additional_notes', 'created_at')
