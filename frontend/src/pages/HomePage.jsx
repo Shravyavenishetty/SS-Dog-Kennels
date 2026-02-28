@@ -244,8 +244,24 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
                         {testimonials.map((t, i) => (
                             <div key={i} className="text-left p-8 lg:p-10 bg-ivory/30 rounded-24 border border-forest-green/5 hover:border-champagne-gold/40 transition-all group">
-                                <div className="flex space-x-1 mb-6">
-                                    {[1, 2, 3, 4, 5].map(star => <Star key={star} size={14} fill="#C5A059" className="text-champagne-gold" />)}
+                                <div className="flex items-center space-x-2 mb-6">
+                                    <div className="flex space-x-0.5">
+                                        {[1, 2, 3, 4, 5].map(star => {
+                                            const fillAmount = Math.max(0, Math.min(100, (t.rating - (star - 1)) * 100));
+                                            return (
+                                                <div key={star} className="relative">
+                                                    <Star size={12} className="text-champagne-gold/20" />
+                                                    <div
+                                                        className="absolute inset-0 overflow-hidden"
+                                                        style={{ width: `${fillAmount}%` }}
+                                                    >
+                                                        <Star size={12} fill="#C5A059" className="text-champagne-gold" />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    <span className="font-inter text-[10px] font-bold text-forest-green/40">{Number(t.rating).toFixed(1)}</span>
                                 </div>
                                 <p className="font-inter text-sm lg:text-base text-forest-green/80 italic mb-8 leading-relaxed">"{t.text}"</p>
                                 <div className="flex items-center space-x-4">

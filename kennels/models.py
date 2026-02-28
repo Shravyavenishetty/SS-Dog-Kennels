@@ -155,7 +155,7 @@ class HomeTestimonial(models.Model):
     name = models.CharField(max_length=100)
     text = models.TextField()
     location = models.CharField(max_length=100)
-    rating = models.PositiveSmallIntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    rating = models.DecimalField(max_digits=3, decimal_places=1, default=5.0, validators=[MinValueValidator(1), MaxValueValidator(5)])
     display_order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
