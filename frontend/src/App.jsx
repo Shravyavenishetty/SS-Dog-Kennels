@@ -9,11 +9,12 @@ import ServicesPage from './pages/ServicesPage';
 import BookingWizard from './pages/BookingWizard';
 import ProfilePage from './pages/DashboardPage';
 import WishlistPage from './pages/WishlistPage';
-import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import StudAvailabilityPage from './pages/StudAvailabilityPage';
+import PuppyAdoptionWizard from './pages/PuppyAdoptionWizard';
+import { fetchKennelDetails } from './lib/api';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(() => {
@@ -25,6 +26,14 @@ function App() {
     const saved = localStorage.getItem('selectedPuppy');
     return saved ? JSON.parse(saved) : null;
   });
+  const [selectedStud, setSelectedStud] = useState(null);
+  const [kennelDetail, setKennelDetail] = useState(null);
+
+  useEffect(() => {
+    fetchKennelDetails().then(data => {
+      if (data) setKennelDetail(data);
+    });
+  }, []);
 
   // Sync selected puppy to localStorage
   useEffect(() => {
@@ -39,22 +48,13 @@ function App() {
     const saved = localStorage.getItem('wishlist');
     return saved ? JSON.parse(saved) : [];
   });
-  const [cart, setCart] = useState(() => {
-    const saved = localStorage.getItem('cart');
-    return saved ? JSON.parse(saved) : [];
-  });
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
   const [userPhone, setUserPhone] = useState(() => localStorage.getItem('userPhone') || '');
   const [isNavigating, setIsNavigating] = useState(false);
 
-  // Persistence for Wishlist and Cart
   useEffect(() => {
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
 
   // Sync state with History API (Back/Forward buttons)
   useEffect(() => {
@@ -81,6 +81,11 @@ function App() {
     setCurrentPage('puppy-detail');
   };
 
+  const handlePuppyAdoption = (puppy) => {
+    setSelectedPuppy(puppy);
+    setCurrentPage('puppy-adoption');
+  };
+
   const handleLoginSuccess = (phone) => {
     setIsLoggedIn(true);
     setUserPhone(phone);
@@ -100,19 +105,6 @@ function App() {
   const handlePhoneChange = (newPhone) => {
     setUserPhone(newPhone);
     localStorage.setItem('userPhone', newPhone);
-  };
-
-  const addToCart = (puppy) => {
-    setCart(prev => {
-      const exists = prev.find(p => p.breed === puppy.breed);
-      if (exists) return prev;
-      return [...prev, puppy];
-    });
-    setCurrentPage('cart');
-  };
-
-  const removeFromCart = (puppy) => {
-    setCart(prev => prev.filter(p => p.breed !== puppy.breed));
   };
 
   const toggleWishlist = (puppy) => {
@@ -149,10 +141,14 @@ function App() {
         puppy={selectedPuppy}
         onToggleWishlist={() => toggleWishlist(selectedPuppy)}
         isWishlisted={selectedPuppy && wishlist.some(p => p.id === selectedPuppy.id)}
-        onAddToCart={addToCart}
+        onBookPuppy={handlePuppyAdoption}
       />;
-      case 'stud': return <StudServicesPage onPageChange={setCurrentPage} />;
-      case 'stud-availability': return <StudAvailabilityPage onPageChange={setCurrentPage} />;
+      case 'puppy-adoption': return <PuppyAdoptionWizard
+        onPageChange={setCurrentPage}
+        puppy={selectedPuppy}
+      />;
+      case 'stud': return <StudServicesPage onPageChange={setCurrentPage} onStudSelect={(stud) => { setSelectedStud(stud); setCurrentPage('stud-availability'); }} />;
+      case 'stud-availability': return <StudAvailabilityPage onPageChange={setCurrentPage} initialStud={selectedStud} />;
       case 'services': return <ServicesPage onPageChange={setCurrentPage} onServiceSelect={handleServiceBooking} />;
       case 'booking-wizard': return <BookingWizard onPageChange={setCurrentPage} initialService={selectedService} />;
       case 'wishlist': return <WishlistPage
@@ -161,20 +157,15 @@ function App() {
         wishlist={wishlist}
         onToggleWishlist={toggleWishlist}
       />;
-      case 'cart': return <CartPage
-        onPageChange={setCurrentPage}
-        cart={cart}
-        onRemoveFromCart={removeFromCart}
-      />;
       case 'profile':
         return isLoggedIn ? (
           <ProfilePage
             onPageChange={setCurrentPage}
             wishlistCount={wishlist.length}
-            cartCount={cart.length}
             onLogout={handleLogout}
             userPhone={userPhone}
             onPhoneChange={handlePhoneChange}
+            kennelDetail={kennelDetail}
           />
         ) : (
           <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />
@@ -192,14 +183,13 @@ function App() {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
         wishlistCount={wishlist.length}
-        cartCount={cart.length}
         isLoggedIn={isLoggedIn}
         onLogout={handleLogout}
       />
       <main className="pt-[56px] lg:pt-[80px]">
         {renderPage()}
       </main>
-      <Footer onPageChange={setCurrentPage} />
+      <Footer onPageChange={setCurrentPage} kennelDetail={kennelDetail} />
     </div>
   );
 }
