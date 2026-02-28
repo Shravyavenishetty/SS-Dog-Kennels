@@ -152,6 +152,27 @@ export async function updateUserProfile(phone, data) {
   return res.json();
 }
 
+export async function deleteProfile(phone) {
+  const res = await fetch(`${API_BASE}/user-profiles/${phone}/`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete profile');
+  return true; // 204 No Content
+}
+
+export async function changeUserPhone(oldPhone, newPhone) {
+  const res = await fetch(`${API_BASE}/user-profiles/${oldPhone}/change-phone/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ new_phone: newPhone }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to change phone number');
+  }
+  return res.json();
+}
+
 export async function fetchUserBookings(phone) {
   const data = await getJson(`/bookings/?phone=${phone}`);
   return data.map(b => ({

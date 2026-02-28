@@ -97,6 +97,11 @@ function App() {
     setCurrentPage('login');
   };
 
+  const handlePhoneChange = (newPhone) => {
+    setUserPhone(newPhone);
+    localStorage.setItem('userPhone', newPhone);
+  };
+
   const addToCart = (puppy) => {
     setCart(prev => {
       const exists = prev.find(p => p.breed === puppy.breed);
@@ -169,6 +174,7 @@ function App() {
             cartCount={cart.length}
             onLogout={handleLogout}
             userPhone={userPhone}
+            onPhoneChange={handlePhoneChange}
           />
         ) : (
           <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />

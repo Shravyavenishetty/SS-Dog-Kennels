@@ -1,14 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, User, Heart, Settings, LogOut, Download, Mail, Phone, MapPin, Shield, Key, ShoppingBag, Loader2 } from 'lucide-react';
-import { fetchUserProfile, fetchUserBookings, updateUserProfile } from '../lib/api';
+import { Calendar, User, Heart, Settings, LogOut, Download, Shield, ShoppingBag, Loader2, Smartphone, Trash2, Lock, CheckCircle2 } from 'lucide-react';
+import { fetchUserProfile, fetchUserBookings, updateUserProfile, deleteProfile, changeUserPhone } from '../lib/api';
 
-const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPhone }) => {
+const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPhone, onPhoneChange }) => {
     const [activeTab, setActiveTab] = useState('summary');
     const [updating, setUpdating] = useState(false);
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState(null);
     const [bookings, setBookings] = useState([]);
     const [editData, setEditData] = useState({ firstName: '', lastName: '', email: '' });
+
+    // Phone Change State
+    const [isChangingPhone, setIsChangingPhone] = useState(false);
+    const [newPhone, setNewPhone] = useState('');
+    const [changePhoneStep, setChangePhoneStep] = useState('input'); // input, otp
+    const [changeOtp, setChangeOtp] = useState(['', '', '', '', '', '']);
+    const [generatedChangeOtp, setGeneratedChangeOtp] = useState('');
+    const [changePhoneError, setChangePhoneError] = useState('');
+    const [isSendingOtp, setIsSendingOtp] = useState(false);
+    const [timer, setTimer] = useState(0);
+
+    // Re-verify Phone State
+    const [isReverifying, setIsReverifying] = useState(false);
+    const [reverifyOtp, setReverifyOtp] = useState(['', '', '', '', '', '']);
+    const [generatedReverifyOtp, setGeneratedReverifyOtp] = useState('');
+    const [reverifyError, setReverifyError] = useState('');
+    const [lastVerifiedTime, setLastVerifiedTime] = useState('Just now');
 
     useEffect(() => {
         const loadData = async () => {
@@ -44,6 +61,190 @@ const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPho
         } catch (error) {
             console.error("Update failed:", error);
             setUpdating(false);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        if (window.confirm("Are you absolutely sure you want to delete your account? This action cannot be undone and you will lose all your booking history.")) {
+            setUpdating(true);
+            try {
+                await deleteProfile(userPhone);
+                onLogout(); // Log the user out after successful deletion
+            } catch (error) {
+                console.error("Error deleting account:", error);
+                alert("Failed to delete account. Please try again later.");
+                setUpdating(false);
+            }
+        }
+    };
+
+    // Phone Change Handlers
+    const handleSendChangeOtp = async (e) => {
+        e.preventDefault();
+        if (newPhone.length !== 10 || !/^[6-9]/.test(newPhone)) {
+            setChangePhoneError('Please enter a valid 10-digit Indian mobile number.');
+            return;
+        }
+        if (newPhone === userPhone) {
+            setChangePhoneError('New number must be different from current number.');
+            return;
+        }
+
+        setIsSendingOtp(true);
+        setChangePhoneError('');
+        try {
+            // Check if number is already in use
+            const res = await fetch(`http://127.0.0.1:8000/api/user-profiles/check/${newPhone}/`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.exists) {
+                    setChangePhoneError('This mobile number is already registered.');
+                    setIsSendingOtp(false);
+                    return;
+                }
+            }
+
+            // Simulate sending OTP
+            const otpToLog = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log(`[DEV ONLY] OTP for changing number to ${newPhone}:`, otpToLog);
+            setGeneratedChangeOtp(otpToLog);
+            setChangePhoneStep('otp');
+            setTimer(30);
+
+            // Start timer
+            const interval = setInterval(() => {
+                setTimer((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(interval);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+
+        } catch (error) {
+            console.error("Error checking phone:", error);
+            setChangePhoneError('Failed to verify network. Try again.');
+        } finally {
+            setIsSendingOtp(false);
+        }
+    };
+
+    const handleVerifyChangeOtp = async (e) => {
+        e.preventDefault();
+        const enteredOtp = changeOtp.join('');
+        if (enteredOtp !== generatedChangeOtp) {
+            setChangePhoneError('Invalid OTP. Please try again.');
+            return;
+        }
+
+        setUpdating(true);
+        setChangePhoneError('');
+        try {
+            await changeUserPhone(userPhone, newPhone);
+            onPhoneChange(newPhone);
+            setIsChangingPhone(false);
+            setChangePhoneStep('input');
+            setNewPhone('');
+            setChangeOtp(['', '', '', '', '', '']);
+            alert('Mobile number updated successfully!');
+        } catch (error) {
+            console.error("Error changing phone:", error);
+            setChangePhoneError(error.message || 'Failed to update mobile number.');
+        } finally {
+            setUpdating(false);
+        }
+    };
+
+    const handleOtpChange = (index, value) => {
+        if (value.length > 1) value = value.slice(-1);
+        if (!/^\d*$/.test(value)) return;
+
+        const newOtp = [...changeOtp];
+        newOtp[index] = value;
+        setChangeOtp(newOtp);
+
+        if (value && index < 5) {
+            const nextInput = document.getElementById(`change-otp-${index + 1}`);
+            if (nextInput) nextInput.focus();
+        }
+    };
+
+    const handleOtpKeyDown = (index, e) => {
+        if (e.key === 'Backspace' && !changeOtp[index] && index > 0) {
+            const prevInput = document.getElementById(`change-otp-${index - 1}`);
+            if (prevInput) {
+                prevInput.focus();
+                const newOtp = [...changeOtp];
+                newOtp[index - 1] = '';
+                setChangeOtp(newOtp);
+            }
+        }
+    };
+
+    const handleStartReverify = () => {
+        setIsReverifying(true);
+        setReverifyError('');
+        setReverifyOtp(['', '', '', '', '', '']);
+        setIsChangingPhone(false); // Make sure change form is closed
+
+        // Simulate sending OTP
+        const otpToLog = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log(`[DEV ONLY] OTP for re-verifying ${userPhone}:`, otpToLog);
+        setGeneratedReverifyOtp(otpToLog);
+
+        setTimer(30);
+        const interval = setInterval(() => {
+            setTimer((prev) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
+
+    const handleVerifySubmit = (e) => {
+        e.preventDefault();
+        const enteredOtp = reverifyOtp.join('');
+        if (enteredOtp !== generatedReverifyOtp) {
+            setReverifyError('Invalid OTP. Please try again.');
+            return;
+        }
+
+        // Success
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        setLastVerifiedTime(`Today at ${timeString}`);
+        setIsReverifying(false);
+        setReverifyOtp(['', '', '', '', '', '']);
+        alert('Mobile number re-verified successfully!');
+    };
+
+    const handleReverifyOtpChange = (index, value) => {
+        if (value.length > 1) value = value.slice(-1);
+        if (!/^\d*$/.test(value)) return;
+
+        const newOtp = [...reverifyOtp];
+        newOtp[index] = value;
+        setReverifyOtp(newOtp);
+
+        if (value && index < 5) {
+            const nextInput = document.getElementById(`reverify-otp-${index + 1}`);
+            if (nextInput) nextInput.focus();
+        }
+    };
+
+    const handleReverifyOtpKeyDown = (index, e) => {
+        if (e.key === 'Backspace' && !reverifyOtp[index] && index > 0) {
+            const prevInput = document.getElementById(`reverify-otp-${index - 1}`);
+            if (prevInput) {
+                prevInput.focus();
+                const newOtp = [...reverifyOtp];
+                newOtp[index - 1] = '';
+                setReverifyOtp(newOtp);
+            }
         }
     };
 
@@ -133,31 +334,206 @@ const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPho
                         <h1 className="font-playfair text-2xl lg:text-4xl text-forest-green mb-8">Account Security</h1>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                             <div className="lg:bg-white p-0 lg:p-10 lg:rounded-32 lg:border lg:border-forest-green/10 lg:shadow-sm">
-                                <div className="w-12 h-12 bg-forest-green/5 rounded-full flex items-center justify-center mb-6 hidden lg:flex">
-                                    <Key size={24} className="text-forest-green" />
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="w-12 h-12 bg-forest-green/5 rounded-full flex items-center justify-center hidden lg:flex">
+                                        <Smartphone size={24} className="text-forest-green" />
+                                    </div>
+                                    <h3 className="font-playfair text-xl lg:text-2xl text-forest-green mb-0">Mobile Verification</h3>
                                 </div>
-                                <h3 className="font-playfair text-xl lg:text-2xl text-forest-green mb-2 lg:mb-4">Update Password</h3>
-                                <p className="font-inter text-sm text-forest-green/60 mb-6 lg:mb-8 leading-relaxed">Ensure your account is using a long, random password to stay secure.</p>
-                                <button
-                                    onClick={() => { }}
-                                    disabled={updating}
-                                    className="w-full py-4 bg-white lg:bg-transparent border border-forest-green/20 text-forest-green rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/5 transition-all disabled:opacity-50"
-                                >
-                                    Change Password
-                                </button>
+
+                                <div className="bg-ivory rounded-2xl p-4 lg:p-6 mb-6 border border-forest-green/5">
+                                    <p className="font-inter text-xs uppercase tracking-wider text-forest-green/60 font-bold mb-2">Registered Mobile</p>
+                                    <div className="flex items-center justify-between">
+                                        <span className="font-inter text-lg lg:text-xl text-forest-green font-medium">
+                                            {userPhone ? `+91 ${userPhone.substring(0, 1)}XXXXXX${userPhone.substring(7)}` : 'Loading...'}
+                                        </span>
+                                        <div className="flex items-center space-x-1.5 bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                                            <Shield size={12} className="fill-current" />
+                                            <span className="font-inter text-[10px] uppercase font-bold tracking-widest">Verified</span>
+                                        </div>
+                                    </div>
+                                    <p className="font-inter text-xs text-forest-green/40 mt-4 flex items-center space-x-2">
+                                        <Calendar size={12} />
+                                        <span>Last OTP verified: {lastVerifiedTime}</span>
+                                    </p>
+                                </div>
+
+                                <div className="space-y-3">
+                                    {!isChangingPhone && !isReverifying ? (
+                                        <>
+                                            <button
+                                                onClick={() => setIsChangingPhone(true)}
+                                                className="w-full py-4 bg-white lg:bg-transparent border border-forest-green/20 text-forest-green rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/5 transition-all"
+                                            >
+                                                Change Mobile Number
+                                            </button>
+                                            <button
+                                                onClick={handleStartReverify}
+                                                className="w-full py-4 bg-forest-green/5 text-forest-green rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/10 transition-all"
+                                            >
+                                                Re-verify Number
+                                            </button>
+                                        </>
+                                    ) : isChangingPhone ? (
+                                        <div className="bg-white rounded-xl border border-forest-green/10 p-5 mt-4">
+                                            {changePhoneStep === 'input' ? (
+                                                <form onSubmit={handleSendChangeOtp} className="space-y-4">
+                                                    <div className="space-y-2">
+                                                        <label className="font-inter text-[10px] uppercase font-bold text-forest-green/40 tracking-widest ml-1">New Mobile Number</label>
+                                                        <div className="relative group">
+                                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center border-r border-forest-green/10 pr-3">
+                                                                <span className="font-inter text-sm font-bold text-forest-green/60">+91</span>
+                                                            </div>
+                                                            <input
+                                                                type="tel"
+                                                                required
+                                                                maxLength={10}
+                                                                value={newPhone}
+                                                                onChange={(e) => setNewPhone(e.target.value.replace(/\D/g, ''))}
+                                                                className={`w-full p-4 pl-16 bg-ivory rounded-xl border ${changePhoneError ? 'border-red-500' : 'border-forest-green/5'} focus:ring-2 focus:ring-forest-green/10 outline-none transition-all font-inter text-sm tracking-[0.2em]`}
+                                                                placeholder="98765 43210"
+                                                            />
+                                                        </div>
+                                                        {changePhoneError && <p className="font-inter text-[10px] text-red-500 font-bold tracking-wider mt-1">{changePhoneError}</p>}
+                                                    </div>
+                                                    <div className="flex space-x-3">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => { setIsChangingPhone(false); setChangePhoneError(''); setNewPhone(''); }}
+                                                            className="flex-1 py-4 bg-transparent border border-forest-green/20 text-forest-green rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/5 transition-all"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            type="submit"
+                                                            disabled={isSendingOtp || newPhone.length !== 10}
+                                                            className="flex-1 py-4 bg-forest-green text-champagne-gold rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/90 transition-all flex justify-center items-center space-x-2 disabled:opacity-50"
+                                                        >
+                                                            {isSendingOtp ? <Loader2 size={16} className="animate-spin" /> : <span>Send OTP</span>}
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            ) : (
+                                                <form onSubmit={handleVerifyChangeOtp} className="space-y-4">
+                                                    <div className="space-y-2 text-center">
+                                                        <p className="font-inter text-xs text-forest-green/60 mb-4">Enter the code sent to +91 {newPhone}</p>
+                                                        <div className="flex justify-center gap-1 sm:gap-2 mx-auto">
+                                                            {changeOtp.map((digit, index) => (
+                                                                <input
+                                                                    key={index}
+                                                                    id={`change-otp-${index}`}
+                                                                    type="text"
+                                                                    maxLength="1"
+                                                                    required
+                                                                    value={digit}
+                                                                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                                                                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                                                                    className="w-8 h-10 sm:w-11 sm:h-12 lg:w-12 lg:h-14 text-center text-sm sm:text-lg lg:text-xl font-bold text-forest-green bg-ivory border border-forest-green/10 rounded-xl focus:border-forest-green/30 outline-none focus:ring-2 focus:ring-forest-green/10 transition-all flex-shrink-0"
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                        {changePhoneError && <p className="font-inter text-[10px] text-red-500 font-bold tracking-wider mt-2">{changePhoneError}</p>}
+                                                    </div>
+
+                                                    <div className="text-center mt-4">
+                                                        <button
+                                                            type="button"
+                                                            disabled={timer > 0}
+                                                            className="font-inter text-[10px] font-bold text-forest-green hover:underline uppercase tracking-widest disabled:opacity-40 disabled:hover:no-underline"
+                                                        >
+                                                            {timer > 0 ? `Resend OTP in ${timer}s` : 'Resend OTP'}
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="flex space-x-3 pt-4">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => { setChangePhoneStep('input'); setChangePhoneError(''); setChangeOtp(['', '', '', '', '', '']); }}
+                                                            className="flex-1 py-4 bg-transparent border border-forest-green/20 text-forest-green rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/5 transition-all"
+                                                        >
+                                                            Back
+                                                        </button>
+                                                        <button
+                                                            type="submit"
+                                                            disabled={changeOtp.some(d => !d) || updating}
+                                                            className="flex-1 py-4 bg-forest-green text-champagne-gold rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/90 transition-all flex justify-center items-center space-x-2 disabled:opacity-50"
+                                                        >
+                                                            {updating ? <Loader2 size={16} className="animate-spin" /> : <span>Verify Code</span>}
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="bg-white rounded-xl border border-forest-green/10 p-5 mt-4">
+                                            <form onSubmit={handleVerifySubmit} className="space-y-4">
+                                                <div className="space-y-2 text-center">
+                                                    <p className="font-inter text-xs text-forest-green/60 mb-4">Enter the code sent to +91 {userPhone}</p>
+                                                    <div className="flex justify-center gap-1 sm:gap-2 mx-auto">
+                                                        {reverifyOtp.map((digit, index) => (
+                                                            <input
+                                                                key={index}
+                                                                id={`reverify-otp-${index}`}
+                                                                type="text"
+                                                                maxLength="1"
+                                                                required
+                                                                value={digit}
+                                                                onChange={(e) => handleReverifyOtpChange(index, e.target.value)}
+                                                                onKeyDown={(e) => handleReverifyOtpKeyDown(index, e)}
+                                                                className="w-8 h-10 sm:w-11 sm:h-12 lg:w-12 lg:h-14 text-center text-sm sm:text-lg lg:text-xl font-bold text-forest-green bg-ivory border border-forest-green/10 rounded-xl focus:border-forest-green/30 outline-none focus:ring-2 focus:ring-forest-green/10 transition-all flex-shrink-0"
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                    {reverifyError && <p className="font-inter text-[10px] text-red-500 font-bold tracking-wider mt-2">{reverifyError}</p>}
+                                                </div>
+
+                                                <div className="text-center mt-4">
+                                                    <button
+                                                        type="button"
+                                                        disabled={timer > 0}
+                                                        className="font-inter text-[10px] font-bold text-forest-green hover:underline uppercase tracking-widest disabled:opacity-40 disabled:hover:no-underline"
+                                                    >
+                                                        {timer > 0 ? `Resend OTP in ${timer}s` : 'Resend OTP'}
+                                                    </button>
+                                                </div>
+
+                                                <div className="flex space-x-3 pt-4">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => { setIsReverifying(false); setReverifyError(''); setReverifyOtp(['', '', '', '', '', '']); }}
+                                                        className="flex-1 py-4 bg-transparent border border-forest-green/20 text-forest-green rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/5 transition-all"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button
+                                                        type="submit"
+                                                        disabled={reverifyOtp.some(d => !d)}
+                                                        className="flex-1 py-4 bg-forest-green text-champagne-gold rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/90 transition-all flex justify-center items-center"
+                                                    >
+                                                        Verify Code
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                            <div className="lg:bg-white p-0 lg:p-10 lg:rounded-32 lg:border lg:border-forest-green/10 lg:shadow-sm mt-8 lg:mt-0 pt-8 lg:pt-10 border-t lg:border-t-0 border-forest-green/5">
-                                <div className="w-12 h-12 bg-forest-green/5 rounded-full flex items-center justify-center mb-6 hidden lg:flex">
-                                    <Shield size={24} className="text-forest-green" />
+
+                            <div className="lg:bg-white p-0 lg:p-10 lg:rounded-32 lg:border lg:border-forest-green/10 lg:shadow-sm">
+                                <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-6 hidden lg:flex">
+                                    <Trash2 size={24} className="text-red-500" />
                                 </div>
-                                <h3 className="font-playfair text-xl lg:text-2xl text-forest-green mb-2 lg:mb-4">Two-Factor Auth</h3>
-                                <p className="font-inter text-sm text-forest-green/60 mb-6 lg:mb-8 leading-relaxed">Add an extra layer of security to your account with 2FA.</p>
+                                <h3 className="font-playfair text-xl lg:text-2xl text-forest-green mb-2 lg:mb-4">Privacy & Data</h3>
+                                <p className="font-inter text-sm text-forest-green/60 mb-6 lg:mb-8 leading-relaxed">
+                                    Take control of your digital footprint. You can request a copy of your adoption history or initiate account deletion.
+                                </p>
                                 <button
-                                    onClick={() => { }}
+                                    onClick={handleDeleteAccount}
                                     disabled={updating}
-                                    className="w-full py-4 bg-forest-green/10 text-forest-green rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/20 transition-all disabled:opacity-50"
+                                    className="font-inter text-[10px] uppercase font-bold text-red-500 tracking-widest hover:underline flex items-center space-x-2 group disabled:opacity-50"
                                 >
-                                    Enable Security
+                                    <span>Delete Account</span>
+                                    <Trash2 size={12} className="group-hover:scale-110 transition-transform" />
                                 </button>
                             </div>
                         </div>

@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+import re
 from rest_framework.response import Response
 from .models import (
     Puppy,
@@ -56,6 +57,27 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     def check_phone(self, request, phone=None):
         exists = UserProfile.objects.filter(phone_number=phone).exists()
         return Response({'exists': exists})
+        
+    @action(detail=True, methods=['post'], url_path='change-phone')
+    def change_phone(self, request, phone_number=None):
+        instance = self.get_object()
+        new_phone = request.data.get('new_phone')
+        
+        if not new_phone or not re.match(r'^[6-9]\d{9}$', new_phone):
+            return Response({'error': 'Invalid phone number format'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if UserProfile.objects.filter(phone_number=new_phone).exists():
+            return Response({'error': 'Phone number already registered'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        instance.phone_number = new_phone
+        instance.save()
+        
+        return Response({'success': True, 'new_phone': new_phone})
+        
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class HomeTestimonialViewSet(viewsets.ReadOnlyModelViewSet):
