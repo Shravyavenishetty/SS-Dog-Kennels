@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Calendar, Mail, FileText, Star, Search, SlidersHorizontal } from 'lucide-react';
+import { Calendar, Mail, Star, Search, SlidersHorizontal } from 'lucide-react';
 import { fetchStudDogs } from '../lib/api';
 
 const StudServicesPage = ({ onPageChange }) => {
@@ -22,6 +22,7 @@ const StudServicesPage = ({ onPageChange }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedBreeds, setSelectedBreeds] = useState([]);
     const [sortBy, setSortBy] = useState('Top Rated');
+    const [showAllBreeds, setShowAllBreeds] = useState(false);
 
     // 3. Logic
     const filteredStuds = useMemo(() => {
@@ -52,6 +53,8 @@ const StudServicesPage = ({ onPageChange }) => {
     }, [baseStuds, searchQuery, selectedBreeds, sortBy]);
 
     const breeds = [...new Set(baseStuds.map(s => s.breed))];
+    const BREEDS_LIMIT = 5;
+    const visibleBreeds = showAllBreeds ? breeds : breeds.slice(0, BREEDS_LIMIT);
 
     const toggleBreed = (breed) => {
         setSelectedBreeds(prev =>
@@ -132,23 +135,29 @@ const StudServicesPage = ({ onPageChange }) => {
                             <div>
                                 <h4 className="font-inter text-[10px] uppercase tracking-[0.2em] font-bold text-forest-green/60 mb-4 block">Filter by Breed</h4>
                                 <div className="space-y-3">
-                                    {breeds.map(breed => (
-                                        <label key={breed} className="flex items-center space-x-3 cursor-pointer group">
+                                    {visibleBreeds.map(breed => (
+                                        <label key={breed} className="flex items-center space-x-3 cursor-pointer group w-full overflow-hidden">
                                             <input
                                                 type="checkbox"
                                                 className="hidden"
                                                 checked={selectedBreeds.includes(breed)}
                                                 onChange={() => toggleBreed(breed)}
                                             />
-                                            <div className={`w-5 h-5 rounded-md border transition-all flex items-center justify-center ${selectedBreeds.includes(breed) ? 'bg-forest-green border-forest-green' : 'border-forest-green/20'
-                                                }`}>
+                                            <div className={`w-5 h-5 rounded-md border transition-all flex items-center justify-center shrink-0 ${selectedBreeds.includes(breed) ? 'bg-forest-green border-forest-green' : 'border-forest-green/20'}`}>
                                                 {selectedBreeds.includes(breed) && <div className="w-2 h-2 bg-champagne-gold rounded-sm"></div>}
                                             </div>
-                                            <span className={`font-inter text-sm transition-colors ${selectedBreeds.includes(breed) ? 'text-forest-green font-bold' : 'text-forest-green/60 group-hover:text-forest-green'
-                                                }`}>{breed}</span>
+                                            <span className={`font-inter text-sm truncate transition-colors ${selectedBreeds.includes(breed) ? 'text-forest-green font-bold' : 'text-forest-green/60 group-hover:text-forest-green'}`}>{breed}</span>
                                         </label>
                                     ))}
                                 </div>
+                                {breeds.length > BREEDS_LIMIT && (
+                                    <button
+                                        onClick={() => setShowAllBreeds(!showAllBreeds)}
+                                        className="mt-4 font-inter text-[11px] text-forest-green/50 hover:text-forest-green font-bold transition-colors flex items-center space-x-1 uppercase tracking-widest"
+                                    >
+                                        <span>{showAllBreeds ? '− Show Less' : `+ ${breeds.length - BREEDS_LIMIT} More`}</span>
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -190,12 +199,9 @@ const StudServicesPage = ({ onPageChange }) => {
                                         <div className="flex space-x-3 pt-3 lg:pt-4">
                                             <button
                                                 onClick={() => onPageChange('stud-availability')}
-                                                className="flex-1 py-4 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-[10px] rounded-xl hover:shadow-2xl transition-all active:scale-95"
+                                                className="w-full py-4 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-[10px] rounded-xl hover:shadow-2xl transition-all active:scale-95"
                                             >
                                                 Check Availability
-                                            </button>
-                                            <button className="w-12 h-12 lg:w-14 lg:h-14 border border-forest-green/10 rounded-xl flex items-center justify-center text-forest-green hover:bg-forest-green hover:text-champagne-gold transition-all group/btn">
-                                                <FileText size={18} className="lg:w-5 lg:h-5 group-hover/btn:scale-110 transition-transform" />
                                             </button>
                                         </div>
                                     </div>
