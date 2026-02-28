@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Calendar, Mail, Star, Search, SlidersHorizontal } from 'lucide-react';
 import { fetchStudDogs } from '../lib/api';
 
-const StudServicesPage = ({ onPageChange }) => {
+const StudServicesPage = ({ onPageChange, onStudSelect }) => {
     const [baseStuds, setBaseStuds] = useState([]);
 
     useEffect(() => {
@@ -176,8 +176,8 @@ const StudServicesPage = ({ onPageChange }) => {
                                                 <Star size={12} fill="currentColor" />
                                                 <span className="text-[10px] font-bold tracking-widest">{stud.rating.toFixed(1)} CHAMPION</span>
                                             </div>
-                                            <h3 className="font-playfair text-2xl lg:text-3xl text-white mb-1">{stud.name}</h3>
-                                            <p className="font-inter text-[10px] text-white/50 uppercase tracking-[0.3em]">{stud.breed}</p>
+                                            <h3 className="font-playfair text-2xl lg:text-3xl text-white mb-1">{stud.breed}</h3>
+                                            <p className="font-inter text-[10px] text-white/50 uppercase tracking-[0.3em]">Purebred Champion</p>
                                         </div>
                                     </div>
 
@@ -198,7 +198,7 @@ const StudServicesPage = ({ onPageChange }) => {
 
                                         <div className="flex space-x-3 pt-3 lg:pt-4">
                                             <button
-                                                onClick={() => onPageChange('stud-availability')}
+                                                onClick={() => onStudSelect ? onStudSelect(stud) : onPageChange('stud-availability')}
                                                 className="w-full py-4 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-[10px] rounded-xl hover:shadow-2xl transition-all active:scale-95"
                                             >
                                                 Check Availability
