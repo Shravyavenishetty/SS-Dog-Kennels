@@ -129,6 +129,17 @@ class SubService(models.Model):
     def __str__(self):
         return f"{self.category.title} - {self.name}"
 
+class UserProfile(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    phone_number = models.CharField(max_length=15, unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.phone_number})"
+
 class Booking(models.Model):
     id = ObjectIdAutoField(primary_key=True)
     STATUS_CHOICES = [
@@ -138,6 +149,7 @@ class Booking(models.Model):
         ('Cancelled', 'Cancelled'),
     ]
     
+    user_profile = models.ForeignKey(UserProfile, related_name='bookings', on_delete=models.CASCADE, null=True, blank=True)
     user_name = models.CharField(max_length=100)
     user_email = models.EmailField()
     service_name = models.CharField(max_length=200)

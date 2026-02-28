@@ -1,4 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from .models import (
     Puppy,
     StudDog,
@@ -8,6 +10,7 @@ from .models import (
     HomeServiceHighlight,
     Facility,
     FAQ,
+    UserProfile,
 )
 from .serializers import (
     PuppySerializer,
@@ -18,6 +21,7 @@ from .serializers import (
     HomeServiceHighlightSerializer,
     FacilitySerializer,
     FAQSerializer,
+    UserProfileSerializer,
 )
 
 class PuppyViewSet(viewsets.ModelViewSet):
@@ -35,6 +39,23 @@ class ServiceCategoryViewSet(viewsets.ModelViewSet):
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        phone = self.request.query_params.get('phone')
+        if phone:
+            queryset = queryset.filter(user_profile__phone_number=phone)
+        return queryset
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    lookup_field = 'phone_number'
+
+    @action(detail=False, methods=['get'], url_path='check/(?P<phone>[^/.]+)')
+    def check_phone(self, request, phone=None):
+        exists = UserProfile.objects.filter(phone_number=phone).exists()
+        return Response({'exists': exists})
 
 
 class HomeTestimonialViewSet(viewsets.ReadOnlyModelViewSet):

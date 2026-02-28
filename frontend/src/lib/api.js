@@ -96,3 +96,65 @@ export async function fetchFaqs() {
     a: f.answer,
   }));
 }
+
+export async function fetchUserProfile(phone) {
+  const data = await getJson(`/user-profiles/${phone}/`);
+  return {
+    firstName: data.first_name,
+    lastName: data.last_name,
+    email: data.email,
+    phone: data.phone_number,
+    createdAt: data.created_at,
+  };
+}
+
+export async function checkProfile(phone) {
+  try {
+    const res = await fetch(`${API_BASE}/user-profiles/check/${phone}/`);
+    if (!res.ok) return false;
+    const data = await res.json();
+    return data.exists;
+  } catch (e) {
+    return false;
+  }
+}
+
+export async function createProfile(data) {
+  const res = await fetch(`${API_BASE}/user-profiles/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      phone_number: data.phone,
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
+    }),
+  });
+  if (!res.ok) throw new Error('Failed to create profile');
+  return res.json();
+}
+
+export async function updateUserProfile(phone, data) {
+  const res = await fetch(`${API_BASE}/user-profiles/${phone}/`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
+    }),
+  });
+  if (!res.ok) throw new Error('Failed to update profile');
+  return res.json();
+}
+
+export async function fetchUserBookings(phone) {
+  const data = await getJson(`/bookings/?phone=${phone}`);
+  return data.map(b => ({
+    id: b.id,
+    serviceName: b.service_name,
+    date: b.booking_date,
+    status: b.status,
+    details: b.details,
+  }));
+}

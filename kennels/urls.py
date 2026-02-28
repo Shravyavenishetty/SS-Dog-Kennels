@@ -9,6 +9,7 @@ from .views import (
     HomeServiceHighlightViewSet,
     FacilityViewSet,
     FAQViewSet,
+    UserProfileViewSet,
 )
 
 router = DefaultRouter()
@@ -16,6 +17,7 @@ router.register(r'puppies', PuppyViewSet)
 router.register(r'stud-dogs', StudDogViewSet)
 router.register(r'services', ServiceCategoryViewSet)
 router.register(r'bookings', BookingViewSet)
+router.register(r'user-profiles', UserProfileViewSet)
 router.register(r'testimonials', HomeTestimonialViewSet, basename='testimonial')
 router.register(r'home-highlights', HomeServiceHighlightViewSet, basename='home-highlight')
 router.register(r'facilities', FacilityViewSet, basename='facility')

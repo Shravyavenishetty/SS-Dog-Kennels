@@ -37,7 +37,8 @@ function App() {
 
   const [wishlist, setWishlist] = useState([]);
   const [cart, setCart] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
+  const [userPhone, setUserPhone] = useState(() => localStorage.getItem('userPhone') || '');
   const [isNavigating, setIsNavigating] = useState(false);
 
   // Sync state with History API (Back/Forward buttons)
@@ -65,13 +66,19 @@ function App() {
     setCurrentPage('puppy-detail');
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (phone) => {
     setIsLoggedIn(true);
+    setUserPhone(phone);
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userPhone', phone);
     setCurrentPage('profile');
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUserPhone('');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userPhone');
     setCurrentPage('login');
   };
 
@@ -146,6 +153,7 @@ function App() {
             wishlistCount={wishlist.length}
             cartCount={cart.length}
             onLogout={handleLogout}
+            userPhone={userPhone}
           />
         ) : (
           <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />

@@ -6,6 +6,7 @@ from .models import (
     ServiceCategory,
     SubService,
     Booking,
+    UserProfile,
     HomeTestimonial,
     HomeServiceHighlight,
     Facility,
@@ -60,12 +61,24 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
         model = ServiceCategory
         fields = ['id', 'title', 'tagline', 'image_url', 'icon_name', 'price_range', 'sub_services']
 
-class BookingSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
 
     class Meta:
-        model = Booking
+        model = UserProfile
         fields = '__all__'
+
+class BookingSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    user_profile_details = UserProfileSerializer(source='user_profile', read_only=True)
+
+    class Meta:
+        model = Booking
+        fields = [
+            'id', 'user_profile', 'user_profile_details', 'user_name', 
+            'user_email', 'service_name', 'booking_date', 'status', 
+            'details', 'created_at'
+        ]
 
 
 class HomeTestimonialSerializer(serializers.ModelSerializer):

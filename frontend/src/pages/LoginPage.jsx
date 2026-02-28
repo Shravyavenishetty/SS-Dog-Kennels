@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Github, Chrome as Google, Smartphone as Apple, Phone, ShieldCheck, RefreshCw, ChevronLeft, User } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Github, Chrome as Google, Smartphone as Apple, Phone, ShieldCheck, RefreshCw, ChevronLeft, User, Heart, Star } from 'lucide-react';
+import { checkProfile, createProfile } from '../lib/api';
 
 const LoginPage = ({ onPageChange, onLoginSuccess }) => {
-    const [step, setStep] = useState('number'); // 'number' or 'otp'
+    const [step, setStep] = useState('number'); // 'number', 'otp', or 'profile-setup'
     const [phoneNumber, setPhoneNumber] = useState('');
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [timer, setTimer] = useState(30);
     const [isLoading, setIsLoading] = useState(false);
+    const [generatedOtp, setGeneratedOtp] = useState('');
+    const [profileData, setProfileData] = useState({ firstName: '', lastName: '', email: '' });
 
     useEffect(() => {
         let interval;
@@ -21,20 +24,58 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
         setIsLoading(true);
         // Simulate API call
         setTimeout(() => {
+            const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            setGeneratedOtp(newOtp);
+            console.log("--------------------------");
+            console.log(`YOUR OTP IS: ${newOtp}`);
+            console.log("--------------------------");
             setIsLoading(false);
             setStep('otp');
             setTimer(30);
         }, 1500);
     };
 
-    const handleVerifyOTP = (e) => {
+    const handleVerifyOTP = async (e) => {
+        e.preventDefault();
+        const enteredOtp = otp.join('');
+
+        if (enteredOtp !== generatedOtp) {
+            alert("Invalid OTP! Please check the console for the correct code.");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            // Simulate OTP verify delay
+            await new Promise(r => setTimeout(r, 1000));
+
+            const exists = await checkProfile(phoneNumber);
+            if (exists) {
+                onLoginSuccess(phoneNumber);
+            } else {
+                setStep('profile-setup');
+            }
+        } catch (error) {
+            console.error('Verification failed:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleProfileSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            await createProfile({
+                phone: phoneNumber,
+                ...profileData
+            });
+            onLoginSuccess(phoneNumber);
+        } catch (error) {
+            console.error('Profile creation failed:', error);
+        } finally {
             setIsLoading(false);
-            onLoginSuccess();
-        }, 1500);
+        }
     };
 
     const handleOtpChange = (index, value) => {
@@ -131,7 +172,7 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                         </p>
                     </div>
 
-                    {step === 'number' ? (
+                    {step === 'number' && (
                         <form onSubmit={handleSendOTP} className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                             <div className="space-y-2">
                                 <label className="font-inter text-[10px] uppercase font-bold text-forest-green/40 tracking-widest ml-1">Mobile Number</label>
@@ -165,7 +206,9 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                                 )}
                             </button>
                         </form>
-                    ) : (
+                    )}
+
+                    {step === 'otp' && (
                         <form onSubmit={handleVerifyOTP} className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-500">
                             <div className="space-y-4 text-center">
                                 <div className="flex justify-between gap-2 sm:gap-3">
@@ -211,6 +254,72 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                                     <>
                                         <span>Log In</span>
                                         <ShieldCheck size={16} className="group-hover:scale-110 transition-transform" />
+                                    </>
+                                )}
+                            </button>
+                        </form>
+                    )}
+
+                    {step === 'profile-setup' && (
+                        <form onSubmit={handleProfileSubmit} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="bg-forest-green/5 p-6 rounded-24 border border-forest-green/5 mb-8">
+                                <div className="flex items-center space-x-4 mb-4">
+                                    <div className="w-12 h-12 bg-champagne-gold rounded-full flex items-center justify-center text-forest-green">
+                                        <Heart size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-playfair text-xl text-forest-green">Welcome to the Family!</h3>
+                                        <p className="font-inter text-[10px] uppercase tracking-widest text-forest-green/40">Since you're new here, tell us about yourself</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="font-inter text-[10px] uppercase font-bold text-forest-green/40 tracking-widest ml-1">First Name</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={profileData.firstName}
+                                        onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
+                                        className="w-full p-4 bg-ivory rounded-2xl border border-forest-green/5 focus:ring-2 focus:ring-forest-green/10 outline-none transition-all font-inter text-sm"
+                                        placeholder="John"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="font-inter text-[10px] uppercase font-bold text-forest-green/40 tracking-widest ml-1">Last Name</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={profileData.lastName}
+                                        onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
+                                        className="w-full p-4 bg-ivory rounded-2xl border border-forest-green/5 focus:ring-2 focus:ring-forest-green/10 outline-none transition-all font-inter text-sm"
+                                        placeholder="Doe"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="font-inter text-[10px] uppercase font-bold text-forest-green/40 tracking-widest ml-1">Email Address (Optional)</label>
+                                <input
+                                    type="email"
+                                    value={profileData.email}
+                                    onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                                    className="w-full p-4 bg-ivory rounded-2xl border border-forest-green/5 focus:ring-2 focus:ring-forest-green/10 outline-none transition-all font-inter text-sm"
+                                    placeholder="john@example.com"
+                                />
+                            </div>
+
+                            <button
+                                disabled={!profileData.firstName || !profileData.lastName || isLoading}
+                                className="w-full py-5 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-2xl hover:bg-forest-green/90 transition-all shadow-xl flex items-center justify-center space-x-3 group disabled:opacity-50"
+                            >
+                                {isLoading ? (
+                                    <RefreshCw className="animate-spin" size={16} />
+                                ) : (
+                                    <>
+                                        <span>Join the Kennel</span>
+                                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
                             </button>
