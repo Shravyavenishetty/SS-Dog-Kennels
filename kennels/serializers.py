@@ -3,6 +3,8 @@ from .models import (
     Puppy,
     PuppyImage,
     StudDog,
+    StudAvailability,
+    StudBookingRequest,
     ServiceCategory,
     SubService,
     Booking,
@@ -11,6 +13,9 @@ from .models import (
     HomeServiceHighlight,
     Facility,
     FAQ,
+    KennelDetail,
+    ContactInquiry,
+    PuppyInquiry,
 )
 
 class PuppyImageSerializer(serializers.ModelSerializer):
@@ -40,12 +45,27 @@ class PuppySerializer(serializers.ModelSerializer):
             return obj.image.url
         return obj.image_url
 
+class StudAvailabilitySerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    class Meta:
+        model = StudAvailability
+        fields = ['id', 'date', 'note']
+
+class StudBookingRequestSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    class Meta:
+        model = StudBookingRequest
+        fields = ['id', 'stud_breed', 'customer_name', 'customer_phone',
+                  'female_breed_details', 'requested_date', 'requested_time', 'status', 'created_at']
+        read_only_fields = ['id', 'status', 'created_at']
+
 class StudDogSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
+    booked_dates = StudAvailabilitySerializer(many=True, read_only=True)
 
     class Meta:
         model = StudDog
-        fields = '__all__'
+        fields = ['id', 'breed', 'rating', 'pups_produced', 'image_url', 'booked_dates', 'created_at']
 
 class SubServiceSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
@@ -77,8 +97,8 @@ class BookingSerializer(serializers.ModelSerializer):
         model = Booking
         fields = [
             'id', 'user_profile', 'user_profile_details', 'user_name', 
-            'user_email', 'service_name', 'booking_date', 'status', 
-            'details', 'created_at'
+            'user_phone', 'user_email', 'service_name', 'booking_date', 
+            'booking_time', 'status', 'details', 'created_at'
         ]
 
 
@@ -112,3 +132,23 @@ class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
         fields = '__all__'
+
+class KennelDetailSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    class Meta:
+        model = KennelDetail
+        fields = '__all__'
+
+class ContactInquirySerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    class Meta:
+        model = ContactInquiry
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at']
+class PuppyInquirySerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    puppy_breed = serializers.CharField(source='puppy.breed', read_only=True)
+    class Meta:
+        model = PuppyInquiry
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at']
