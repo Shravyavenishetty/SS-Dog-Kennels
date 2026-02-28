@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Award, ShieldCheck, Heart, Star, Calendar, MessageCircle, Scissors, Truck, Home, GraduationCap } from 'lucide-react';
+import { ArrowRight, Award, ShieldCheck, Heart, Star, Calendar, MessageCircle, Scissors, Truck, Home, GraduationCap, Search } from 'lucide-react';
 import PuppyCard from '../components/PuppyCard';
-import LitterCounter from '../components/LitterCounter';
 import { fetchPuppies, fetchTestimonials, fetchHomeHighlights } from '../lib/api';
 
 const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist }) => {
@@ -277,18 +276,63 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                 </div>
             </section>
 
-            {/* Final Story CTA */}
+            {/* Your Journey to Parenthood */}
             <section className="bg-ivory py-20 lg:py-32">
-                <div className="fixed-layout px-6 lg:px-10 flex flex-col items-center text-center">
-                    <LitterCounter />
-                    <p className="mt-8 font-inter text-forest-green/40 text-[10px] lg:text-xs uppercase tracking-widest mb-8 lg:mb-12">Puppies found their homes in 5 years</p>
-                    <h3 className="text-3xl lg:text-4xl text-forest-green font-playfair mb-8 max-w-2xl px-4">Ready to welcome your next family member?</h3>
-                    <button
-                        onClick={() => onPageChange('contact')}
-                        className="w-full sm:w-auto px-12 py-6 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-lg shadow-2xl hover:scale-105 transition-transform"
-                    >
-                        Talk to our Breeders
-                    </button>
+                <div className="fixed-layout px-6 lg:px-10">
+                    <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
+                        <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/40 mb-4 lg:mb-6 block">Your Journey</span>
+                        <h2 className="text-3xl lg:text-5xl text-forest-green font-playfair mb-6 lg:mb-8 leading-tight">Bringing a New Family <br className="hidden sm:block" /><span className="italic">Member Home.</span></h2>
+                        <p className="font-inter text-sm lg:text-base text-forest-green/60 leading-relaxed">
+                            Our adoption process is designed to ensure a perfect match for both you and your puppy, providing support every step of the way.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative">
+                        {/* Connecting Line (Desktop) */}
+                        <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-forest-green/10 -z-10" />
+
+                        {[
+                            {
+                                step: "01",
+                                title: "Select Your Breed",
+                                desc: "Browse our available puppies and find the companion that speaks to your heart.",
+                                icon: Search
+                            },
+                            {
+                                step: "02",
+                                title: "Talk to Experts",
+                                desc: "Consult with our experienced breeders about temperament, diet, and care needs.",
+                                icon: MessageCircle
+                            },
+                            {
+                                step: "03",
+                                title: "Welcome Home",
+                                desc: "Once everything is ready, we coordinate the safe arrival of your new family member.",
+                                icon: Heart
+                            }
+                        ].map((s, i) => (
+                            <div key={i} className="bg-white p-8 lg:p-10 rounded-32 border border-forest-green/5 hover:border-champagne-gold/40 transition-all group flex flex-col items-center text-center shadow-lg hover:-translate-y-2">
+                                <div className="w-16 h-16 bg-forest-green rounded-full flex items-center justify-center text-champagne-gold mb-6 group-hover:scale-110 transition-transform relative">
+                                    <s.icon size={24} />
+                                    <span className="absolute -top-2 -right-2 bg-champagne-gold text-forest-green font-inter font-bold text-[10px] w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+                                        {s.step}
+                                    </span>
+                                </div>
+                                <h3 className="font-playfair text-xl lg:text-2xl text-forest-green mb-4 group-hover:text-champagne-gold transition-colors">{s.title}</h3>
+                                <p className="font-inter text-sm text-forest-green/60 leading-relaxed">{s.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-16 lg:mt-24 text-center">
+                        <h3 className="text-2xl lg:text-3xl text-forest-green font-playfair mb-8 lg:mb-12">Ready to welcome your next family member?</h3>
+                        <button
+                            onClick={() => onPageChange('contact')}
+                            className="w-full sm:w-auto px-12 py-6 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-lg shadow-2xl hover:scale-105 transition-transform"
+                        >
+                            Talk to our Breeders
+                        </button>
+                    </div>
                 </div>
             </section>
         </div>

@@ -3,16 +3,16 @@ import { Mail, Phone, MapPin, Instagram, Facebook, Twitter } from 'lucide-react'
 
 const Footer = ({ onPageChange }) => {
     return (
-        <footer className="bg-forest-green text-ivory-white pt-20 pb-10 lg:pt-32 lg:pb-12 mt-0">
+        <footer className="bg-forest-green text-ivory-white py-8 lg:py-12 mt-0 border-t border-white/5">
             <div className="fixed-layout px-4 lg:px-10">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 mb-16 lg:mb-24">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 mb-8 lg:mb-12">
                     {/* Brand Section */}
                     <div className="md:col-span-4 translate-y-0">
-                        <div className="flex items-center space-x-3 mb-6 lg:mb-8">
+                        <div className="flex items-center space-x-3 mb-3 lg:mb-4">
                             <div className="w-8 h-8 lg:w-10 lg:h-10 bg-champagne-gold rounded-full flex items-center justify-center text-forest-green font-playfair font-bold text-sm lg:text-base">SS</div>
                             <h2 className="font-playfair text-xl lg:text-2xl font-bold text-champagne-gold tracking-tight uppercase">SS DOG KENNELS</h2>
                         </div>
-                        <p className="font-inter text-xs lg:text-sm leading-relaxed text-ivory-white/60 mb-8 lg:mb-10 max-w-sm">
+                        <p className="font-inter text-xs lg:text-sm leading-relaxed text-ivory-white/60 mb-4 lg:mb-6 max-w-sm">
                             Since 2020, we have been dedicated to raising the healthiest and happiest dogs. Our focus is on quality breeding and ensuring every puppy find a loving home.
                         </p>
                         <div className="flex space-x-4 lg:space-x-5">
@@ -31,8 +31,8 @@ const Footer = ({ onPageChange }) => {
                     {/* Links Grid */}
                     <div className="md:col-span-5 grid grid-cols-2 gap-8">
                         <div>
-                            <h4 className="font-playfair text-base lg:text-lg text-white mb-6 lg:mb-8 border-b border-white/10 pb-4">Our Kennel</h4>
-                            <ul className="space-y-3 lg:space-y-4 font-inter text-xs lg:text-sm text-ivory-white/60">
+                            <h4 className="font-playfair text-base lg:text-lg text-white mb-4 lg:mb-6 uppercase tracking-widest">Our Kennel</h4>
+                            <ul className="space-y-2 lg:space-y-3 font-inter text-xs lg:text-sm text-ivory-white/60">
                                 <li><button onClick={() => onPageChange('puppies')} className="hover:text-champagne-gold transition-colors">Available Puppies</button></li>
                                 <li><button onClick={() => onPageChange('stud')} className="hover:text-champagne-gold transition-colors">Stud Services</button></li>
                                 <li><button onClick={() => onPageChange('about')} className="hover:text-champagne-gold transition-colors">Our Story</button></li>
@@ -40,8 +40,8 @@ const Footer = ({ onPageChange }) => {
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-playfair text-base lg:text-lg text-white mb-6 lg:mb-8 border-b border-white/10 pb-4">Help Center</h4>
-                            <ul className="space-y-3 lg:space-y-4 font-inter text-xs lg:text-sm text-ivory-white/60">
+                            <h4 className="font-playfair text-base lg:text-lg text-white mb-4 lg:mb-6 uppercase tracking-widest">Help Center</h4>
+                            <ul className="space-y-2 lg:space-y-3 font-inter text-xs lg:text-sm text-ivory-white/60">
                                 <li><button onClick={() => onPageChange('contact')} className="hover:text-champagne-gold transition-colors">Contact Team</button></li>
                                 <li><button className="hover:text-champagne-gold transition-colors">Shipping Info</button></li>
                                 <li><button className="hover:text-champagne-gold transition-colors">Health Guarantee</button></li>
@@ -52,8 +52,8 @@ const Footer = ({ onPageChange }) => {
 
                     {/* Contact Info */}
                     <div className="md:col-span-3">
-                        <h4 className="font-playfair text-base lg:text-lg text-white mb-6 lg:mb-8 border-b border-white/10 pb-4">Get in Touch</h4>
-                        <div className="space-y-4 lg:space-y-6">
+                        <h4 className="font-playfair text-base lg:text-lg text-white mb-4 lg:mb-6 uppercase tracking-widest">Get in Touch</h4>
+                        <div className="space-y-3 lg:space-y-4">
                             <div className="flex items-start space-x-4">
                                 <MapPin size={18} className="text-champagne-gold shrink-0 mt-0.5" />
                                 <span className="font-inter text-xs lg:text-sm text-ivory-white/60">NS Estate, Kennel Village,<br />Mahabaleshwar, India</span>
@@ -71,7 +71,7 @@ const Footer = ({ onPageChange }) => {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-8 lg:pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-ivory-white/40 font-inter text-[10px] lg:text-xs">
+                <div className="pt-4 lg:pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-ivory-white/30 font-inter text-[10px] lg:text-xs">
                     <p className="mb-6 md:mb-0 text-center md:text-left">&copy; 2026 NS Dog Kennels. All rights reserved. Trusted since 1982.</p>
                     <div className="flex flex-wrap justify-center gap-4 lg:gap-8">
                         <button className="hover:text-champagne-gold transition-colors">Privacy Policy</button>
