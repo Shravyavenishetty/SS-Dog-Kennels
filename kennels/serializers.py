@@ -31,6 +31,7 @@ class PuppySerializer(serializers.ModelSerializer):
         fields = [
             'id', 'breed', 'price', 'price_display', 'age', 'availability', 
             'dog_type', 'image', 'image_url', 'tagline', 'behavior', 'health_shield', 
+            'description', 'initial_package', 'elite_protection',
             'images', 'created_at'
         ]
     

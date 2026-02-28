@@ -31,6 +31,12 @@ class Puppy(models.Model):
     tagline = models.CharField(max_length=200, default='Elite Heritage & Quality Companion')
     behavior = models.CharField(max_length=100, default='Calm & Trained')
     health_shield = models.CharField(max_length=100, default='Verified')
+    
+    # Dynamic Description Fields
+    description = models.TextField(default='Our puppies come from a lineage of excellence. We ensure every puppy receives individual attention, high-quality nutrition, and early socialization to make their transition to your home seamless and joyful.', blank=True)
+    initial_package = models.TextField(default='• Complete Vaccinations Record\n• Microchipping Documentation\n• Beginner\'s Training Guide\n• 14-Day Health Guaranty', blank=True)
+    elite_protection = models.TextField(default='This breed is known for its natural guardian instincts. We provide guidance on maintaining their protective yet gentle nature.', blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

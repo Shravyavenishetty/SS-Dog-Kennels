@@ -30,6 +30,9 @@ export async function fetchPuppies() {
     tagline: p.tagline,
     behavior: p.behavior,
     health_shield: p.health_shield,
+    description: p.description,
+    initial_package: p.initial_package,
+    elite_protection: p.elite_protection,
   }));
 }
 
