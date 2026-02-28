@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ShoppingCart, Menu, Heart, User, X, ArrowRight, LogOut } from 'lucide-react';
+import { Search, Menu, Heart, User, X, ArrowRight, LogOut } from 'lucide-react';
 import logo from '../assets/ss_dog_kennels_logo-removebg-preview.png';
 
-const Header = ({ currentPage, onPageChange, wishlistCount, cartCount, isLoggedIn, onLogout }) => {
+const Header = ({ currentPage, onPageChange, wishlistCount, isLoggedIn, onLogout }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     // Prevent background scrolling when menu is open
@@ -95,17 +95,7 @@ const Header = ({ currentPage, onPageChange, wishlistCount, cartCount, isLoggedI
                         <User size={20} className="w-5 h-5 lg:w-5 lg:h-5" />
                     </button>
 
-                    <button
-                        onClick={() => onPageChange('cart')}
-                        className="text-forest-green p-2 sm:p-2.5 hover:bg-forest-green/5 rounded-full transition-all relative"
-                    >
-                        <ShoppingCart size={20} className="w-5 h-5 lg:w-5 lg:h-5" />
-                        {cartCount > 0 && (
-                            <span className="absolute top-1.5 right-1.5 bg-forest-green text-champagne-gold text-[7px] lg:text-[8px] w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full flex items-center justify-center font-bold">
-                                {cartCount}
-                            </span>
-                        )}
-                    </button>
+
 
                     {/* Mobile Menu Toggle */}
                     <button
@@ -199,7 +189,7 @@ const Header = ({ currentPage, onPageChange, wishlistCount, cartCount, isLoggedI
                     </div>
                 </div>
             </div>
-        </header>
+        </header >
     );
 };
 
