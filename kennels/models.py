@@ -103,7 +103,6 @@ class PuppyImage(models.Model):
 
 class StudDog(models.Model):
     id = ObjectIdAutoField(primary_key=True)
-    name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
     rating = models.DecimalField(max_digits=3, decimal_places=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
     pups_produced = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -111,7 +110,57 @@ class StudDog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} ({self.breed})"
+        return self.breed
+
+class StudAvailability(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    stud = models.ForeignKey(StudDog, related_name='booked_dates', on_delete=models.CASCADE, null=True, blank=True)
+    date = models.DateField()
+    note = models.CharField(max_length=200, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Stud Availabilities"
+        unique_together = [('stud', 'date')]
+        ordering = ['date']
+
+    def __str__(self):
+        stud_breed = self.stud.breed if self.stud else "All Breeds"
+        return f"{stud_breed} — Booked: {self.date}"
+
+class StudBookingRequest(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled'),
+    ]
+    TIME_CHOICES = [
+        ('09:00', '9:00 AM'),
+        ('10:00', '10:00 AM'),
+        ('11:00', '11:00 AM'),
+        ('12:00', '12:00 PM'),
+        ('14:00', '2:00 PM'),
+        ('15:00', '3:00 PM'),
+        ('16:00', '4:00 PM'),
+        ('17:00', '5:00 PM'),
+    ]
+    stud_breed = models.CharField(max_length=100, blank=True, default='Any')
+    customer_name = models.CharField(max_length=100)
+    customer_phone = models.CharField(max_length=15)
+    female_breed_details = models.TextField(blank=True, default='')
+    requested_date = models.DateField()
+    requested_time = models.CharField(max_length=10, choices=TIME_CHOICES, default='10:00')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    admin_notes = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Stud Booking Requests"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.customer_name} → {self.stud_breed} on {self.requested_date} at {self.requested_time}"
 
 class ServiceCategory(models.Model):
     id = ObjectIdAutoField(primary_key=True)
@@ -161,9 +210,11 @@ class Booking(models.Model):
     
     user_profile = models.ForeignKey(UserProfile, related_name='bookings', on_delete=models.CASCADE, null=True, blank=True)
     user_name = models.CharField(max_length=100)
+    user_phone = models.CharField(max_length=15, blank=True, default='')
     user_email = models.EmailField()
     service_name = models.CharField(max_length=200)
     booking_date = models.DateField()
+    booking_time = models.CharField(max_length=10, default='09:00')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     details = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -232,3 +283,54 @@ class FAQ(models.Model):
 
     def __str__(self):
         return self.question
+
+class KennelDetail(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    address = models.TextField()
+    phone = models.CharField(max_length=20)
+    email = models.EmailField()
+    map_url = models.URLField(max_length=500, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Kennel Details"
+
+    def __str__(self):
+        return "Kennel Contact Information"
+
+class ContactInquiry(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    NAME_CHOICES = [
+        ('Buying a Puppy', 'Buying a Puppy'),
+        ('Booking a Dog', 'Booking a Dog'),
+        ('Grooming / Training', 'Grooming / Training'),
+        ('General Inquiry', 'General Inquiry'),
+    ]
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=50, choices=NAME_CHOICES, default='General Inquiry')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Contact Inquiries"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Inquiry from {self.name} - {self.subject}"
+class PuppyInquiry(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    puppy = models.ForeignKey(Puppy, related_name='inquiries', on_delete=models.CASCADE)
+    customer_name = models.CharField(max_length=100)
+    customer_phone = models.CharField(max_length=15)
+    customer_email = models.EmailField()
+    customer_address = models.TextField()
+    additional_notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Puppy Inquiries'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Adoption Enquiry for {self.puppy.breed} from {self.customer_name}'
