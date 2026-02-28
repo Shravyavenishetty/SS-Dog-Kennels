@@ -73,6 +73,7 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
             onLoginSuccess(phoneNumber);
         } catch (error) {
             console.error('Profile creation failed:', error);
+            alert("Oops! We couldn't create your profile. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -186,14 +187,17 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                                         maxLength={10}
                                         value={phoneNumber}
                                         onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
-                                        className="w-full p-4 pl-20 bg-ivory rounded-2xl border border-forest-green/5 focus:ring-2 focus:ring-forest-green/10 focus:border-forest-green/20 outline-none transition-all font-inter text-sm tracking-[0.2em]"
+                                        className={`w-full p-4 pl-20 bg-ivory rounded-2xl border ${phoneNumber && phoneNumber.length === 10 && !/^[6-9]/.test(phoneNumber) ? 'border-red-500' : 'border-forest-green/5'} focus:ring-2 focus:ring-forest-green/10 focus:border-forest-green/20 outline-none transition-all font-inter text-sm tracking-[0.2em]`}
                                         placeholder="98765 43210"
                                     />
                                 </div>
+                                {phoneNumber && phoneNumber.length === 10 && !/^[6-9]/.test(phoneNumber) && (
+                                    <p className="font-inter text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">Please enter a valid Indian mobile number</p>
+                                )}
                             </div>
 
                             <button
-                                disabled={phoneNumber.length !== 10 || isLoading}
+                                disabled={phoneNumber.length !== 10 || !/^[6-9]/.test(phoneNumber) || isLoading}
                                 className="w-full py-5 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-2xl hover:bg-forest-green/90 transition-all shadow-xl hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-3 group disabled:opacity-50 disabled:translate-y-0"
                             >
                                 {isLoading ? (
@@ -305,13 +309,16 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
                                     type="email"
                                     value={profileData.email}
                                     onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                                    className="w-full p-4 bg-ivory rounded-2xl border border-forest-green/5 focus:ring-2 focus:ring-forest-green/10 outline-none transition-all font-inter text-sm"
+                                    className={`w-full p-4 bg-ivory rounded-2xl border ${profileData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email) ? 'border-red-500' : 'border-forest-green/5'} focus:ring-2 focus:ring-forest-green/10 outline-none transition-all font-inter text-sm`}
                                     placeholder="john@example.com"
                                 />
+                                {profileData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email) && (
+                                    <p className="font-inter text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">Please enter a valid email address</p>
+                                )}
                             </div>
 
                             <button
-                                disabled={!profileData.firstName || !profileData.lastName || isLoading}
+                                disabled={!profileData.firstName || !profileData.lastName || (profileData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)) || isLoading}
                                 className="w-full py-5 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-xs rounded-2xl hover:bg-forest-green/90 transition-all shadow-xl flex items-center justify-center space-x-3 group disabled:opacity-50"
                             >
                                 {isLoading ? (

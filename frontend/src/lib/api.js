@@ -130,7 +130,11 @@ export async function createProfile(data) {
       email: data.email,
     }),
   });
-  if (!res.ok) throw new Error('Failed to create profile');
+  if (!res.ok) {
+    const errorBody = await res.text();
+    console.error(`Failed to create profile: ${res.status}`, errorBody);
+    throw new Error(`Failed to create profile: ${res.status}`);
+  }
   return res.json();
 }
 

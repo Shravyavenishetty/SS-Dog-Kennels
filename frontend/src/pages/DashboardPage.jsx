@@ -108,13 +108,16 @@ const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPho
                                         type="email"
                                         value={editData.email}
                                         onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                                        className="w-full p-4 bg-white lg:bg-ivory rounded-xl border border-forest-green/10 lg:border-forest-green/5 font-inter text-sm text-forest-green/80 focus:ring-2 focus:ring-forest-green/20 outline-none transition-all"
+                                        className={`w-full p-4 bg-white lg:bg-ivory rounded-xl border ${editData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editData.email) ? 'border-red-500' : 'border-forest-green/10 lg:border-forest-green/5'} font-inter text-sm text-forest-green/80 focus:ring-2 focus:ring-forest-green/20 outline-none transition-all`}
                                     />
+                                    {editData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editData.email) && (
+                                        <p className="font-inter text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">Please enter a valid email address</p>
+                                    )}
                                 </div>
                                 <div className="sm:col-span-2">
                                     <button
                                         type="submit"
-                                        disabled={updating}
+                                        disabled={updating || (editData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editData.email))}
                                         className="w-full py-5 lg:py-4 bg-forest-green text-champagne-gold rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-forest-green/90 transition-all shadow-lg active:scale-95 disabled:opacity-50"
                                     >
                                         {updating ? 'Saving...' : 'Update Information'}

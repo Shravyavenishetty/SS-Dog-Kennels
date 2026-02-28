@@ -1,7 +1,7 @@
 import requests
 from django.core.files.base import ContentFile
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator, EmailValidator
 from django_mongodb_backend.fields import ObjectIdAutoField
 from urllib.parse import urlparse
 import os
@@ -131,10 +131,14 @@ class SubService(models.Model):
 
 class UserProfile(models.Model):
     id = ObjectIdAutoField(primary_key=True)
-    phone_number = models.CharField(max_length=15, unique=True)
+    phone_number = models.CharField(
+        max_length=15, 
+        unique=True,
+        validators=[RegexValidator(r'^[6-9]\d{9}$', 'Enter a valid 10-digit Indian mobile number.')]
+    )
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField(null=True, blank=True, validators=[EmailValidator('Enter a valid email address.')])
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

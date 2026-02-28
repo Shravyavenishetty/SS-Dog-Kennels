@@ -10,7 +10,13 @@ from .models import (
     HomeServiceHighlight,
     Facility,
     FAQ,
+    UserProfile,
 )
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'last_name', 'phone_number', 'email', 'created_at')
+    search_fields = ('first_name', 'last_name', 'phone_number', 'email')
 
 class PuppyImageInline(admin.TabularInline):
     model = PuppyImage
