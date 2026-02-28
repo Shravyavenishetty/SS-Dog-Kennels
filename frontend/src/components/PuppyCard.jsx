@@ -5,7 +5,7 @@ const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlis
     return (
         <div
             onClick={onSelect}
-            className="w-full bg-white rounded-24 lg:rounded-[32px] overflow-hidden border border-champagne-gold/10 group hover:shadow-2xl hover:shadow-forest-green/5 transition-all duration-500 hover:-translate-y-1 cursor-pointer"
+            className="w-full h-full flex flex-col bg-white rounded-24 lg:rounded-[32px] overflow-hidden border border-champagne-gold/10 group hover:shadow-2xl hover:shadow-forest-green/5 transition-all duration-500 hover:-translate-y-1 cursor-pointer"
         >
             {/* Image Container */}
             <div className="relative h-[200px] lg:h-[240px] overflow-hidden">
@@ -34,21 +34,23 @@ const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlis
             </div>
 
             {/* Content */}
-            <div className="p-5 lg:p-7">
+            <div className="p-5 lg:p-7 flex flex-col flex-1">
                 <div className="flex justify-between items-start mb-1 lg:mb-2">
-                    <div>
-                        <h3 className="font-playfair text-lg lg:text-2xl text-forest-green font-bold mb-1">{breed}</h3>
+                    <div className="pr-2">
+                        <h3 className="font-playfair text-lg lg:text-2xl text-forest-green font-bold mb-1 leading-tight">{breed}</h3>
                         <p className="font-inter text-[10px] lg:text-xs text-forest-green/60 uppercase tracking-widest">{age}</p>
                     </div>
-                    <span className="font-playfair text-base lg:text-xl text-forest-green font-medium">{price}</span>
+                    <span className="font-playfair text-base lg:text-xl text-forest-green font-medium shrink-0">{price}</span>
                 </div>
 
-                <div className="h-[1px] w-full bg-champagne-gold/10 my-4 lg:my-6"></div>
+                <div className="mt-auto">
+                    <div className="h-[1px] w-full bg-champagne-gold/10 my-4 lg:my-6"></div>
 
-                <button className="w-full py-3.5 lg:py-4 bg-transparent border border-forest-green/10 hover:border-forest-green hover:bg-forest-green hover:text-champagne-gold transition-all duration-500 rounded-xl flex items-center justify-center space-x-2 text-xs lg:text-[11px] font-bold uppercase tracking-widest text-forest-green group/btn">
-                    <span>Explore Legacy</span>
-                    <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                </button>
+                    <button className="w-full py-3.5 lg:py-4 bg-transparent border border-forest-green/10 hover:border-forest-green hover:bg-forest-green hover:text-champagne-gold transition-all duration-500 rounded-xl flex items-center justify-center space-x-2 text-xs lg:text-[11px] font-bold uppercase tracking-widest text-forest-green group/btn">
+                        <span>Explore Legacy</span>
+                        <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                </div>
             </div>
         </div>
     );
