@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, User, Heart, Settings, LogOut, Download, Shield, ShoppingBag, Loader2, Smartphone, Trash2, Lock, CheckCircle2 } from 'lucide-react';
+import { Calendar, User, Heart, Settings, LogOut, Download, Shield, Loader2, Smartphone, Trash2, Lock, CheckCircle2 } from 'lucide-react';
 import { fetchUserProfile, fetchUserBookings, updateUserProfile, deleteProfile, changeUserPhone } from '../lib/api';
 
-const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPhone, onPhoneChange }) => {
+const ProfilePage = ({ onPageChange, wishlistCount, onLogout, userPhone, onPhoneChange, kennelDetail }) => {
     const [activeTab, setActiveTab] = useState('summary');
     const [updating, setUpdating] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -256,7 +256,6 @@ const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPho
 
     const externalLinks = [
         { id: 'wishlist', icon: Heart, label: 'My Saved Dogs', count: wishlistCount },
-        { id: 'cart', icon: ShoppingBag, label: 'My Shopping Cart', count: cartCount },
     ];
 
     if (loading) {
@@ -548,7 +547,6 @@ const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPho
                                 {[
                                     { label: 'Total Bookings', value: bookings.length.toString().padStart(2, '0'), id: 'summary', mobileHidden: true },
                                     { label: 'Saved Dogs', value: wishlistCount.toString().padStart(2, '0'), id: 'wishlist' },
-                                    { label: 'Items in Cart', value: cartCount.toString().padStart(2, '0'), id: 'cart' },
                                 ].map((stat, i) => (
                                     <div
                                         key={i}
@@ -585,14 +583,9 @@ const ProfilePage = ({ onPageChange, wishlistCount, cartCount, onLogout, userPho
                                                 <p className="font-inter text-sm lg:text-sm text-forest-green/40">Booking ID: #{booking.id.slice(-6).toUpperCase()}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-between sm:justify-end space-x-6 lg:space-x-6">
-                                            <div className="sm:text-right">
-                                                <div className="text-xs lg:text-sm font-bold text-forest-green tracking-wider uppercase">{booking.status}</div>
-                                                <div className="text-xs lg:text-xs text-forest-green/40">Elite Kennel Services</div>
-                                            </div>
-                                            <button className="w-10 h-10 lg:w-12 lg:h-12 border border-forest-green/10 rounded-full flex items-center justify-center text-forest-green hover:bg-forest-green hover:text-white transition-all shrink-0">
-                                                <Download size={18} className="lg:w-[18px]" />
-                                            </button>
+                                        <div className="sm:text-right">
+                                            <div className="text-xs lg:text-sm font-bold text-forest-green tracking-wider uppercase">{booking.status}</div>
+                                            <div className="text-xs lg:text-xs text-forest-green/40">{kennelDetail?.name || "SS Dog Kennels"}</div>
                                         </div>
                                     </div>
                                 )) : (
