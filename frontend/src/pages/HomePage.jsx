@@ -97,10 +97,6 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                             <div className="font-playfair text-3xl lg:text-4xl mb-1 text-champagne-gold">24+</div>
                             <div className="font-inter text-[10px] uppercase tracking-widest opacity-70">Happy Litters</div>
                         </div>
-                        <div className="text-white drop-shadow-lg">
-                            <div className="font-playfair text-3xl lg:text-4xl mb-1 text-champagne-gold">180+</div>
-                            <div className="font-inter text-[10px] uppercase tracking-widest opacity-70">Top Awards</div>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -224,10 +220,10 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                         </div>
                         <div className="lg:flex-1 grid grid-cols-2 gap-4">
                             <div className="rounded-24 overflow-hidden h-[300px] lg:h-[400px]">
-                                <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover" alt="Stud" />
+                                <img src="https://img.freepik.com/premium-photo/two-dogs-running-path-fall_662214-605879.jpg" className="w-full h-full object-cover" alt="Stud" />
                             </div>
                             <div className="rounded-24 overflow-hidden h-[300px] lg:h-[400px] mt-8 lg:mt-12">
-                                <img src="https://images.unsplash.com/photo-1560743173-567a3b5658b1?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover" alt="Stud 2" />
+                                <img src="https://thumbs.dreamstime.com/b/two-dogs-resting-closely-together-gray-fabric-surface-two-dogs-resting-closely-together-gray-fabric-surface-dog-360024717.jpg" className="w-full h-full object-cover" alt="Stud 2" />
                             </div>
                         </div>
                     </div>
