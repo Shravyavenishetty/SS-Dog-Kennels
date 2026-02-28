@@ -153,7 +153,7 @@ const ServicesPage = ({ onPageChange, onServiceSelect }) => {
             {/* Header Section */}
             <div className="max-w-4xl mb-16 lg:mb-24">
                 <span className="font-inter text-xs uppercase tracking-[0.4em] text-forest-green/60 mb-4 lg:mb-6 block font-bold">SS Care Ecosystem</span>
-                <h1 className="font-playfair text-4xl lg:text-7xl text-forest-green mb-6 lg:mb-8 leading-tight">Professional Services for <br className="hidden sm:block" /><span className="italic text-champagne-gold underline decoration-forest-green/5 underline-offset-8">Every Stage.</span></h1>
+                <h1 className="font-playfair text-4xl lg:text-7xl text-forest-green mb-6 lg:mb-8 leading-tight">Professional Services for <br className="hidden sm:block" /><span class="italic text-[#C5A059] underline decoration-forest-green/5 underline-offset-8">Every Stage.</span></h1>
                 <p className="text-lg lg:text-xl text-forest-green/70 leading-relaxed font-inter">
                     From the first grooming session to lifelong boarding and elite breeding support, we ensure your companion receives the gold standard of care.
                 </p>
@@ -200,7 +200,7 @@ const ServicesPage = ({ onPageChange, onServiceSelect }) => {
                                     <span className="font-playfair text-xl lg:text-2xl text-forest-green font-bold">{cat.priceRange}</span>
                                 </div>
                                 <button
-                                    onClick={() => onServiceSelect(cat.id)}
+                                    onClick={() => onServiceSelect(cat)}
                                     className="w-full sm:w-auto px-10 lg:px-12 py-4 lg:py-5 bg-forest-green text-champagne-gold font-bold uppercase tracking-widest text-[10px] lg:text-xs rounded-xl hover:shadow-2xl hover:-translate-y-1 active:translate-y-0 transition-all flex items-center justify-center space-x-3"
                                 >
                                     <span>Plan This Service</span>
