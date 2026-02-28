@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 import re
@@ -5,6 +6,7 @@ from rest_framework.response import Response
 from .models import (
     Puppy,
     StudDog,
+    StudBookingRequest,
     ServiceCategory,
     Booking,
     HomeTestimonial,
@@ -12,10 +14,14 @@ from .models import (
     Facility,
     FAQ,
     UserProfile,
+    KennelDetail,
+    ContactInquiry,
+    PuppyInquiry,
 )
 from .serializers import (
     PuppySerializer,
     StudDogSerializer,
+    StudBookingRequestSerializer,
     ServiceCategorySerializer,
     BookingSerializer,
     HomeTestimonialSerializer,
@@ -23,6 +29,9 @@ from .serializers import (
     FacilitySerializer,
     FAQSerializer,
     UserProfileSerializer,
+    KennelDetailSerializer,
+    ContactInquirySerializer,
+    PuppyInquirySerializer,
 )
 
 class PuppyViewSet(viewsets.ModelViewSet):
@@ -32,6 +41,11 @@ class PuppyViewSet(viewsets.ModelViewSet):
 class StudDogViewSet(viewsets.ModelViewSet):
     queryset = StudDog.objects.all()
     serializer_class = StudDogSerializer
+
+class StudBookingRequestViewSet(viewsets.ModelViewSet):
+    queryset = StudBookingRequest.objects.all()
+    serializer_class = StudBookingRequestSerializer
+    http_method_names = ['get', 'post', 'head', 'options']  # no delete/patch from public
 
 class ServiceCategoryViewSet(viewsets.ModelViewSet):
     queryset = ServiceCategory.objects.all()
@@ -45,8 +59,20 @@ class BookingViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         phone = self.request.query_params.get('phone')
         if phone:
-            queryset = queryset.filter(user_profile__phone_number=phone)
+            # Filter by linked profile OR direct phone field
+            queryset = queryset.filter(
+                Q(user_profile__phone_number=phone) | Q(user_phone=phone)
+            )
         return queryset
+
+    def perform_create(self, serializer):
+        # Automatically link to UserProfile if it exists for this phone
+        user_phone = self.request.data.get('user_phone')
+        user_profile = None
+        if user_phone:
+            user_profile = UserProfile.objects.filter(phone_number=user_phone).first()
+        
+        serializer.save(user_profile=user_profile)
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -98,3 +124,17 @@ class FacilityViewSet(viewsets.ReadOnlyModelViewSet):
 class FAQViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = FAQ.objects.filter(is_active=True).order_by("display_order")
     serializer_class = FAQSerializer
+
+class KennelDetailViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = KennelDetail.objects.all()
+    serializer_class = KennelDetailSerializer
+
+class ContactInquiryViewSet(viewsets.ModelViewSet):
+    queryset = ContactInquiry.objects.all()
+    serializer_class = ContactInquirySerializer
+    http_method_names = ['post', 'get', 'head', 'options']
+
+class PuppyInquiryViewSet(viewsets.ModelViewSet):
+    queryset = PuppyInquiry.objects.all()
+    serializer_class = PuppyInquirySerializer
+    http_method_names = ['post', 'get', 'head', 'options']
