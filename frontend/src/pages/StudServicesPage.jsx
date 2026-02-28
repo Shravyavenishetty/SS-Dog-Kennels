@@ -3,7 +3,11 @@ import { Calendar, Mail, Star, Search, SlidersHorizontal } from 'lucide-react';
 import { fetchStudDogs } from '../lib/api';
 
 const StudServicesPage = ({ onPageChange, onStudSelect }) => {
-    const [baseStuds, setBaseStuds] = useState([]);
+    const [baseStuds, setBaseStuds] = useState(() => {
+        const cached = localStorage.getItem('ss_studs_cache');
+        return cached ? JSON.parse(cached) : [];
+    });
+    const [isLoading, setIsLoading] = useState(baseStuds.length === 0);
 
     useEffect(() => {
         let mounted = true;
@@ -11,9 +15,12 @@ const StudServicesPage = ({ onPageChange, onStudSelect }) => {
             .then((items) => {
                 if (!mounted) return;
                 setBaseStuds(items);
+                localStorage.setItem('ss_studs_cache', JSON.stringify(items));
+                setIsLoading(false);
             })
             .catch((err) => {
                 console.error("Failed to load stud dogs from API:", err);
+                if (mounted) setIsLoading(false);
             });
         return () => { mounted = false; };
     }, []);
@@ -165,7 +172,13 @@ const StudServicesPage = ({ onPageChange, onStudSelect }) => {
 
                 {/* Main Content */}
                 <section className="flex-1">
-                    {filteredStuds.length > 0 ? (
+                    {isLoading ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 animate-pulse">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="aspect-[3/4] bg-forest-green/5 rounded-24" />
+                            ))}
+                        </div>
+                    ) : filteredStuds.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 animate-in fade-in duration-700">
                             {filteredStuds.map((stud, i) => (
                                 <div key={i} className="group cursor-pointer">
