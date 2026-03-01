@@ -161,3 +161,6 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# For backward compatibility with django-cloudinary-storage collectstatic command
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
