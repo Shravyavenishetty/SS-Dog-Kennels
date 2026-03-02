@@ -4,7 +4,8 @@ const BACKEND_URL = API_BASE.replace('/api', '');
 function getFullUrl(url) {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  return `${BACKEND_URL}${url}`;
+  const normalizedPath = url.startsWith('/') ? url : `/${url}`;
+  return `${BACKEND_URL}${normalizedPath}`;
 }
 
 async function getJson(path) {

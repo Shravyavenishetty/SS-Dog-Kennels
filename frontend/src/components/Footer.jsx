@@ -9,8 +9,7 @@ const Footer = ({ onPageChange, kennelDetail }) => {
                     {/* Brand Section */}
                     <div className="md:col-span-4 translate-y-0">
                         <div className="flex items-center space-x-3 mb-3 lg:mb-4">
-                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-champagne-gold rounded-full flex items-center justify-center text-forest-green font-playfair font-bold text-sm lg:text-base">SS</div>
-                            <h2 className="font-playfair text-xl lg:text-2xl font-bold text-champagne-gold tracking-tight uppercase">SS DOG KENNELS</h2>
+                            <h2 className="font-playfair text-xl lg:text-2xl font-bold text-champagne-gold tracking-tight uppercase">SANGAS DOG KENNELS</h2>
                         </div>
                         <p className="font-inter text-xs lg:text-sm leading-relaxed text-ivory-white/60 mb-4 lg:mb-6 max-w-sm">
                             Since 2020, we have been dedicated to raising the healthiest and happiest dogs. Our focus is on quality breeding and ensuring every puppy find a loving home.
@@ -72,7 +71,7 @@ const Footer = ({ onPageChange, kennelDetail }) => {
 
                 {/* Bottom Bar */}
                 <div className="pt-4 lg:pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-ivory-white/30 font-inter text-[10px] lg:text-xs">
-                    <p className="mb-6 md:mb-0 text-center md:text-left">&copy; NS Dog Kennels. All rights reserved. Trusted since 2020.</p>
+                    <p className="mb-6 md:mb-0 text-center md:text-left">&copy; Sangas Dog Kennels. All rights reserved. Trusted since 2020.</p>
                     <div className="flex flex-wrap justify-center gap-4 lg:gap-8">
                         <button className="hover:text-champagne-gold transition-colors">Privacy Policy</button>
                         <button className="hover:text-champagne-gold transition-colors">Terms of Business</button>

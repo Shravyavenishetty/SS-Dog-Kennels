@@ -152,9 +152,9 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                     </div>
                     <div className="lg:w-1/3 bg-forest-green p-8 lg:p-10 rounded-24 lg:rounded-[32px] text-ivory-white flex flex-col justify-between">
                         <div>
-                            <h4 className="font-playfair text-2xl lg:text-3xl text-champagne-gold mb-4 lg:mb-6 italic">Ready to Welcome Them?</h4>
+                            <h4 className="font-playfair text-2xl lg:text-3xl text-champagne-gold mb-4 lg:mb-6 italic">Bring Home Your New Companion</h4>
                             <p className="font-inter text-[10px] lg:text-sm opacity-70 leading-relaxed mb-6 lg:mb-8">
-                                Secure this pup today with a 50% reservation deposit. Our team will handle the documentation and final health sweep.
+                                Reserve this puppy today with a 10% booking deposit. We will take care of the paperwork, final health checks, and a smooth handover.
                             </p>
                         </div>
                         <div className="flex items-center space-x-4 pt-6 border-t border-white/10">
@@ -162,8 +162,8 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" alt="Lead Breeder" />
                             </div>
                             <div>
-                                <div className="font-inter text-sm lg:text-base font-bold text-white">Venkatesh S.</div>
-                                <div className="font-inter text-[8px] lg:text-xs text-champagne-gold uppercase tracking-widest font-bold">NS Lead Breeder</div>
+                                <div className="font-inter text-sm lg:text-base font-bold text-white">Pranay M.</div>
+                                <div className="font-inter text-[8px] lg:text-xs text-champagne-gold uppercase tracking-widest font-bold">Sangas Lead Breeder</div>
                             </div>
                         </div>
                     </div>
