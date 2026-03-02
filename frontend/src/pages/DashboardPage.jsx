@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, User, Heart, Settings, LogOut, Download, Shield, Loader2, Smartphone, Trash2, Lock, CheckCircle2 } from 'lucide-react';
-import { fetchUserProfile, fetchUserBookings, updateUserProfile, deleteProfile, changeUserPhone } from '../lib/api';
+import { fetchUserProfile, fetchUserBookings, updateUserProfile, deleteProfile, changeUserPhone, checkProfile } from '../lib/api';
 
 const ProfilePage = ({ onPageChange, wishlistCount, onLogout, userPhone, onPhoneChange, kennelDetail }) => {
     const [activeTab, setActiveTab] = useState('summary');
@@ -94,14 +94,11 @@ const ProfilePage = ({ onPageChange, wishlistCount, onLogout, userPhone, onPhone
         setChangePhoneError('');
         try {
             // Check if number is already in use
-            const res = await fetch(`http://127.0.0.1:8000/api/user-profiles/check/${newPhone}/`);
-            if (res.ok) {
-                const data = await res.json();
-                if (data.exists) {
-                    setChangePhoneError('This mobile number is already registered.');
-                    setIsSendingOtp(false);
-                    return;
-                }
+            const exists = await checkProfile(newPhone);
+            if (exists) {
+                setChangePhoneError('This mobile number is already registered.');
+                setIsSendingOtp(false);
+                return;
             }
 
             // Simulate sending OTP

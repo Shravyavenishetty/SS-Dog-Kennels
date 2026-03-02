@@ -158,6 +158,9 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.StaticFilesStorage",
     },
 }
+
+# For backward compatibility with django-cloudinary-storage collectstatic command
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
