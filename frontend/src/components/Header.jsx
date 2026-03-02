@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Menu, Heart, User, X, ArrowRight, LogOut } from 'lucide-react';
-import logo from '../assets/ss_dog_kennels_logo-removebg-preview.png';
+import logo from '../assets/1772302617054-removebg-preview.png';
 
 const Header = ({ currentPage, onPageChange, wishlistCount, isLoggedIn, onLogout }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

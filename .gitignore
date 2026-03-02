@@ -3,3 +3,4 @@ kennels/migrations
 backend/__pycache__
 kennels/__pycache__
 .env
+env
