@@ -138,10 +138,10 @@ SILENCED_SYSTEM_CHECKS = ['fields.E008']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 CORS_ALLOW_ALL_ORIGINS = True # For development
@@ -164,3 +164,5 @@ STORAGES = {
 
 # For backward compatibility with django-cloudinary-storage collectstatic command
 STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+# For compatibility with code paths that still rely on DEFAULT_FILE_STORAGE.
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

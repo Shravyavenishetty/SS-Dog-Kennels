@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from cloudinary.utils import cloudinary_url
 from .models import (
     Puppy,
     PuppyImage,
@@ -18,13 +19,27 @@ from .models import (
     PuppyInquiry,
 )
 
+def resolve_cloudinary_media_url(file_field, fallback_url=None):
+    if file_field and getattr(file_field, "name", None):
+        generated_url, _ = cloudinary_url(file_field.name, secure=True)
+        if generated_url:
+            return generated_url
+        try:
+            return file_field.url
+        except Exception:
+            pass
+    return fallback_url
+
 class PuppyImageSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
-    url = serializers.ReadOnlyField()
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = PuppyImage
         fields = ['id', 'url']
+
+    def get_url(self, obj):
+        return resolve_cloudinary_media_url(obj.image, obj.image_url)
 
 class PuppySerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
@@ -41,9 +56,7 @@ class PuppySerializer(serializers.ModelSerializer):
         ]
     
     def get_image_url(self, obj):
-        if obj.image:
-            return obj.image.url
-        return obj.image_url
+        return resolve_cloudinary_media_url(obj.image, obj.image_url)
 
 class StudAvailabilitySerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
