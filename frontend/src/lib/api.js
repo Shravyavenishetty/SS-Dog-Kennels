@@ -14,7 +14,7 @@ function optimizeCloudinaryUrl(url, { width, height }) {
     const transforms = [`f_auto`, `q_auto`];
     if (width) transforms.push(`w_${width}`);
     if (height) transforms.push(`h_${height}`);
-    transforms.push('c_fill', 'g_auto');
+    transforms.push('c_pad', 'b_auto');
     return url.replace('/upload/', `/upload/${transforms.join(',')}/`);
   }
   return url;

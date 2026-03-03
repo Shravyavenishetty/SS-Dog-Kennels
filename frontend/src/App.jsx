@@ -24,7 +24,18 @@ function App() {
   const [selectedService, setSelectedService] = useState(null);
   const [selectedPuppy, setSelectedPuppy] = useState(() => {
     const saved = localStorage.getItem('selectedPuppy');
-    return saved ? JSON.parse(saved) : null;
+    if (!saved) return null;
+    try {
+      const parsed = JSON.parse(saved);
+      if (!parsed || !parsed.imageFull) {
+        localStorage.removeItem('selectedPuppy');
+        return null;
+      }
+      return parsed;
+    } catch {
+      localStorage.removeItem('selectedPuppy');
+      return null;
+    }
   });
   const [selectedStud, setSelectedStud] = useState(null);
   const [kennelDetail, setKennelDetail] = useState(null);

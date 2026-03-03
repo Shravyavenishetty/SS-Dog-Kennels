@@ -3,10 +3,12 @@ import PuppyCard from '../components/PuppyCard';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { fetchPuppies } from '../lib/api';
 
+const PUPPIES_CACHE_KEY = 'ss_puppies_cache_v2';
+
 const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }) => {
     // 1. Data
     const [basePuppies, setBasePuppies] = useState(() => {
-        const cached = localStorage.getItem('ss_puppies_cache');
+        const cached = localStorage.getItem(PUPPIES_CACHE_KEY);
         return cached ? JSON.parse(cached) : [];
     });
     const [isLoading, setIsLoading] = useState(basePuppies.length === 0);
@@ -17,7 +19,7 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
             .then((items) => {
                 if (!mounted) return;
                 setBasePuppies(items);
-                localStorage.setItem('ss_puppies_cache', JSON.stringify(items));
+                localStorage.setItem(PUPPIES_CACHE_KEY, JSON.stringify(items));
                 setIsLoading(false);
             })
             .catch((err) => {

@@ -79,7 +79,7 @@ class PuppySerializer(serializers.ModelSerializer):
             obj.image,
             obj.image_url,
             transformation=[
-                {"width": 480, "height": 480, "crop": "fill", "gravity": "auto"},
+                {"width": 480, "height": 480, "crop": "pad", "background": "auto"},
                 {"quality": "auto", "fetch_format": "auto"},
             ],
         )
