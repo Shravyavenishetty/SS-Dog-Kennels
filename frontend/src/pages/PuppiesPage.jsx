@@ -33,6 +33,7 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
     const [selectedAvailability, setSelectedAvailability] = useState([]);
     const [priceRange, setPriceRange] = useState('All Prices');
     const [sortBy, setSortBy] = useState('Newest');
+    const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
     // 3. Logic
     const filteredPuppies = useMemo(() => {
@@ -108,6 +109,15 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                         Reset
                     </button>
                 </div>
+                <button
+                    onClick={() => setIsMobileFiltersOpen((prev) => !prev)}
+                    className="w-full flex items-center justify-center space-x-2 py-3 bg-forest-green/5 border border-forest-green/10 rounded-2xl text-forest-green"
+                >
+                    <SlidersHorizontal size={16} />
+                    <span className="font-inter text-[10px] uppercase tracking-widest font-bold">
+                        {isMobileFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+                    </span>
+                </button>
                 <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-forest-green/40" size={16} />
                     <input
@@ -129,6 +139,52 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                         </button>
                     ))}
                 </div>
+                {isMobileFiltersOpen && (
+                    <div className="space-y-5 p-4 rounded-2xl border border-forest-green/10 bg-forest-green/5">
+                        <div>
+                            <h4 className="font-inter text-[10px] uppercase tracking-widest font-bold text-forest-green/60 mb-3">Availability</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {['Available Now', 'Coming Soon', 'Sold Out'].map(status => (
+                                    <button
+                                        key={status}
+                                        onClick={() => toggleAvailability(status)}
+                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${selectedAvailability.includes(status) ? 'bg-forest-green text-champagne-gold' : 'bg-white text-forest-green border border-forest-green/10'}`}
+                                    >
+                                        {status}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 className="font-inter text-[10px] uppercase tracking-widest font-bold text-forest-green/60 mb-3">Price Range</h4>
+                            <select
+                                value={priceRange}
+                                onChange={(e) => setPriceRange(e.target.value)}
+                                className="w-full bg-white border border-forest-green/10 rounded-xl px-4 py-3 font-inter text-sm text-forest-green focus:outline-none"
+                            >
+                                <option>All Prices</option>
+                                <option>₹1,000 - ₹25,000</option>
+                                <option>₹25,000 - ₹50,000</option>
+                                <option>₹50,000 - ₹1L</option>
+                                <option>₹1L+</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <h4 className="font-inter text-[10px] uppercase tracking-widest font-bold text-forest-green/60 mb-3">Sort By</h4>
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="w-full bg-white border border-forest-green/10 rounded-xl px-4 py-3 font-inter text-sm text-forest-green focus:outline-none"
+                            >
+                                <option>Newest</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                            </select>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Sidebar Filters - Desktop Only */}

@@ -52,7 +52,6 @@ const StudServicesPage = ({ onPageChange, onStudSelect }) => {
         result.sort((a, b) => {
             if (sortBy === 'Most Experienced') return b.pups - a.pups;
             if (sortBy === 'Top Rated') return b.rating - a.rating;
-            if (sortBy === 'Name (A-Z)') return a.name.localeCompare(b.name);
             return 0;
         });
 
@@ -100,7 +99,6 @@ const StudServicesPage = ({ onPageChange, onStudSelect }) => {
                         >
                             <option>Top Rated</option>
                             <option>Most Experienced</option>
-                            <option>Name (A-Z)</option>
                         </select>
                     </div>
                 </div>

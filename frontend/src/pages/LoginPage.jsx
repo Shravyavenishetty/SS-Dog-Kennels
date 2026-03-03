@@ -126,10 +126,10 @@ const LoginPage = ({ onPageChange, onLoginSuccess }) => {
 
                     <div className="relative z-10">
                         <div className="w-12 h-12 bg-champagne-gold rounded-full flex items-center justify-center text-forest-green font-playfair font-bold text-xl mb-6">
-                            SS
+                            SD
                         </div>
                         <h2 className="font-playfair text-4xl text-champagne-gold leading-tight mb-6">
-                            Welcome to <br />SS Dog Kennels.
+                            Welcome to <br />Sangas Dog Kennels.
                         </h2>
                         <p className="font-inter text-ivory/60 text-sm leading-relaxed max-w-sm">
                             Join our community and find your perfect puppy companion today.
