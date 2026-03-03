@@ -76,6 +76,11 @@ function App() {
     }
   }, [currentPage]);
 
+  // Ensure each internal page navigation starts at the top.
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [currentPage]);
+
   const handlePuppySelect = (puppy) => {
     setSelectedPuppy(puppy);
     setCurrentPage('puppy-detail');
