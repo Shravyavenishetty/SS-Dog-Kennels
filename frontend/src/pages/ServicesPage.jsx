@@ -165,7 +165,13 @@ const ServicesPage = ({ onPageChange, onServiceSelect }) => {
                     <div key={cat.id} className={`flex flex-col lg:flex-row items-center gap-10 lg:gap-20 ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
                         {/* Image Panel */}
                         <div className="w-full lg:w-1/2 shadow-2xl rounded-24 lg:rounded-32 overflow-hidden relative group">
-                            <img src={cat.image} alt={cat.title} className="w-full h-[300px] lg:h-[500px] object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <img
+                                src={cat.image}
+                                alt={cat.title}
+                                className="w-full h-[300px] lg:h-[500px] object-cover transition-transform duration-700 group-hover:scale-110"
+                                loading="lazy"
+                                decoding="async"
+                            />
                             <div className="absolute inset-0 bg-gradient-to-t from-forest-green/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8 lg:p-12">
                                 <span className="text-white font-playfair text-xl lg:text-2xl italic">Trusted by thousands of owners.</span>
                             </div>

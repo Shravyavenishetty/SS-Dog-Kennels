@@ -13,6 +13,8 @@ const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlis
                 <img
                     src={image || 'https://via.placeholder.com/320x240?text=Puppy'}
                     alt={breed}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute top-3 lg:top-4 right-3 lg:right-4">

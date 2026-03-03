@@ -181,7 +181,13 @@ const StudServicesPage = ({ onPageChange, onStudSelect }) => {
                             {filteredStuds.map((stud, i) => (
                                 <div key={i} className="group cursor-pointer">
                                     <div className="aspect-[3/4] rounded-24 overflow-hidden mb-6 lg:mb-8 shadow-xl relative bg-ivory">
-                                        <img src={stud.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={stud.name} />
+                                        <img
+                                            src={stud.image}
+                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                                            alt={stud.name}
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
                                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-forest-green via-forest-green/40 to-transparent p-6 lg:p-8">
                                             <div className="flex items-center space-x-2 text-champagne-gold mb-1 lg:mb-2">
                                                 <Star size={12} fill="currentColor" />

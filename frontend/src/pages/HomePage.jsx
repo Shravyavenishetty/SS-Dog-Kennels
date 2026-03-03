@@ -61,6 +61,9 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                         src="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=1600"
                         className="w-full h-full object-cover"
                         alt="Puppy with child - Emotional Connection"
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
                     />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-forest-green/80 via-forest-green/40 to-transparent"></div>
@@ -220,10 +223,10 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                         </div>
                         <div className="lg:flex-1 grid grid-cols-2 gap-4">
                             <div className="rounded-24 overflow-hidden h-[300px] lg:h-[400px]">
-                                <img src="https://img.freepik.com/premium-photo/two-dogs-running-path-fall_662214-605879.jpg" className="w-full h-full object-cover" alt="Stud" />
+                                <img src="https://img.freepik.com/premium-photo/two-dogs-running-path-fall_662214-605879.jpg" className="w-full h-full object-cover" alt="Stud" loading="lazy" decoding="async" />
                             </div>
                             <div className="rounded-24 overflow-hidden h-[300px] lg:h-[400px] mt-8 lg:mt-12">
-                                <img src="https://thumbs.dreamstime.com/b/two-dogs-resting-closely-together-gray-fabric-surface-two-dogs-resting-closely-together-gray-fabric-surface-dog-360024717.jpg" className="w-full h-full object-cover" alt="Stud 2" />
+                                <img src="https://thumbs.dreamstime.com/b/two-dogs-resting-closely-together-gray-fabric-surface-two-dogs-resting-closely-together-gray-fabric-surface-dog-360024717.jpg" className="w-full h-full object-cover" alt="Stud 2" loading="lazy" decoding="async" />
                             </div>
                         </div>
                     </div>
