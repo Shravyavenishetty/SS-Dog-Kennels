@@ -8,6 +8,18 @@ function getFullUrl(url) {
   return `${BACKEND_URL}${normalizedPath}`;
 }
 
+function optimizeCloudinaryUrl(url, { width, height }) {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  if (url.includes('/upload/')) {
+    const transforms = [`f_auto`, `q_auto`];
+    if (width) transforms.push(`w_${width}`);
+    if (height) transforms.push(`h_${height}`);
+    transforms.push('c_fill', 'g_auto');
+    return url.replace('/upload/', `/upload/${transforms.join(',')}/`);
+  }
+  return url;
+}
+
 async function getJson(path) {
   const res = await fetch(`${API_BASE}${path}`);
   if (!res.ok) {
@@ -26,7 +38,8 @@ export async function fetchPuppies() {
     age: p.age,
     availability: p.availability,
     type: p.dog_type,
-    image: getFullUrl(p.image_url),
+    image: getFullUrl(p.image_thumb_url || p.image_url),
+    imageFull: getFullUrl(p.image_url),
     images: (p.images || []).map(img => getFullUrl(img.url)),
     tagline: p.tagline,
     behavior: p.behavior,
@@ -44,7 +57,7 @@ export async function fetchStudDogs() {
     breed: s.breed,
     rating: Number(s.rating || 0),
     pups: s.pups_produced || 0,
-    image: s.image_url,
+    image: optimizeCloudinaryUrl(s.image_url, { width: 520, height: 700 }),
     booked_dates: (s.booked_dates || []).map(b => b.date), // Array of 'YYYY-MM-DD' strings
   }));
 }
@@ -68,7 +81,7 @@ export async function fetchServiceCategories() {
     id: c.id,
     title: c.title,
     tagline: c.tagline,
-    image: c.image_url,
+    image: optimizeCloudinaryUrl(c.image_url, { width: 900, height: 700 }),
     iconName: c.icon_name,
     subServices: (c.sub_services || []).map((s) => s.name),
     priceRange: c.price_range,

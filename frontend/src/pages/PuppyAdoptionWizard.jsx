@@ -99,7 +99,7 @@ const PuppyAdoptionWizard = ({ onPageChange, puppy }) => {
 
                         <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-2xl border border-white/10 mb-8">
                             <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
-                                <img src={puppy.image} className="w-full h-full object-cover" alt={puppy.breed} />
+                                <img src={puppy.imageFull || puppy.image} className="w-full h-full object-cover" alt={puppy.breed} loading="lazy" decoding="async" />
                             </div>
                             <div>
                                 <div className="font-playfair text-lg text-white">{puppy.breed}</div>

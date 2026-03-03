@@ -19,9 +19,12 @@ from .models import (
     PuppyInquiry,
 )
 
-def resolve_cloudinary_media_url(file_field, fallback_url=None):
+def resolve_cloudinary_media_url(file_field, fallback_url=None, transformation=None):
     if file_field and getattr(file_field, "name", None):
-        generated_url, _ = cloudinary_url(file_field.name, secure=True)
+        options = {"secure": True}
+        if transformation:
+            options["transformation"] = transformation
+        generated_url, _ = cloudinary_url(file_field.name, **options)
         if generated_url:
             return generated_url
         try:
@@ -41,22 +44,45 @@ class PuppyImageSerializer(serializers.ModelSerializer):
     def get_url(self, obj):
         return resolve_cloudinary_media_url(obj.image, obj.image_url)
 
+class PuppyImageAdminSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+    url = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = PuppyImage
+        fields = ['id', 'puppy', 'image', 'image_url', 'url', 'created_at']
+        read_only_fields = ['id', 'url', 'created_at']
+
+    def get_url(self, obj):
+        return resolve_cloudinary_media_url(obj.image, obj.image_url)
+
 class PuppySerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
     images = PuppyImageSerializer(many=True, read_only=True)
     image_url = serializers.SerializerMethodField()
+    image_thumb_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Puppy
         fields = [
             'id', 'breed', 'price', 'price_display', 'age', 'availability', 
-            'dog_type', 'image', 'image_url', 'tagline', 'behavior', 'health_shield', 
+            'dog_type', 'image', 'image_url', 'image_thumb_url', 'tagline', 'behavior', 'health_shield', 
             'description', 'initial_package', 'elite_protection',
             'images', 'created_at'
         ]
     
     def get_image_url(self, obj):
         return resolve_cloudinary_media_url(obj.image, obj.image_url)
+
+    def get_image_thumb_url(self, obj):
+        return resolve_cloudinary_media_url(
+            obj.image,
+            obj.image_url,
+            transformation=[
+                {"width": 480, "height": 480, "crop": "fill", "gravity": "auto"},
+                {"quality": "auto", "fetch_format": "auto"},
+            ],
+        )
 
 class StudAvailabilitySerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)

@@ -2,11 +2,11 @@ import React from 'react';
 import { ShieldCheck, Heart, Download } from 'lucide-react';
 
 const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, onBookPuppy }) => {
-    const [activeImage, setActiveImage] = React.useState(puppy?.image);
+    const [activeImage, setActiveImage] = React.useState(puppy?.imageFull || puppy?.image);
 
     // Update activeImage if puppy changes
     React.useEffect(() => {
-        if (puppy) setActiveImage(puppy.image);
+        if (puppy) setActiveImage(puppy.imageFull || puppy.image);
     }, [puppy]);
 
     // Fallback if puppy is null (e.g. direct refresh)
@@ -22,7 +22,7 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
     }
 
     // Prepare gallery: main image + nested images
-    const allImages = [puppy.image, ...(puppy.images || [])].filter(Boolean);
+    const allImages = [puppy.imageFull || puppy.image, ...(puppy.images || [])].filter(Boolean);
 
     return (
         <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10">
@@ -42,9 +42,10 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                 <div className="w-full lg:w-[600px] shrink-0">
                     <div className="aspect-[4/5] bg-forest-green/5 rounded-24 lg:rounded-32 overflow-hidden mb-4 lg:mb-6 relative group">
                         <img
-                            src={activeImage || puppy.image}
+                            src={activeImage || puppy.imageFull || puppy.image}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             alt={puppy.breed}
+                            decoding="async"
                         />
                         <button
                             onClick={(e) => { e.stopPropagation(); onToggleWishlist(); }}
@@ -61,7 +62,7 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                                 onClick={() => setActiveImage(img)}
                                 className={`aspect-square bg-forest-green/5 rounded-lg overflow-hidden cursor-pointer hover:ring-2 ring-forest-green transition-all shrink-0 ${activeImage === img ? 'ring-2' : ''}`}
                             >
-                                <img src={img} className="w-full h-full object-cover" />
+                                <img src={img} className="w-full h-full object-cover" decoding="async" loading="lazy" />
                             </div>
                         ))}
                     </div>
