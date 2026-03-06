@@ -1,21 +1,27 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Calendar, Mail, Star, Search, SlidersHorizontal } from 'lucide-react';
-import { fetchStudDogs } from '../lib/api';
+import { fetchStudDogs, preloadStudImages } from '../lib/api';
 
 const StudServicesPage = ({ onPageChange, onStudSelect }) => {
+    const STUDS_CACHE_KEY = 'ss_studs_cache';
     const [baseStuds, setBaseStuds] = useState(() => {
-        const cached = localStorage.getItem('ss_studs_cache');
+        const cached = localStorage.getItem(STUDS_CACHE_KEY);
         return cached ? JSON.parse(cached) : [];
     });
     const [isLoading, setIsLoading] = useState(baseStuds.length === 0);
 
     useEffect(() => {
+        if (baseStuds.length > 0) {
+            preloadStudImages(baseStuds, 9).catch(() => {});
+        }
+
         let mounted = true;
         fetchStudDogs()
             .then((items) => {
                 if (!mounted) return;
                 setBaseStuds(items);
-                localStorage.setItem('ss_studs_cache', JSON.stringify(items));
+                localStorage.setItem(STUDS_CACHE_KEY, JSON.stringify(items));
+                preloadStudImages(items, 9).catch(() => {});
                 setIsLoading(false);
             })
             .catch((err) => {
@@ -185,7 +191,8 @@ const StudServicesPage = ({ onPageChange, onStudSelect }) => {
                                             src={stud.image}
                                             className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105"
                                             alt={stud.name}
-                                            loading="lazy"
+                                            loading={i < 3 ? "eager" : "lazy"}
+                                            fetchPriority={i < 3 ? "high" : "auto"}
                                             decoding="async"
                                         />
                                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-forest-green via-forest-green/40 to-transparent p-6 lg:p-8">

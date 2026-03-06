@@ -13,10 +13,14 @@ function getFullUrl(url) {
 function optimizeCloudinaryUrl(url, { width, height }) {
   if (!url || !url.includes('res.cloudinary.com')) return url;
   if (url.includes('/upload/')) {
-    const transforms = [`f_auto`, `q_auto`];
-    if (width) transforms.push(`w_${width}`);
-    if (height) transforms.push(`h_${height}`);
-    transforms.push('c_pad', 'b_auto');
+    const transforms = [`f_auto`, `q_auto:eco`];
+    if (width && height) {
+      transforms.push(`w_${width}`, `h_${height}`, 'c_fill', 'g_auto');
+    } else {
+      if (width) transforms.push(`w_${width}`);
+      if (height) transforms.push(`h_${height}`);
+      transforms.push('c_pad', 'b_auto');
+    }
     return url.replace('/upload/', `/upload/${transforms.join(',')}/`);
   }
   return url;
@@ -61,7 +65,7 @@ export async function fetchPuppies() {
     age: p.age,
     availability: p.availability,
     type: p.dog_type,
-    image: getFullUrl(p.image_thumb_url || p.image_url),
+    image: optimizeCloudinaryUrl(getFullUrl(p.image_thumb_url || p.image_url), { width: 480, height: 360 }),
     imageFull: getFullUrl(p.image_url),
     images: (p.images || []).map(img => getFullUrl(img.url)),
     tagline: p.tagline,
@@ -163,9 +167,24 @@ export async function fetchStudDogs() {
     breed: s.breed,
     rating: Number(s.rating || 0),
     pups: s.pups_produced || 0,
-    image: optimizeCloudinaryUrl(s.image_url, { width: 520, height: 700 }),
+    image: optimizeCloudinaryUrl(s.image_url, { width: 600, height: 800 }),
     booked_dates: (s.booked_dates || []).map(b => b.date), // Array of 'YYYY-MM-DD' strings
   }));
+}
+
+export async function preloadStudImages(studs, maxImages = 9) {
+  const urls = [];
+  const seen = new Set();
+
+  for (const stud of studs || []) {
+    const url = stud?.image;
+    if (!url || seen.has(url)) continue;
+    seen.add(url);
+    urls.push(url);
+    if (urls.length >= maxImages) break;
+  }
+
+  await Promise.allSettled(urls.map((url) => preloadImage(url)));
 }
 
 export async function submitStudBookingRequest(data) {

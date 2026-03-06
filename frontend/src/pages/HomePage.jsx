@@ -3,8 +3,18 @@ import { ArrowRight, Award, ShieldCheck, Heart, Star, Calendar, MessageCircle, S
 import PuppyCard from '../components/PuppyCard';
 import { fetchPuppies, fetchTestimonials, fetchHomeHighlights, preloadPuppyImages, subscribeToPuppyUpdates } from '../lib/api';
 
+const HOME_FEATURED_CACHE_KEY = 'ss_home_featured_puppies_v1';
+
 const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist }) => {
-    const [featuredPuppies, setFeaturedPuppies] = useState([]);
+    const [featuredPuppies, setFeaturedPuppies] = useState(() => {
+        const cached = localStorage.getItem(HOME_FEATURED_CACHE_KEY);
+        if (!cached) return [];
+        try {
+            return JSON.parse(cached);
+        } catch {
+            return [];
+        }
+    });
     const [testimonials, setTestimonials] = useState([]);
     const [homeHighlights, setHomeHighlights] = useState([]);
 
@@ -31,11 +41,22 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                     if (!mounted) return;
                     const featured = items.slice(0, 4);
                     setFeaturedPuppies(featured);
+                    localStorage.setItem(HOME_FEATURED_CACHE_KEY, JSON.stringify(featured));
                     preloadPuppyImages(featured, 8).catch(() => {});
                 })
                 .catch((err) => {
                     console.error("Failed to load featured puppies from API:", err);
                 });
+
+        const cachedFeatured = localStorage.getItem(HOME_FEATURED_CACHE_KEY);
+        if (cachedFeatured) {
+            try {
+                const parsed = JSON.parse(cachedFeatured);
+                preloadPuppyImages(parsed, 8).catch(() => {});
+            } catch {
+                // no-op
+            }
+        }
 
         loadFeaturedPuppies();
         fetchTestimonials()
