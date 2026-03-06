@@ -126,7 +126,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = '__all__'
+        fields = ['id', 'phone_number', 'first_name', 'last_name', 'email', 'created_at']
+        read_only_fields = ['id', 'created_at']
 
 class BookingSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)

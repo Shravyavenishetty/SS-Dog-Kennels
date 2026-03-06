@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
-import { fetchFaqs, fetchKennelDetails, submitContactInquiry } from '../lib/api';
+import { fetchFaqs, fetchKennelDetails, isAuthenticated, submitContactInquiry } from '../lib/api';
 
-const ContactPage = () => {
+const ContactPage = ({ onPageChange }) => {
     const [faqs, setFaqs] = useState([]);
     const [kennel, setKennel] = useState({
         address: 'Heritage Lane, Ooty\nTamil Nadu, India',
@@ -38,6 +38,10 @@ const ContactPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isAuthenticated()) {
+            onPageChange?.('register');
+            return;
+        }
         setSubmitStatus(null);
         setErrorMessage('');
         setIsSubmitting(true);

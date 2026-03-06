@@ -14,6 +14,8 @@ from .views import (
     KennelDetailViewSet,
     ContactInquiryViewSet,
     PuppyInquiryViewSet,
+    register_with_mobile_password,
+    login_with_mobile_password,
 )
 
 router = DefaultRouter()
@@ -32,5 +34,7 @@ router.register(r'contact-inquiries', ContactInquiryViewSet, basename='contact-i
 router.register(r'puppy-inquiries', PuppyInquiryViewSet, basename='puppy-inquiry')
 
 urlpatterns = [
+    path('auth/register/', register_with_mobile_password),
+    path('auth/login/', login_with_mobile_password),
     path('', include(router.urls)),
 ]

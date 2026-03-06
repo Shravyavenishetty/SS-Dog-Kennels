@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator, RegexVa
 from django_mongodb_backend.fields import ObjectIdAutoField
 from urllib.parse import urlparse
 import os
+from django.contrib.auth.hashers import make_password, check_password
 
 class Puppy(models.Model):
     id = ObjectIdAutoField(primary_key=True)
@@ -194,10 +195,19 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(null=True, blank=True, validators=[EmailValidator('Enter a valid email address.')])
+    password_hash = models.CharField(max_length=255, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.phone_number})"
+
+    def set_password(self, raw_password):
+        self.password_hash = make_password(raw_password)
+
+    def check_password(self, raw_password):
+        if not self.password_hash:
+            return False
+        return check_password(raw_password, self.password_hash)
 
 class Booking(models.Model):
     id = ObjectIdAutoField(primary_key=True)

@@ -2,7 +2,9 @@ from django.db.models import Q
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 import re
+from django.core import signing
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from .models import (
     Puppy,
     StudDog,
@@ -33,6 +35,90 @@ from .serializers import (
     ContactInquirySerializer,
     PuppyInquirySerializer,
 )
+
+AUTH_SALT = "kennels.mobile.password.auth"
+AUTH_TOKEN_TTL_SECONDS = 60 * 60 * 24 * 30  # 30 days
+
+
+def issue_auth_token(phone_number):
+    return signing.dumps({"phone_number": phone_number}, salt=AUTH_SALT)
+
+
+def parse_auth_token(token):
+    try:
+        payload = signing.loads(token, max_age=AUTH_TOKEN_TTL_SECONDS, salt=AUTH_SALT)
+        return payload.get("phone_number")
+    except signing.BadSignature:
+        return None
+    except signing.SignatureExpired:
+        return None
+
+
+def get_bearer_token(request):
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        return None
+    return auth_header.replace("Bearer ", "", 1).strip() or None
+
+
+@api_view(['POST'])
+def register_with_mobile_password(request):
+    name = (request.data.get('name') or '').strip()
+    phone_number = (request.data.get('phone_number') or '').strip()
+    password = request.data.get('password') or ''
+
+    if not name:
+        return Response({'error': 'Name is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if not re.match(r'^[6-9]\d{9}$', phone_number):
+        return Response({'error': 'Invalid phone number format.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if len(password) < 6:
+        return Response({'error': 'Password must be at least 6 characters.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if UserProfile.objects.filter(phone_number=phone_number).exists():
+        return Response({'error': 'Phone number already registered.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    name_parts = [part for part in name.split() if part]
+    first_name = name_parts[0]
+    last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
+
+    profile = UserProfile(
+        phone_number=phone_number,
+        first_name=first_name,
+        last_name=last_name,
+        email='',
+    )
+    profile.set_password(password)
+    profile.save()
+
+    return Response({
+        'success': True,
+        'phone_number': profile.phone_number,
+        'name': f"{profile.first_name} {profile.last_name}".strip(),
+        'token': issue_auth_token(profile.phone_number),
+    }, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def login_with_mobile_password(request):
+    phone_number = (request.data.get('phone_number') or '').strip()
+    password = request.data.get('password') or ''
+
+    if not re.match(r'^[6-9]\d{9}$', phone_number):
+        return Response({'error': 'Invalid phone number format.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    profile = UserProfile.objects.filter(phone_number=phone_number).first()
+    if not profile or not profile.check_password(password):
+        return Response({'error': 'Invalid phone number or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    return Response({
+        'success': True,
+        'phone_number': profile.phone_number,
+        'name': f"{profile.first_name} {profile.last_name}".strip(),
+        'token': issue_auth_token(profile.phone_number),
+    })
+
 
 class PuppyViewSet(viewsets.ModelViewSet):
     queryset = Puppy.objects.all()
@@ -78,6 +164,13 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     lookup_field = 'phone_number'
+
+    def perform_create(self, serializer):
+        password = self.request.data.get('password')
+        instance = serializer.save()
+        if password:
+            instance.set_password(password)
+            instance.save()
 
     @action(detail=False, methods=['get'], url_path='check/(?P<phone>[^/.]+)')
     def check_phone(self, request, phone=None):
@@ -138,3 +231,21 @@ class PuppyInquiryViewSet(viewsets.ModelViewSet):
     queryset = PuppyInquiry.objects.all()
     serializer_class = PuppyInquirySerializer
     http_method_names = ['post', 'get', 'head', 'options']
+
+    def create(self, request, *args, **kwargs):
+        token = get_bearer_token(request)
+        phone_from_token = parse_auth_token(token) if token else None
+        if not phone_from_token:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        request_phone = (request.data.get('customer_phone') or '').strip()
+        if request_phone and request_phone != phone_from_token:
+            return Response({'error': 'Phone mismatch for authenticated user.'}, status=status.HTTP_403_FORBIDDEN)
+
+        mutable_data = request.data.copy()
+        mutable_data['customer_phone'] = phone_from_token
+        serializer = self.get_serializer(data=mutable_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User, Phone, Mail, MapPin, MessageSquare, Send, CheckCircle2, ChevronLeft, Loader2, Home } from 'lucide-react';
-import { submitPuppyInquiry } from '../lib/api';
+import { isAuthenticated, submitPuppyInquiry } from '../lib/api';
 
 const PuppyAdoptionWizard = ({ onPageChange, puppy }) => {
     const [step, setStep] = useState(1);
@@ -14,6 +14,12 @@ const PuppyAdoptionWizard = ({ onPageChange, puppy }) => {
         notes: ''
     });
 
+    useEffect(() => {
+        if (!isAuthenticated()) {
+            onPageChange('register');
+        }
+    }, [onPageChange]);
+
     if (!puppy) {
         return (
             <div className="py-20 text-center">
@@ -23,6 +29,10 @@ const PuppyAdoptionWizard = ({ onPageChange, puppy }) => {
                 </button>
             </div>
         );
+    }
+
+    if (!isAuthenticated()) {
+        return null;
     }
 
     const handleInputChange = (e) => {

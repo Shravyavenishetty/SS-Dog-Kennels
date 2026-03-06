@@ -1,6 +1,7 @@
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api").replace(/\/+$/, "");
 const BACKEND_URL = API_BASE.replace('/api', '');
 const WS_BASE = (import.meta.env.VITE_WS_BASE_URL || BACKEND_URL).replace(/\/+$/, "");
+const AUTH_TOKEN_KEY = 'authToken';
 
 function getFullUrl(url) {
   if (!url) return '';
@@ -70,6 +71,23 @@ export async function fetchPuppies() {
     initial_package: p.initial_package,
     elite_protection: p.elite_protection,
   }));
+}
+
+export function getAuthToken() {
+  return localStorage.getItem(AUTH_TOKEN_KEY) || '';
+}
+
+export function setAuthToken(token) {
+  if (!token) return;
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+export function clearAuthToken() {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+}
+
+export function isAuthenticated() {
+  return Boolean(getAuthToken() && localStorage.getItem('isLoggedIn') === 'true');
 }
 
 export async function preloadPuppyImages(puppies, maxImages = 12) {
@@ -232,7 +250,7 @@ export async function checkProfile(phone) {
     if (!res.ok) return false;
     const data = await res.json();
     return data.exists;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -254,6 +272,45 @@ export async function createProfile(data) {
     throw new Error(`Failed to create profile: ${res.status}`);
   }
   return res.json();
+}
+
+export async function registerWithMobilePassword(data) {
+  const res = await fetch(`${API_BASE}/auth/register/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: data.name,
+      phone_number: data.phone,
+      password: data.password,
+    }),
+  });
+
+  const payload = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(payload.error || 'Failed to register');
+  }
+
+  if (payload.token) setAuthToken(payload.token);
+  return payload;
+}
+
+export async function loginWithMobilePassword(data) {
+  const res = await fetch(`${API_BASE}/auth/login/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      phone_number: data.phone,
+      password: data.password,
+    }),
+  });
+
+  const payload = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(payload.error || 'Failed to login');
+  }
+
+  if (payload.token) setAuthToken(payload.token);
+  return payload;
 }
 
 export async function updateUserProfile(phone, data) {
@@ -354,9 +411,13 @@ export async function submitContactInquiry(data) {
 }
 
 export async function submitPuppyInquiry(data) {
+  const token = getAuthToken();
   const res = await fetch(`${API_BASE}/puppy-inquiries/`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify({
       puppy: data.puppyId,
       customer_name: data.name,

@@ -10,11 +10,12 @@ import BookingWizard from './pages/BookingWizard';
 import ProfilePage from './pages/DashboardPage';
 import WishlistPage from './pages/WishlistPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import StudAvailabilityPage from './pages/StudAvailabilityPage';
 import PuppyAdoptionWizard from './pages/PuppyAdoptionWizard';
-import { fetchKennelDetails } from './lib/api';
+import { clearAuthToken, fetchKennelDetails, setAuthToken } from './lib/api';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(() => {
@@ -61,7 +62,6 @@ function App() {
   });
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
   const [userPhone, setUserPhone] = useState(() => localStorage.getItem('userPhone') || '');
-  const [isNavigating, setIsNavigating] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
@@ -102,11 +102,13 @@ function App() {
     setCurrentPage('puppy-adoption');
   };
 
-  const handleLoginSuccess = (phone) => {
+  const handleLoginSuccess = ({ phone, name, token }) => {
     setIsLoggedIn(true);
     setUserPhone(phone);
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('userPhone', phone);
+    localStorage.setItem('userName', name || '');
+    if (token) setAuthToken(token);
     setCurrentPage('profile');
   };
 
@@ -115,6 +117,8 @@ function App() {
     setUserPhone('');
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userPhone');
+    localStorage.removeItem('userName');
+    clearAuthToken();
     setCurrentPage('login');
   };
 
@@ -187,8 +191,9 @@ function App() {
           <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />
         );
       case 'login': return <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />;
+      case 'register': return <RegisterPage onPageChange={setCurrentPage} onRegisterSuccess={handleLoginSuccess} />;
       case 'about': return <AboutPage />;
-      case 'contact': return <ContactPage />;
+      case 'contact': return <ContactPage onPageChange={setCurrentPage} />;
       default: return <HomePage onPageChange={setCurrentPage} onPuppySelect={handlePuppySelect} />;
     }
   };
