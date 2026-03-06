@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -17,10 +17,17 @@ import StudAvailabilityPage from './pages/StudAvailabilityPage';
 import PuppyAdoptionWizard from './pages/PuppyAdoptionWizard';
 import { clearAuthToken, fetchKennelDetails, setAuthToken } from './lib/api';
 
+const PROTECTED_PAGES = new Set(['contact', 'booking-wizard', 'stud-availability', 'puppy-adoption']);
+
 function App() {
   const [currentPage, setCurrentPage] = useState(() => {
     const path = window.location.pathname.replace('/SS-Dog-Kennels/', '').replace('/', '');
-    return path || 'home';
+    const requestedPage = path || 'home';
+    const alreadyLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    if (PROTECTED_PAGES.has(requestedPage) && !alreadyLoggedIn) {
+      return 'login';
+    }
+    return requestedPage;
   });
   const [selectedService, setSelectedService] = useState(null);
   const [selectedPuppy, setSelectedPuppy] = useState(() => {
@@ -63,6 +70,14 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
   const [userPhone, setUserPhone] = useState(() => localStorage.getItem('userPhone') || '');
 
+  const navigateToPage = useCallback((page) => {
+    if (PROTECTED_PAGES.has(page) && !isLoggedIn) {
+      setCurrentPage('login');
+      return;
+    }
+    setCurrentPage(page);
+  }, [isLoggedIn]);
+
   useEffect(() => {
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
@@ -71,12 +86,12 @@ function App() {
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.replace('/SS-Dog-Kennels/', '').replace('/', '');
-      setCurrentPage(path || 'home');
+      navigateToPage(path || 'home');
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  }, [navigateToPage]);
 
   // Sync state to URL (Internal navigation)
   useEffect(() => {
@@ -99,7 +114,7 @@ function App() {
 
   const handlePuppyAdoption = (puppy) => {
     setSelectedPuppy(puppy);
-    setCurrentPage('puppy-adoption');
+    navigateToPage('puppy-adoption');
   };
 
   const handleLoginSuccess = ({ phone, name, token }) => {
@@ -139,40 +154,45 @@ function App() {
 
   const handleServiceBooking = (serviceId) => {
     setSelectedService(serviceId);
-    setCurrentPage('booking-wizard');
+    navigateToPage('booking-wizard');
   };
 
   const renderPage = () => {
+    const loginPage = <LoginPage onPageChange={navigateToPage} onLoginSuccess={handleLoginSuccess} />;
+
     switch (currentPage) {
       case 'home': return <HomePage
-        onPageChange={setCurrentPage}
+        onPageChange={navigateToPage}
         onPuppySelect={handlePuppySelect}
         wishlist={wishlist}
         onToggleWishlist={toggleWishlist}
       />;
       case 'puppies': return <Entries
-        onPageChange={setCurrentPage}
+        onPageChange={navigateToPage}
         onPuppySelect={handlePuppySelect}
         wishlist={wishlist}
         onToggleWishlist={toggleWishlist}
       />;
       case 'puppy-detail': return <PuppyDetailPage
-        onPageChange={setCurrentPage}
+        onPageChange={navigateToPage}
         puppy={selectedPuppy}
         onToggleWishlist={() => toggleWishlist(selectedPuppy)}
         isWishlisted={selectedPuppy && wishlist.some(p => p.id === selectedPuppy.id)}
         onBookPuppy={handlePuppyAdoption}
       />;
-      case 'puppy-adoption': return <PuppyAdoptionWizard
-        onPageChange={setCurrentPage}
-        puppy={selectedPuppy}
-      />;
-      case 'stud': return <StudServicesPage onPageChange={setCurrentPage} onStudSelect={(stud) => { setSelectedStud(stud); setCurrentPage('stud-availability'); }} />;
-      case 'stud-availability': return <StudAvailabilityPage onPageChange={setCurrentPage} initialStud={selectedStud} />;
-      case 'services': return <ServicesPage onPageChange={setCurrentPage} onServiceSelect={handleServiceBooking} />;
-      case 'booking-wizard': return <BookingWizard onPageChange={setCurrentPage} initialService={selectedService} />;
+      case 'puppy-adoption': return isLoggedIn ? (
+        <PuppyAdoptionWizard onPageChange={navigateToPage} puppy={selectedPuppy} />
+      ) : loginPage;
+      case 'stud': return <StudServicesPage onPageChange={navigateToPage} onStudSelect={(stud) => { setSelectedStud(stud); navigateToPage('stud-availability'); }} />;
+      case 'stud-availability': return isLoggedIn ? (
+        <StudAvailabilityPage onPageChange={navigateToPage} initialStud={selectedStud} />
+      ) : loginPage;
+      case 'services': return <ServicesPage onPageChange={navigateToPage} onServiceSelect={handleServiceBooking} />;
+      case 'booking-wizard': return isLoggedIn ? (
+        <BookingWizard onPageChange={navigateToPage} initialService={selectedService} />
+      ) : loginPage;
       case 'wishlist': return <WishlistPage
-        onPageChange={setCurrentPage}
+        onPageChange={navigateToPage}
         onPuppySelect={handlePuppySelect}
         wishlist={wishlist}
         onToggleWishlist={toggleWishlist}
@@ -180,7 +200,7 @@ function App() {
       case 'profile':
         return isLoggedIn ? (
           <ProfilePage
-            onPageChange={setCurrentPage}
+            onPageChange={navigateToPage}
             wishlistCount={wishlist.length}
             onLogout={handleLogout}
             userPhone={userPhone}
@@ -188,13 +208,13 @@ function App() {
             kennelDetail={kennelDetail}
           />
         ) : (
-          <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />
+          loginPage
         );
-      case 'login': return <LoginPage onPageChange={setCurrentPage} onLoginSuccess={handleLoginSuccess} />;
-      case 'register': return <RegisterPage onPageChange={setCurrentPage} onRegisterSuccess={handleLoginSuccess} />;
+      case 'login': return loginPage;
+      case 'register': return <RegisterPage onPageChange={navigateToPage} onRegisterSuccess={handleLoginSuccess} />;
       case 'about': return <AboutPage />;
-      case 'contact': return <ContactPage onPageChange={setCurrentPage} />;
-      default: return <HomePage onPageChange={setCurrentPage} onPuppySelect={handlePuppySelect} />;
+      case 'contact': return isLoggedIn ? <ContactPage onPageChange={navigateToPage} /> : loginPage;
+      default: return <HomePage onPageChange={navigateToPage} onPuppySelect={handlePuppySelect} />;
     }
   };
 
@@ -202,7 +222,7 @@ function App() {
     <div className="min-h-screen bg-ivory-white">
       <Header
         currentPage={currentPage}
-        onPageChange={setCurrentPage}
+        onPageChange={navigateToPage}
         wishlistCount={wishlist.length}
         isLoggedIn={isLoggedIn}
         onLogout={handleLogout}
@@ -210,7 +230,7 @@ function App() {
       <main className="pt-[56px] lg:pt-[80px]">
         {renderPage()}
       </main>
-      <Footer onPageChange={setCurrentPage} kennelDetail={kennelDetail} />
+      <Footer onPageChange={navigateToPage} kennelDetail={kennelDetail} />
     </div>
   );
 }

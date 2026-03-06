@@ -39,7 +39,7 @@ const ContactPage = ({ onPageChange }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isAuthenticated()) {
-            onPageChange?.('register');
+            onPageChange?.('login');
             return;
         }
         setSubmitStatus(null);

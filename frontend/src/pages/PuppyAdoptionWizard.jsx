@@ -16,7 +16,7 @@ const PuppyAdoptionWizard = ({ onPageChange, puppy }) => {
 
     useEffect(() => {
         if (!isAuthenticated()) {
-            onPageChange('register');
+            onPageChange('login');
         }
     }, [onPageChange]);
 
