@@ -8,17 +8,17 @@ const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlis
             className="w-full h-full flex flex-col bg-white rounded-24 lg:rounded-[32px] overflow-hidden border border-champagne-gold/10 group hover:shadow-2xl hover:shadow-forest-green/5 transition-all duration-500 hover:-translate-y-1 cursor-pointer"
         >
             {/* Image Container */}
-            <div className="relative h-[200px] lg:h-[240px] overflow-hidden">
-                <div className="absolute inset-0 bg-forest-green/10 group-hover:bg-transparent transition-colors duration-500"></div>
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-ivory/40">
+                <div className="absolute inset-0 bg-forest-green/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
                 <img
                     src={image || 'https://via.placeholder.com/320x240?text=Puppy'}
                     alt={breed}
                     loading={priority ? "eager" : "auto"}
                     fetchPriority={priority ? "high" : "auto"}
                     decoding="async"
-                    className="w-full h-full object-contain bg-ivory/40 transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute top-3 lg:top-4 right-3 lg:right-4">
+                <div className="absolute top-3 lg:top-4 right-3 lg:right-4 z-20">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -29,7 +29,7 @@ const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlis
                         <Heart size={16} className={`${isWishlisted ? 'fill-current' : 'group-hover/heart:fill-current'}`} />
                     </button>
                 </div>
-                <div className="absolute bottom-3 lg:bottom-4 left-3 lg:left-4">
+                <div className="absolute bottom-3 lg:bottom-4 left-3 lg:left-4 z-20">
                     <span className="bg-forest-green text-champagne-gold text-[8px] lg:text-[10px] font-bold uppercase tracking-widest px-3 py-1 lg:px-4 rounded-full">
                         {availability}
                     </span>

@@ -183,7 +183,7 @@ const StudServicesPage = ({ onPageChange, onStudSelect }) => {
                                     <div className="aspect-[3/4] rounded-24 overflow-hidden mb-6 lg:mb-8 shadow-xl relative bg-ivory">
                                         <img
                                             src={stud.image}
-                                            className="w-full h-full object-contain bg-ivory/40 transition-transform duration-1000 group-hover:scale-105"
+                                            className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105"
                                             alt={stud.name}
                                             loading="lazy"
                                             decoding="async"
