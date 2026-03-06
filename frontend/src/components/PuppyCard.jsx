@@ -1,7 +1,7 @@
 import React from 'react';
 import { Heart, ArrowRight } from 'lucide-react';
 
-const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlisted, onToggleWishlist, id }) => {
+const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlisted, onToggleWishlist, priority = false }) => {
     return (
         <div
             onClick={onSelect}
@@ -13,7 +13,8 @@ const PuppyCard = ({ image, breed, price, availability, age, onSelect, isWishlis
                 <img
                     src={image || 'https://via.placeholder.com/320x240?text=Puppy'}
                     alt={breed}
-                    loading="lazy"
+                    loading={priority ? "eager" : "auto"}
+                    fetchPriority={priority ? "high" : "auto"}
                     decoding="async"
                     className="w-full h-full object-contain bg-ivory/40 transition-transform duration-700 group-hover:scale-110"
                 />

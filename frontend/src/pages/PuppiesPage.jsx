@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import PuppyCard from '../components/PuppyCard';
 import { Search, SlidersHorizontal } from 'lucide-react';
-import { fetchPuppies } from '../lib/api';
+import { fetchPuppies, preloadPuppyImages, subscribeToPuppyUpdates } from '../lib/api';
 
 const PUPPIES_CACHE_KEY = 'ss_puppies_cache_v2';
 
@@ -14,12 +14,19 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
     const [isLoading, setIsLoading] = useState(basePuppies.length === 0);
 
     useEffect(() => {
+        if (basePuppies.length > 0) {
+            preloadPuppyImages(basePuppies, 18).catch(() => {});
+        }
+    }, []);
+
+    useEffect(() => {
         let mounted = true;
         fetchPuppies()
             .then((items) => {
                 if (!mounted) return;
                 setBasePuppies(items);
                 localStorage.setItem(PUPPIES_CACHE_KEY, JSON.stringify(items));
+                preloadPuppyImages(items, 18).catch(() => {});
                 setIsLoading(false);
             })
             .catch((err) => {
@@ -27,6 +34,34 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                 if (mounted) setIsLoading(false);
             });
         return () => { mounted = false; };
+    }, []);
+
+    useEffect(() => {
+        let refreshTimer = null;
+
+        const refreshPuppies = () => {
+            fetchPuppies()
+                .then((items) => {
+                    setBasePuppies(items);
+                    localStorage.setItem(PUPPIES_CACHE_KEY, JSON.stringify(items));
+                    preloadPuppyImages(items, 18).catch(() => {});
+                })
+                .catch((err) => {
+                    console.error("Failed to refresh puppies from websocket event:", err);
+                });
+        };
+
+        const unsubscribe = subscribeToPuppyUpdates({
+            onUpdate: () => {
+                if (refreshTimer) clearTimeout(refreshTimer);
+                refreshTimer = setTimeout(refreshPuppies, 150);
+            },
+        });
+
+        return () => {
+            if (refreshTimer) clearTimeout(refreshTimer);
+            unsubscribe();
+        };
     }, []);
 
     // 2. State
@@ -333,6 +368,7 @@ const PuppiesPage = ({ onPageChange, onPuppySelect, wishlist, onToggleWishlist }
                             <PuppyCard
                                 key={i}
                                 {...puppy}
+                                priority={i < 6}
                                 price={puppy.priceDisplay}
                                 availability={puppy.availability}
                                 onSelect={() => onPuppySelect(puppy)}

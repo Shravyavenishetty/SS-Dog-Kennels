@@ -1,5 +1,6 @@
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api").replace(/\/+$/, "");
 const BACKEND_URL = API_BASE.replace('/api', '');
+const WS_BASE = (import.meta.env.VITE_WS_BASE_URL || BACKEND_URL).replace(/\/+$/, "");
 
 function getFullUrl(url) {
   if (!url) return '';
@@ -18,6 +19,27 @@ function optimizeCloudinaryUrl(url, { width, height }) {
     return url.replace('/upload/', `/upload/${transforms.join(',')}/`);
   }
   return url;
+}
+
+function buildWsUrl(path) {
+  const wsOrigin = WS_BASE.startsWith("https://")
+    ? WS_BASE.replace("https://", "wss://")
+    : WS_BASE.replace("http://", "ws://");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${wsOrigin}${normalizedPath}`;
+}
+
+function preloadImage(url) {
+  if (!url) return Promise.resolve();
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.loading = "eager";
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = url;
+    if (img.complete) resolve();
+  });
 }
 
 async function getJson(path) {
@@ -48,6 +70,72 @@ export async function fetchPuppies() {
     initial_package: p.initial_package,
     elite_protection: p.elite_protection,
   }));
+}
+
+export async function preloadPuppyImages(puppies, maxImages = 12) {
+  const urls = [];
+  const seen = new Set();
+
+  for (const puppy of puppies || []) {
+    const candidates = [puppy.image, puppy.imageFull, ...(puppy.images || [])].filter(Boolean);
+    for (const candidate of candidates) {
+      if (seen.has(candidate)) continue;
+      seen.add(candidate);
+      urls.push(candidate);
+      if (urls.length >= maxImages) break;
+    }
+    if (urls.length >= maxImages) break;
+  }
+
+  await Promise.allSettled(urls.map((url) => preloadImage(url)));
+}
+
+export function subscribeToPuppyUpdates({ onUpdate, onStatusChange } = {}) {
+  const wsUrl = buildWsUrl("/ws/puppies/");
+  let socket = null;
+  let reconnectTimer = null;
+  let reconnectAttempt = 0;
+  let closedByClient = false;
+
+  const connect = () => {
+    socket = new WebSocket(wsUrl);
+
+    socket.onopen = () => {
+      reconnectAttempt = 0;
+      onStatusChange?.("connected");
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.event === "puppies.update") {
+          onUpdate?.(data.payload || {});
+        }
+      } catch (err) {
+        console.error("WebSocket message parse error:", err);
+      }
+    };
+
+    socket.onerror = () => {
+      onStatusChange?.("error");
+    };
+
+    socket.onclose = () => {
+      onStatusChange?.("disconnected");
+      if (closedByClient) return;
+      const backoffMs = Math.min(1000 * 2 ** reconnectAttempt, 10000);
+      reconnectAttempt += 1;
+      reconnectTimer = setTimeout(connect, backoffMs);
+    };
+  };
+
+  connect();
+
+  return () => {
+    closedByClient = true;
+    if (reconnectTimer) clearTimeout(reconnectTimer);
+    if (socket) socket.close();
+  };
 }
 
 export async function fetchStudDogs() {

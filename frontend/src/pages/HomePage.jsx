@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight, Award, ShieldCheck, Heart, Star, Calendar, MessageCircle, Scissors, Truck, Home, GraduationCap, Search } from 'lucide-react';
 import PuppyCard from '../components/PuppyCard';
-import { fetchPuppies, fetchTestimonials, fetchHomeHighlights } from '../lib/api';
+import { fetchPuppies, fetchTestimonials, fetchHomeHighlights, preloadPuppyImages, subscribeToPuppyUpdates } from '../lib/api';
 
 const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist }) => {
     const [featuredPuppies, setFeaturedPuppies] = useState([]);
@@ -25,14 +25,19 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
 
     useEffect(() => {
         let mounted = true;
-        fetchPuppies()
-            .then((items) => {
-                if (!mounted) return;
-                setFeaturedPuppies(items.slice(0, 4));
-            })
-            .catch((err) => {
-                console.error("Failed to load featured puppies from API:", err);
-            });
+        const loadFeaturedPuppies = () =>
+            fetchPuppies()
+                .then((items) => {
+                    if (!mounted) return;
+                    const featured = items.slice(0, 4);
+                    setFeaturedPuppies(featured);
+                    preloadPuppyImages(featured, 8).catch(() => {});
+                })
+                .catch((err) => {
+                    console.error("Failed to load featured puppies from API:", err);
+                });
+
+        loadFeaturedPuppies();
         fetchTestimonials()
             .then((items) => {
                 if (!mounted) return;
@@ -49,7 +54,20 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
             .catch((err) => {
                 console.error("Failed to load home highlights from API:", err);
             });
-        return () => { mounted = false; };
+
+        let refreshTimer = null;
+        const unsubscribe = subscribeToPuppyUpdates({
+            onUpdate: () => {
+                if (refreshTimer) clearTimeout(refreshTimer);
+                refreshTimer = setTimeout(loadFeaturedPuppies, 150);
+            },
+        });
+
+        return () => {
+            mounted = false;
+            if (refreshTimer) clearTimeout(refreshTimer);
+            unsubscribe();
+        };
     }, []);
 
     return (
@@ -142,6 +160,7 @@ const HomePage = ({ onPageChange, onPuppySelect, wishlist = [], onToggleWishlist
                             <PuppyCard
                                 key={i}
                                 {...puppy}
+                                priority
                                 price={puppy.priceDisplay || puppy.price}
                                 onSelect={() => onPuppySelect(puppy)}
                                 isWishlisted={wishlist.some(p => p.id === puppy.id)}
