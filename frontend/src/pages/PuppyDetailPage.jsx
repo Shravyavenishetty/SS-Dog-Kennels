@@ -1,8 +1,9 @@
 import React from 'react';
-import { ShieldCheck, Heart, Download } from 'lucide-react';
+import { ShieldCheck, Heart, PlayCircle, X } from 'lucide-react';
 
 const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, onBookPuppy }) => {
     const [activeImage, setActiveImage] = React.useState(puppy?.imageFull || puppy?.image);
+    const [activeVideo, setActiveVideo] = React.useState(null);
 
     // Update activeImage if puppy changes
     React.useEffect(() => {
@@ -23,6 +24,26 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
 
     // Prepare gallery: main image + nested images
     const allImages = [puppy.imageFull || puppy.image, ...(puppy.images || [])].filter(Boolean);
+    const cloudinaryVideos = [
+        {
+            id: 'legacy-1',
+            title: `${puppy.breed} Play Session`,
+            videoUrl: 'https://res.cloudinary.com/demo/video/upload/f_auto,q_auto,dpr_auto/dog.mp4',
+            posterUrl: 'https://res.cloudinary.com/demo/video/upload/so_2/f_jpg,q_auto,dpr_auto/dog.jpg',
+        },
+        {
+            id: 'legacy-2',
+            title: `${puppy.breed} Training Walk`,
+            videoUrl: 'https://res.cloudinary.com/demo/video/upload/f_auto,q_auto,dpr_auto/dog.mp4',
+            posterUrl: 'https://res.cloudinary.com/demo/video/upload/so_8/f_jpg,q_auto,dpr_auto/dog.jpg',
+        },
+        {
+            id: 'legacy-3',
+            title: `${puppy.breed} Daily Care`,
+            videoUrl: 'https://res.cloudinary.com/demo/video/upload/f_auto,q_auto,dpr_auto/dog.mp4',
+            posterUrl: 'https://res.cloudinary.com/demo/video/upload/so_5/f_jpg,q_auto,dpr_auto/dog.jpg',
+        },
+    ];
 
     return (
         <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10">
@@ -66,6 +87,7 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                             </div>
                         ))}
                     </div>
+
                 </div>
 
                 {/* Right: Details */}
@@ -121,6 +143,63 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                     </div>
                 </div>
             </div>
+
+            <div className="mb-16 lg:mb-20">
+                <div className="flex items-center space-x-2 mb-4 lg:mb-6">
+                    <PlayCircle size={16} className="text-forest-green" />
+                    <h3 className="font-playfair text-xl lg:text-2xl text-forest-green">Legacy Videos</h3>
+                </div>
+                <div className="grid grid-cols-3 gap-3 lg:gap-4">
+                    {cloudinaryVideos.map((video) => (
+                        <div key={video.id} className="bg-white border border-forest-green/10 rounded-2xl overflow-hidden">
+                            <button
+                                onClick={() => setActiveVideo(video)}
+                                className="relative h-44 lg:h-52 bg-forest-green/5 w-full group/video"
+                            >
+                                <img src={video.posterUrl} alt="Legacy video preview" className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-black/20 group-hover/video:bg-black/30 transition-colors flex items-center justify-center">
+                                    <PlayCircle size={32} className="text-white drop-shadow-lg" />
+                                </div>
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {activeVideo && (
+                <div
+                    className="fixed inset-0 bg-black/85 z-[100] flex items-center justify-center p-4 lg:p-10"
+                    onClick={() => setActiveVideo(null)}
+                >
+                    <div
+                        className="w-full max-w-5xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between mb-3">
+                            <p className="font-inter text-white text-sm lg:text-base font-semibold">{activeVideo.title}</p>
+                            <button
+                                onClick={() => setActiveVideo(null)}
+                                className="w-9 h-9 rounded-full bg-white/15 text-white flex items-center justify-center hover:bg-white/25 transition-colors"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+                        <div className="w-full bg-black rounded-xl overflow-hidden">
+                            <video
+                                key={activeVideo.id}
+                                className="w-full max-h-[80vh]"
+                                controls
+                                autoPlay
+                                playsInline
+                                preload="metadata"
+                                poster={activeVideo.posterUrl}
+                            >
+                                <source src={activeVideo.videoUrl} type="video/mp4" />
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Content Tabs */}
             <div className="mt-16 lg:mt-24">
