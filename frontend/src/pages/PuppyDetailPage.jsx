@@ -43,7 +43,7 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                     <div className="aspect-[4/5] bg-forest-green/5 rounded-24 lg:rounded-32 overflow-hidden mb-4 lg:mb-6 relative group">
                         <img
                             src={activeImage || puppy.imageFull || puppy.image}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            className="w-full h-full object-contain bg-ivory/40 transition-transform duration-700 group-hover:scale-105"
                             alt={puppy.breed}
                             decoding="async"
                         />
@@ -62,7 +62,7 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                                 onClick={() => setActiveImage(img)}
                                 className={`aspect-square bg-forest-green/5 rounded-lg overflow-hidden cursor-pointer hover:ring-2 ring-forest-green transition-all shrink-0 ${activeImage === img ? 'ring-2' : ''}`}
                             >
-                                <img src={img} className="w-full h-full object-cover" decoding="async" loading="lazy" />
+                                <img src={img} className="w-full h-full object-contain bg-ivory/40" decoding="async" loading="lazy" />
                             </div>
                         ))}
                     </div>

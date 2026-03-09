@@ -168,7 +168,7 @@ const ServicesPage = ({ onPageChange, onServiceSelect }) => {
                             <img
                                 src={cat.image}
                                 alt={cat.title}
-                                className="w-full h-[300px] lg:h-[500px] object-cover transition-transform duration-700 group-hover:scale-110"
+                                className="w-full h-[300px] lg:h-[500px] object-contain bg-ivory/40 transition-transform duration-700 group-hover:scale-110"
                                 loading="lazy"
                                 decoding="async"
                             />
