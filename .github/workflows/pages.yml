@@ -20,23 +20,19 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        working-directory: frontend
-        run: npm install
-
       - name: Build project
-        working-directory: frontend
-        run: npm run build
+        run: |
+          cd frontend
+          npm install
+          npm run build
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
 
-      - name: Install Admin dependencies
-        working-directory: admin-panel
-        run: npm install
-
       - name: Build Admin project
-        working-directory: admin-panel
-        run: npm run build
+        run: |
+          cd admin-panel
+          npm install
+          npm run build
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
 
