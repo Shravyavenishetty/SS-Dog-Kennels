@@ -30,6 +30,21 @@ jobs:
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
 
+      - name: Install Admin dependencies
+        working-directory: admin-panel
+        run: npm install
+
+      - name: Build Admin project
+        working-directory: admin-panel
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+
+      - name: Merge Admin into Frontend
+        run: |
+          mkdir -p frontend/dist/admin-panel
+          cp -r admin-panel/dist/* frontend/dist/admin-panel/
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist
