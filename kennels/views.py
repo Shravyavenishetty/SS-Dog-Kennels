@@ -2,14 +2,19 @@ from django.db.models import Q
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 import re
+import cloudinary.uploader
 from django.core import signing
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import (
     Puppy,
+    PuppyImage,
+    PuppyVideo,
     StudDog,
+    StudAvailability,
     StudBookingRequest,
     ServiceCategory,
+    SubService,
     Booking,
     HomeTestimonial,
     HomeServiceHighlight,
@@ -22,9 +27,13 @@ from .models import (
 )
 from .serializers import (
     PuppySerializer,
+    PuppyImageAdminSerializer,
+    PuppyVideoAdminSerializer,
     StudDogSerializer,
+    StudAvailabilitySerializer,
     StudBookingRequestSerializer,
     ServiceCategorySerializer,
+    SubServiceSerializer,
     BookingSerializer,
     HomeTestimonialSerializer,
     HomeServiceHighlightSerializer,
@@ -124,6 +133,28 @@ class PuppyViewSet(viewsets.ModelViewSet):
     queryset = Puppy.objects.all()
     serializer_class = PuppySerializer
 
+class PuppyImageViewSet(viewsets.ModelViewSet):
+    queryset = PuppyImage.objects.all()
+    serializer_class = PuppyImageAdminSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        puppy_id = self.request.query_params.get('puppy')
+        if puppy_id:
+            qs = qs.filter(puppy__id=puppy_id)
+        return qs
+
+class PuppyVideoViewSet(viewsets.ModelViewSet):
+    queryset = PuppyVideo.objects.all()
+    serializer_class = PuppyVideoAdminSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        puppy_id = self.request.query_params.get('puppy')
+        if puppy_id:
+            qs = qs.filter(puppy__id=puppy_id)
+        return qs
+
 class StudDogViewSet(viewsets.ModelViewSet):
     queryset = StudDog.objects.all()
     serializer_class = StudDogSerializer
@@ -199,26 +230,36 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class HomeTestimonialViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = HomeTestimonial.objects.filter(is_active=True).order_by("display_order")
+class HomeTestimonialViewSet(viewsets.ModelViewSet):
+    queryset = HomeTestimonial.objects.all().order_by("display_order")
     serializer_class = HomeTestimonialSerializer
 
 
-class HomeServiceHighlightViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = HomeServiceHighlight.objects.filter(is_active=True).order_by("display_order")
+class HomeServiceHighlightViewSet(viewsets.ModelViewSet):
+    queryset = HomeServiceHighlight.objects.all().order_by("display_order")
     serializer_class = HomeServiceHighlightSerializer
 
 
-class FacilityViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Facility.objects.filter(is_active=True).order_by("display_order")
+class FacilityViewSet(viewsets.ModelViewSet):
+    queryset = Facility.objects.all().order_by("display_order")
     serializer_class = FacilitySerializer
 
 
-class FAQViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = FAQ.objects.filter(is_active=True).order_by("display_order")
+class FAQViewSet(viewsets.ModelViewSet):
+    queryset = FAQ.objects.all().order_by("display_order")
     serializer_class = FAQSerializer
 
-class KennelDetailViewSet(viewsets.ReadOnlyModelViewSet):
+
+class StudAvailabilityViewSet(viewsets.ModelViewSet):
+    queryset = StudAvailability.objects.all().order_by('date')
+    serializer_class = StudAvailabilitySerializer
+
+
+class SubServiceViewSet(viewsets.ModelViewSet):
+    queryset = SubService.objects.all()
+    serializer_class = SubServiceSerializer
+
+class KennelDetailViewSet(viewsets.ModelViewSet):
     queryset = KennelDetail.objects.all()
     serializer_class = KennelDetailSerializer
 
@@ -249,3 +290,35 @@ class PuppyInquiryViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+@api_view(['GET'])
+def admin_stats(request):
+    return Response({
+        'puppies': Puppy.objects.count(),
+        'bookings': Booking.objects.count(),
+        'contact_inquiries': ContactInquiry.objects.count(),
+        'puppy_inquiries': PuppyInquiry.objects.count(),
+        'stud_requests': StudBookingRequest.objects.count(),
+        'users': UserProfile.objects.count(),
+        'pending_bookings': Booking.objects.filter(status='Pending').count(),
+        'pending_stud_requests': StudBookingRequest.objects.filter(status='pending').count(),
+    })
+
+
+@api_view(['POST'])
+def upload_image(request):
+    """Upload a file to Cloudinary, return its URL. Used by the admin panel."""
+    file_obj = request.FILES.get('file')
+    if not file_obj:
+        return Response({'error': 'No file provided.'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        folder = request.data.get('folder', 'admin-uploads')
+        result = cloudinary.uploader.upload(
+            file_obj,
+            folder=folder,
+            resource_type='auto',
+        )
+        return Response({'url': result.get('secure_url', '')}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

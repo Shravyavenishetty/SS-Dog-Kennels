@@ -68,6 +68,7 @@ export async function fetchPuppies() {
     image: optimizeCloudinaryUrl(getFullUrl(p.image_thumb_url || p.image_url), { width: 480, height: 360 }),
     imageFull: getFullUrl(p.image_url),
     images: (p.images || []).map(img => getFullUrl(img.url)),
+    videos: p.videos || [],
     tagline: p.tagline,
     behavior: p.behavior,
     health_shield: p.health_shield,

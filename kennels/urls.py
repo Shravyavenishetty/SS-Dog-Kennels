@@ -2,6 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     PuppyViewSet,
+    PuppyImageViewSet,
+    PuppyVideoViewSet,
     StudDogViewSet,
     StudBookingRequestViewSet,
     ServiceCategoryViewSet,
@@ -16,10 +18,16 @@ from .views import (
     PuppyInquiryViewSet,
     register_with_mobile_password,
     login_with_mobile_password,
+    StudAvailabilityViewSet,
+    SubServiceViewSet,
+    admin_stats,
+    upload_image,
 )
 
 router = DefaultRouter()
 router.register(r'puppies', PuppyViewSet)
+router.register(r'puppy-images', PuppyImageViewSet, basename='puppy-image')
+router.register(r'puppy-videos', PuppyVideoViewSet, basename='puppy-video')
 router.register(r'stud-dogs', StudDogViewSet)
 router.register(r'stud-booking-requests', StudBookingRequestViewSet)
 router.register(r'services', ServiceCategoryViewSet)
@@ -33,8 +41,14 @@ router.register(r'kennel-details', KennelDetailViewSet, basename='kennel-detail'
 router.register(r'contact-inquiries', ContactInquiryViewSet, basename='contact-inquiry')
 router.register(r'puppy-inquiries', PuppyInquiryViewSet, basename='puppy-inquiry')
 
+router.register(r'stud-availability', StudAvailabilityViewSet, basename='stud-availability')
+router.register(r'sub-services', SubServiceViewSet, basename='sub-service')
+
 urlpatterns = [
     path('auth/register/', register_with_mobile_password),
     path('auth/login/', login_with_mobile_password),
+    path('admin-stats/', admin_stats),
+    path('upload-image/', upload_image),
     path('', include(router.urls)),
 ]
+

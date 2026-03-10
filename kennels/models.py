@@ -102,6 +102,28 @@ class PuppyImage(models.Model):
             return self.image.url
         return self.image_url
 
+class PuppyVideo(models.Model):
+    id = ObjectIdAutoField(primary_key=True)
+    puppy = models.ForeignKey(Puppy, related_name='videos', on_delete=models.CASCADE)
+    video_url = models.URLField(max_length=1000)
+    poster_url = models.URLField(max_length=1000, blank=True, default='')
+    title = models.CharField(max_length=200, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Video for {self.puppy.breed} – {self.title or self.id}"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        existing = PuppyVideo.objects.filter(puppy=self.puppy)
+        if self.pk:
+            existing = existing.exclude(pk=self.pk)
+        if existing.count() >= 3:
+            raise ValidationError("A puppy can have at most 3 videos.")
+
 class StudDog(models.Model):
     id = ObjectIdAutoField(primary_key=True)
     breed = models.CharField(max_length=100)

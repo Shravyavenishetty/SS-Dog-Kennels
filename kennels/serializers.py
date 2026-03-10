@@ -3,6 +3,7 @@ from cloudinary.utils import cloudinary_url
 from .models import (
     Puppy,
     PuppyImage,
+    PuppyVideo,
     StudDog,
     StudAvailability,
     StudBookingRequest,
@@ -56,19 +57,40 @@ class PuppyImageAdminSerializer(serializers.ModelSerializer):
     def get_url(self, obj):
         return resolve_cloudinary_media_url(obj.image, obj.image_url)
 
+class PuppyVideoSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = PuppyVideo
+        fields = ['id', 'video_url', 'poster_url', 'title']
+
+class PuppyVideoAdminSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = PuppyVideo
+        fields = ['id', 'puppy', 'video_url', 'poster_url', 'title', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
 class PuppySerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
     images = PuppyImageSerializer(many=True, read_only=True)
+    videos = PuppyVideoSerializer(many=True, read_only=True)
     image_url = serializers.SerializerMethodField()
     image_thumb_url = serializers.SerializerMethodField()
+    # Write-only field so the admin panel can set the raw URL
+    raw_image_url = serializers.CharField(
+        source='image_url', write_only=True, required=False, allow_blank=True, default=''
+    )
 
     class Meta:
         model = Puppy
         fields = [
-            'id', 'breed', 'price', 'price_display', 'age', 'availability', 
-            'dog_type', 'image', 'image_url', 'image_thumb_url', 'tagline', 'behavior', 'health_shield', 
+            'id', 'breed', 'price', 'price_display', 'age', 'availability',
+            'dog_type', 'image', 'image_url', 'image_thumb_url', 'raw_image_url',
+            'tagline', 'behavior', 'health_shield',
             'description', 'initial_package', 'elite_protection',
-            'images', 'created_at'
+            'images', 'videos', 'created_at'
         ]
     
     def get_image_url(self, obj):

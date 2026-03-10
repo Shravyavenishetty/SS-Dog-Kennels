@@ -24,26 +24,7 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
 
     // Prepare gallery: main image + nested images
     const allImages = [puppy.imageFull || puppy.image, ...(puppy.images || [])].filter(Boolean);
-    const cloudinaryVideos = [
-        {
-            id: 'legacy-1',
-            title: `${puppy.breed} Play Session`,
-            videoUrl: 'https://res.cloudinary.com/demo/video/upload/f_auto,q_auto,dpr_auto/dog.mp4',
-            posterUrl: 'https://res.cloudinary.com/demo/video/upload/so_2/f_jpg,q_auto,dpr_auto/dog.jpg',
-        },
-        {
-            id: 'legacy-2',
-            title: `${puppy.breed} Training Walk`,
-            videoUrl: 'https://res.cloudinary.com/demo/video/upload/f_auto,q_auto,dpr_auto/dog.mp4',
-            posterUrl: 'https://res.cloudinary.com/demo/video/upload/so_8/f_jpg,q_auto,dpr_auto/dog.jpg',
-        },
-        {
-            id: 'legacy-3',
-            title: `${puppy.breed} Daily Care`,
-            videoUrl: 'https://res.cloudinary.com/demo/video/upload/f_auto,q_auto,dpr_auto/dog.mp4',
-            posterUrl: 'https://res.cloudinary.com/demo/video/upload/so_5/f_jpg,q_auto,dpr_auto/dog.jpg',
-        },
-    ];
+    const videos = puppy.videos || [];
 
     return (
         <div className="fixed-layout py-8 lg:py-16 px-4 lg:px-10">
@@ -144,27 +125,34 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                 </div>
             </div>
 
-            <div className="mb-16 lg:mb-20">
-                <div className="flex items-center space-x-2 mb-4 lg:mb-6">
-                    <PlayCircle size={16} className="text-forest-green" />
-                    <h3 className="font-playfair text-xl lg:text-2xl text-forest-green">Legacy Videos</h3>
+            {videos.length > 0 && (
+                <div className="mb-16 lg:mb-20">
+                    <div className="flex items-center space-x-2 mb-4 lg:mb-6">
+                        <PlayCircle size={16} className="text-forest-green" />
+                        <h3 className="font-playfair text-xl lg:text-2xl text-forest-green">Legacy Videos</h3>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
+                        {videos.map((video) => (
+                            <div key={video.id} className="bg-white border border-forest-green/10 rounded-2xl overflow-hidden">
+                                <button
+                                    onClick={() => setActiveVideo(video)}
+                                    className="relative h-44 lg:h-52 bg-forest-green/5 w-full group/video"
+                                >
+                                    <video src={video.video_url} className="w-full h-full object-cover pointer-events-none" />
+                                    <div className="absolute inset-0 bg-black/20 group-hover/video:bg-black/30 transition-colors flex items-center justify-center">
+                                        <PlayCircle size={32} className="text-white drop-shadow-lg" />
+                                    </div>
+                                    {video.title && (
+                                        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
+                                            <p className="text-white text-xs font-inter font-bold truncate">{video.title}</p>
+                                        </div>
+                                    )}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <div className="grid grid-cols-3 gap-3 lg:gap-4">
-                    {cloudinaryVideos.map((video) => (
-                        <div key={video.id} className="bg-white border border-forest-green/10 rounded-2xl overflow-hidden">
-                            <button
-                                onClick={() => setActiveVideo(video)}
-                                className="relative h-44 lg:h-52 bg-forest-green/5 w-full group/video"
-                            >
-                                <img src={video.posterUrl} alt="Legacy video preview" className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 bg-black/20 group-hover/video:bg-black/30 transition-colors flex items-center justify-center">
-                                    <PlayCircle size={32} className="text-white drop-shadow-lg" />
-                                </div>
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            )}
 
             {activeVideo && (
                 <div
@@ -192,9 +180,9 @@ const PuppyDetailPage = ({ onPageChange, puppy, onToggleWishlist, isWishlisted, 
                                 autoPlay
                                 playsInline
                                 preload="metadata"
-                                poster={activeVideo.posterUrl}
+                                poster={activeVideo.poster_url || undefined}
                             >
-                                <source src={activeVideo.videoUrl} type="video/mp4" />
+                                <source src={activeVideo.video_url} type="video/mp4" />
                             </video>
                         </div>
                     </div>
