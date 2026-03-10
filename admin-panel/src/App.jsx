@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Menu } from 'lucide-react';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import PuppiesPage from './pages/PuppiesPage';
@@ -58,6 +59,7 @@ export default function App() {
     const [authed, setAuthed] = useState(() => localStorage.getItem('admin_authed') === '1');
     const [page, setPage] = useState('dashboard');
     const [toasts, setToasts] = useState([]);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const toast = useCallback((msg, type = 'success') => {
         const id = Date.now();
@@ -87,10 +89,29 @@ export default function App() {
         <ToastCtx.Provider value={toast}>
             <NavCtx.Provider value={setPage}>
                 <div className="admin-layout">
-                    <Sidebar active={page} onNav={setPage} onLogout={handleLogout} />
+                    {/* Dark overlay when sidebar is open on mobile */}
+                    <div
+                        className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+                        onClick={() => setSidebarOpen(false)}
+                    />
+
+                    <Sidebar
+                        active={page}
+                        onNav={(k) => { setPage(k); setSidebarOpen(false); }}
+                        onLogout={handleLogout}
+                        isOpen={sidebarOpen}
+                        onClose={() => setSidebarOpen(false)}
+                    />
                     <div className="admin-main">
                         <header className="admin-topbar">
                             <div className="topbar-left">
+                                <button
+                                    className="menu-btn"
+                                    onClick={() => setSidebarOpen(true)}
+                                    aria-label="Toggle Menu"
+                                >
+                                    <Menu size={20} />
+                                </button>
                                 <span className="topbar-title">🐾 {PAGE_TITLES[page] || 'Admin'}</span>
                             </div>
                             <div className="topbar-right">

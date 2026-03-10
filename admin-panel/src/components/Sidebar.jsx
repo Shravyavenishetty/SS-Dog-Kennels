@@ -22,11 +22,11 @@ const NAV = [
     { key: 'puppy-inquiries', label: 'Puppy Inquiries', icon: ShoppingBag, section: 'Inquiries' },
 ];
 
-export default function Sidebar({ active, onNav, onLogout }) {
+export default function Sidebar({ active, onNav, onLogout, isOpen, onClose }) {
     const sections = [...new Set(NAV.map(n => n.section))];
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
             <div className="sidebar-brand">
                 <h2>🐾 SS Kennels</h2>
                 <span>Admin Dashboard</span>
