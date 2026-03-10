@@ -1,10 +1,6 @@
-import requests
-from django.core.files.base import ContentFile
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator, EmailValidator
 from django_mongodb_backend.fields import ObjectIdAutoField
-from urllib.parse import urlparse
-import os
 from django.contrib.auth.hashers import make_password, check_password
 
 class Puppy(models.Model):
@@ -47,7 +43,6 @@ class Puppy(models.Model):
         return f"{self.breed} - {self.price_display}"
 
     def save(self, *args, **kwargs):
-        # Force re-fetch from URL if image_url has changed or if image is missing
         if self.pk:
             try:
                 orig = Puppy.objects.get(pk=self.pk)
@@ -55,15 +50,6 @@ class Puppy(models.Model):
                     self.image = None
             except Puppy.DoesNotExist:
                 pass
-
-        if self.image_url and not self.image:
-            try:
-                response = requests.get(self.image_url)
-                if response.status_code == 200:
-                    filename = os.path.basename(urlparse(self.image_url).path) or f"{self.breed}_{self.id}.jpg"
-                    self.image.save(filename, ContentFile(response.content), save=False)
-            except Exception as e:
-                print(f"Error fetching image from URL: {e}")
         super().save(*args, **kwargs)
 
 class PuppyImage(models.Model):
@@ -77,7 +63,6 @@ class PuppyImage(models.Model):
         return f"Image for {self.puppy.breed}"
 
     def save(self, *args, **kwargs):
-        # Force re-fetch from URL if image_url has changed or if image is missing
         if self.pk:
             try:
                 orig = PuppyImage.objects.get(pk=self.pk)
@@ -85,15 +70,6 @@ class PuppyImage(models.Model):
                     self.image = None
             except PuppyImage.DoesNotExist:
                 pass
-
-        if self.image_url and not self.image:
-            try:
-                response = requests.get(self.image_url)
-                if response.status_code == 200:
-                    filename = os.path.basename(urlparse(self.image_url).path) or f"gallery_{self.puppy.breed}_{self.id}.jpg"
-                    self.image.save(filename, ContentFile(response.content), save=False)
-            except Exception as e:
-                print(f"Error fetching gallery image from URL: {e}")
         super().save(*args, **kwargs)
 
     @property
