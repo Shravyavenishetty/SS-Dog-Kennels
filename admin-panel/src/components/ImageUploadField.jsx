@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Upload, Link, X } from 'lucide-react';
 
-const BASE = 'http://localhost:8000/api';
+const BASE = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api').replace(/\/+$/, '');
 
 /**
  * ImageUploadField — replaces plain URL inputs with a file-upload widget.
