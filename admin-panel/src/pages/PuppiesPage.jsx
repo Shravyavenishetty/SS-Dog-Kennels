@@ -17,6 +17,24 @@ const EMPTY = {
     new_gallery_urls: [], new_video_urls: []
 };
 
+function buildPuppyPayload(form) {
+    return {
+        breed: form.breed,
+        price: Number(form.price) || 0,
+        price_display: form.price_display,
+        age: form.age,
+        availability: form.availability,
+        dog_type: form.dog_type,
+        tagline: form.tagline,
+        behavior: form.behavior,
+        health_shield: form.health_shield,
+        description: form.description,
+        initial_package: form.initial_package,
+        elite_protection: form.elite_protection,
+        raw_image_url: form.image_url || '',
+    };
+}
+
 export default function PuppiesPage() {
     const toast = useContext(ToastCtx);
     const [items, setItems] = useState([]);
@@ -66,16 +84,7 @@ export default function PuppiesPage() {
     const save = async () => {
         setSaving(true);
         try {
-            const payload = {
-                ...form,
-                price: Number(form.price) || 0,
-                raw_image_url: form.image_url,
-            };
-            // Remove local states from payload
-            delete payload.new_gallery_urls;
-            delete payload.new_video_urls;
-            delete payload.images;
-            delete payload.videos;
+            const payload = buildPuppyPayload(form);
 
             let savedPuppy;
             if (modal === 'add') savedPuppy = await puppiesApi.create(payload);

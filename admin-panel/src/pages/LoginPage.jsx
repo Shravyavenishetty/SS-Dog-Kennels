@@ -26,7 +26,7 @@ export default function LoginPage({ onLogin }) {
         <div className="login-page">
             <div className="login-left">
                 <div className="login-paws">🐾</div>
-                <h1>SS Dog Kennels</h1>
+                <h1>Sangas Dog Kennels</h1>
                 <p>Premium kennel management system<br />for India's finest dog breeders</p>
 
                 <div style={{ marginTop: 48, display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -75,7 +75,7 @@ export default function LoginPage({ onLogin }) {
                         </button>
                     </form>
                     <p style={{ marginTop: 24, fontSize: '0.75rem', color: 'var(--gray-400)', textAlign: 'center' }}>
-                        SS Dog Kennels Admin — Internal Use Only
+                        Sangas Dog Kennels Admin — Internal Use Only
                     </p>
                 </div>
             </div>
