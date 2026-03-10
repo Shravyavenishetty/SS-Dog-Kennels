@@ -51,7 +51,7 @@ class PuppyImageAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PuppyImage
-        fields = ['id', 'puppy', 'image', 'image_url', 'url', 'created_at']
+        fields = ['id', 'puppy', 'image_url', 'url', 'created_at']
         read_only_fields = ['id', 'url', 'created_at']
 
     def get_url(self, obj):
@@ -87,7 +87,7 @@ class PuppySerializer(serializers.ModelSerializer):
         model = Puppy
         fields = [
             'id', 'breed', 'price', 'price_display', 'age', 'availability',
-            'dog_type', 'image', 'image_url', 'image_thumb_url', 'raw_image_url',
+            'dog_type', 'image_url', 'image_thumb_url', 'raw_image_url',
             'tagline', 'behavior', 'health_shield',
             'description', 'initial_package', 'elite_protection',
             'images', 'videos', 'created_at'
