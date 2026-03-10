@@ -47,6 +47,7 @@ class PuppyImageSerializer(serializers.ModelSerializer):
 
 class PuppyImageAdminSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
+    puppy = serializers.PrimaryKeyRelatedField(queryset=Puppy.objects.all(), pk_field=serializers.CharField())
     url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -66,6 +67,7 @@ class PuppyVideoSerializer(serializers.ModelSerializer):
 
 class PuppyVideoAdminSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
+    puppy = serializers.PrimaryKeyRelatedField(queryset=Puppy.objects.all(), pk_field=serializers.CharField())
 
     class Meta:
         model = PuppyVideo
